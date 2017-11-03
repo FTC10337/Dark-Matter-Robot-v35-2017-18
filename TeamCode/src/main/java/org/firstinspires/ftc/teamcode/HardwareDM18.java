@@ -76,7 +76,7 @@ public class HardwareDM18
     BNO055IMU adaGyro;
 
     public final static double JEWEL_HOME = 0.027;
-    public final static double JEWEL_DEPLOY = 0.76;
+    public final static double JEWEL_DEPLOY = 0.70;
     public final static double JEWEL_ROT_HOME = 0.52;
     public final static double JEWEL_ROT_FWD = 0.62;
     public final static double JEWEL_ROT_REV = 0.42;

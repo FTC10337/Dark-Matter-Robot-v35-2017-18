@@ -74,6 +74,23 @@ public class Gripper {
             theControl.setServoPwmRange(thePort, theRange);
         }
 
+        // Set the black grip servo for extended PWM range
+        if (blackGrip.getController() instanceof ServoControllerEx) {
+            // Confirm its an extended range servo controller before we try to set to avoid crash
+            ServoControllerEx theControl = (ServoControllerEx) blackGrip.getController();
+            int thePort = blackGrip.getPortNumber();
+            PwmControl.PwmRange theRange = new PwmControl.PwmRange(553, 2500);
+            theControl.setServoPwmRange(thePort, theRange);
+        }// Set the purple grip servo for extended PWM range
+        if (purpleGrip.getController() instanceof ServoControllerEx) {
+            // Confirm its an extended range servo controller before we try to set to avoid crash
+            ServoControllerEx theControl = (ServoControllerEx) purpleGrip.getController();
+            int thePort = rotateServo.getPortNumber();
+            PwmControl.PwmRange theRange = new PwmControl.PwmRange(553, 2500);
+            theControl.setServoPwmRange(thePort, theRange);
+        }
+
+
         // Start with purple on top
         topGrip = purpleGrip;
         btmGrip = blackGrip;

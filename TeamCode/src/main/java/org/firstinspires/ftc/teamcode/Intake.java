@@ -82,7 +82,7 @@ public class Intake {
         // Define and initialize Intake servos
         intakeLeftServo = hw.servo.get(ls);
         intakeRightServo = hw.servo.get(rs);
-        setOpen();
+        setClosed();
 
         // Define distance sensor
         distanceSensor = hw.get(DistanceSensor.class, ds);
