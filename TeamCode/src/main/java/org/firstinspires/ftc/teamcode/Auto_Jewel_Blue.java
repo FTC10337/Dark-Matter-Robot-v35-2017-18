@@ -104,8 +104,8 @@ public class Auto_Jewel_Blue extends LinearOpMode {
 
     static final double     HEADING_THRESHOLD       = 2 ;      // As tight as we can make it with an integer gyro
     static final double     P_TURN_COEFF            = 0.011;   // Larger is more responsive, but also less accurate
-    static final double     P_DRIVE_COEFF_1         = 0.03;  // Larger is more responsive, but also less accurate
-    static final double     P_DRIVE_COEFF_2         = 0.02;
+    static final double     P_DRIVE_COEFF_1         = 0.01;  // Larger is more responsive, but also less accurate
+    static final double     P_DRIVE_COEFF_2         = 0.01;
 
     // Variables used for reading Gyro
     Orientation             angles;
@@ -233,10 +233,6 @@ public class Auto_Jewel_Blue extends LinearOpMode {
 
         RobotLog.i("DM10337 - Gyro bias set to " + headingBias);
 
-
-        // Open intake wheels
-        robot.intake.setOpen();
-
                /*
 
          JEWEL CODE
@@ -282,10 +278,7 @@ public class Auto_Jewel_Blue extends LinearOpMode {
         sleep(500);
         robot.jewelCS.enableLed(false);
 
-        // Lift preloaded glyph to mid position for driving
-        robot.lift.setLiftMid();
 
-        while (!robot.lift.reachedFloor()) idle();
 
         /*
 
@@ -301,53 +294,56 @@ public class Auto_Jewel_Blue extends LinearOpMode {
         if (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN) {
             // Drive forward to lineup with center cryptoglyph
             if (iAmBlue()) {
-                encoderDrive(0.5, 32.0, 5.0, false, 0.0);
+                encoderDrive(0.5, 33.0, 5.0, true, 0.0);
             } else {
-                encoderDrive(0.5, -36.0, 5.0, false, 0.0);
+                encoderDrive(0.5, -36.0, 5.0, true, 0.0);
             }
+
             // Turn toward center cryptoglyph
             gyroTurn(0.8, 90, P_TURN_COEFF);
+            // Outake glyph
+            robot.gripper.setBothOpen();
+            sleep (1000);
             // Drive closer to center cryptoglyph
-            encoderDrive(0.5, 2.0, 3.0, false, 90);
+            encoderDrive(0.5, 7.0, 3.0, true, 90);
         }
         if (vuMark == RelicRecoveryVuMark.RIGHT) {
             // Drive forward to lineup with center cryptoglyph
             if (iAmBlue()) {
-                encoderDrive(0.5, 32.0+7.5, 5.0, false, 0.0);
+                encoderDrive(0.5, 33.0+7.5, 5.0, true, 0.0);
             } else {
-                encoderDrive(0.5, -36.0+7.5, 5.0, false, 0.0);
+                encoderDrive(0.5, -36.0+7.5, 5.0, true, 0.0);
             }
             // Turn toward center cryptoglyph
             gyroTurn(0.8, 90, P_TURN_COEFF);
-            encoderDrive(0.5, 2.0, 3.0, false, 90);
+            // Outake glyph
+            robot.gripper.setBothOpen();
+            sleep (1000);
+            // Drive closer to cryptoglyph
+            encoderDrive(0.5, 7.0, 3.0, true, 90);
         }
         if (vuMark == RelicRecoveryVuMark.LEFT) {
             // Drive forward to lineup with center cryptoglyph
             if (iAmBlue()) {
-                encoderDrive(0.5, 32.0-7.5, 5.0, false, 0.0);
+                encoderDrive(0.5, 33.0-7.5, 5.0, true, 0.0);
             } else {
-                encoderDrive(0.5, -36.0-7.5, 5.0, false, 0.0);
+                encoderDrive(0.5, -36.0-7.5, 5.0, true, 0.0);
             }
             // Turn toward center cryptoglyph
             gyroTurn(0.8, 90, P_TURN_COEFF);
-            encoderDrive(0.5, 2.0, 3.0, false, 90);
+            // Outake glyph
+            robot.gripper.setBothOpen();
+            sleep (1000);
+            // Drive closer to cryptoglyph
+            encoderDrive(0.5, 7.0, 3.0, true, 90);
         }
 
-        // Outake glyph
-        robot.gripper.setExtendOut();
-        while (robot.gripper.isExtending()) idle();
-        robot.lift.setLiftBtm();
-        while(!robot.lift.reachedFloor()) idle();
-        robot.gripper.setBothOpen();
-        while(robot.gripper.isMoving());
+
+        robot.intake.setOut();
+        sleep(1500);
 
         // Drive back, but stay in safe zone
-        encoderDrive(0.6, -7.5, 3.0, true, 90);
-
-        // lift to top then pusher in
-        robot.lift.setLiftTop();
-        while(!robot.lift.reachedFloor()) idle();
-        robot.gripper.setExtendIn();
+        encoderDrive(0.6, -4.0, 3.0, true, 90);
 
 
         RobotLog.i("DM10337- Finished last move of auto");

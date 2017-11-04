@@ -75,11 +75,11 @@ public class HardwareDM18
 
     BNO055IMU adaGyro;
 
-    public final static double JEWEL_HOME = 0.027;
-    public final static double JEWEL_DEPLOY = 0.70;
-    public final static double JEWEL_ROT_HOME = 0.52;
-    public final static double JEWEL_ROT_FWD = 0.62;
-    public final static double JEWEL_ROT_REV = 0.42;
+    public final static double JEWEL_HOME = 0.15;
+    public final static double JEWEL_DEPLOY = 0.78;
+    public final static double JEWEL_ROT_HOME = 0.54;
+    public final static double JEWEL_ROT_FWD = 0.74;
+    public final static double JEWEL_ROT_REV = 0.34;
 
 
     /* Drive train constants */
