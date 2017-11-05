@@ -75,6 +75,13 @@ public class TeleOpDM18_MechManipulator extends OpMode {
     int curState = 0;
     int lastState = 0;
     double Pos = 0;
+
+    // Storage for reading adaFruit color sensor for beacon sensing
+    // adaHSV is an array that will hold the hue, saturation, and value information.
+    float[] adaHSV = {0F, 0F, 0F};
+    // adaValues is a reference to the adaHSV array.
+    final float adaValues[] = adaHSV;
+    
     /*
      * Code to run ONCE when the driver hits INIT
      */
