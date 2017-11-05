@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -243,6 +245,16 @@ public class TeleOpDM18_MechManipulator extends OpMode {
                 telemetry.addData("JEWEL", "ROTATE");
                 telemetry.addData("Pos: ", robot.jewelRotServo.getPosition());
 
+                Color.RGBToHSV((robot.jewelCS.red() * 255) / 800, (robot.jewelCS.green() * 255) / 800,
+                        (robot.jewelCS.blue() * 255) / 800, adaHSV);
+
+                // Normalize hue to -180 to 180 degrees
+                if (adaHSV[0] > 180.0) {
+                    adaHSV[0] -= 360.0;
+                }
+
+                telemetry.addData("Hue: ", adaHSV[0]);
+
                 Pos = robot.jewelRotServo.getPosition();
 
                 if (gamepad2.x) {
@@ -258,6 +270,16 @@ public class TeleOpDM18_MechManipulator extends OpMode {
             case 8: // JEWEL DEPLOY
                 telemetry.addData("JEWEL", "DEPLOY");
                 telemetry.addData("Pos: ", robot.jewelServo.getPosition());
+
+                Color.RGBToHSV((robot.jewelCS.red() * 255) / 800, (robot.jewelCS.green() * 255) / 800,
+                        (robot.jewelCS.blue() * 255) / 800, adaHSV);
+
+                // Normalize hue to -180 to 180 degrees
+                if (adaHSV[0] > 180.0) {
+                    adaHSV[0] -= 360.0;
+                }
+
+                telemetry.addData("Hue: ", adaHSV[0]);
 
                 Pos = robot.jewelServo.getPosition();
 
