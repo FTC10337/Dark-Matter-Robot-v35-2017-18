@@ -698,9 +698,7 @@ public class TeleOpDM18_Janus extends OpMode {
 
 // Intake Control
 
-    public void intakeControl()
-    {
-
+    public void intakeControl()  {
 
         // Intake IN
         if (gamepad1.right_trigger > 0.5 && !init_AutoLoad && !init_Reset) {
@@ -708,13 +706,29 @@ public class TeleOpDM18_Janus extends OpMode {
             robot.intake.setClosed();
         }
 
-        // Intake STOP
+        // Intake IN - LEFT only
+        if (gamepad1.left_bumper && !init_AutoLoad && !init_Reset) {
+            robot.intake.setInLeftOnly();
+            intakeStopTimer.reset();
+            stopIntake = true;
+        }
+
+        // Intake IN - RIGHT only
+        if (gamepad1.right_bumper && !init_AutoLoad && !init_Reset) {
+            robot.intake.setInRightOnly();
+            intakeStopTimer.reset();
+            stopIntake = true;
+
+        }
+
+        // Intake SET STOP after glyph detected
         if (robot.intake.isIntakeInOn && robot.intake.detectGlyph()) {
             intakeStopTimer.reset();
             stopIntake = true;
             robot.intake.isIntakeInOn = false;
         }
 
+        // Intake STOP after 500 ms
         if (stopIntake && intakeStopTimer.milliseconds() > 500) {
             robot.intake.setStop();
             stopIntake = false;
@@ -730,6 +744,7 @@ public class TeleOpDM18_Janus extends OpMode {
         if (gamepad1.a && !init_AutoLoad && !init_Reset) {
             robot.intake.setStop();
         }
+
         // Intake open & close
         if (gamepad1.x && !init_AutoLoad && !init_Reset) {
             robot.intake.setClosed();
@@ -740,7 +755,6 @@ public class TeleOpDM18_Janus extends OpMode {
         }
 
     }
-
 
 
 }

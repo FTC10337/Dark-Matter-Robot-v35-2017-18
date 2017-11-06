@@ -121,6 +121,12 @@ public class Auto_Jewel_Blue extends LinearOpMode {
 
     int glyphsCollected = 0;
 
+    // Timer for detecting jewel color
+    ElapsedTime             detectColorTimer        = new ElapsedTime();
+
+    // Jewel color detection variable
+    boolean                 detectedJewelColor      = false;
+
     // Storage for reading adaFruit color sensor for beacon sensing
     // adaHSV is an array that will hold the hue, saturation, and value information.
     float[] adaHSV = {0F, 0F, 0F};
@@ -233,11 +239,11 @@ public class Auto_Jewel_Blue extends LinearOpMode {
 
         RobotLog.i("DM10337 - Gyro bias set to " + headingBias);
 
-               /*
 
-         JEWEL CODE
+        /*
+        JEWEL CODE
+        */
 
-          */
         double armPos = robot.jewelServo.getPosition();
         double armIncr = (robot.JEWEL_DEPLOY - armPos)/50;
         while (armPos < robot.JEWEL_DEPLOY) {
@@ -249,23 +255,36 @@ public class Auto_Jewel_Blue extends LinearOpMode {
         robot.jewelCS.enableLed(true);
         sleep(1500);
 
-        int jewelColor = JewelColor();
 
-        // Check if we see blue or red
-        if (jewelColor == -1) {
-            // We see red
-            robot.jewelRotServo.setPosition(iAmBlue()?robot.JEWEL_ROT_REV:robot.JEWEL_ROT_FWD);
-            sleep(500);
-        } else if (jewelColor == 1) {
-            // We see blue
-            robot.jewelRotServo.setPosition(iAmBlue()?robot.JEWEL_ROT_FWD:robot.JEWEL_ROT_REV);
-            sleep(500);
-        } else {
-            // We saw neither blue nor red so do nothing
-            sleep(500);
+        // Slowly raise jewel arm while looking for RED or BLUE
+        armPos = robot.jewelServo.getPosition();
+        armIncr = (robot.JEWEL_HOME - armPos)/100;
+
+        while (armPos > 0.70 && !detectedJewelColor && detectColorTimer.milliseconds() < 1000) {
+            armPos += armIncr;
+            robot.jewelServo.setPosition(armPos);
+            sleep(20);
+
+            // Check jewel color
+            int jewelColor = JewelColor();
+
+            // Check if we see blue or red
+            if (jewelColor == -1) {
+                // We see red
+                robot.jewelRotServo.setPosition(iAmBlue()?robot.JEWEL_ROT_REV:robot.JEWEL_ROT_FWD);
+                sleep(500);
+                detectedJewelColor = true;
+            } else if (jewelColor == 1) {
+                // We see blue
+                robot.jewelRotServo.setPosition(iAmBlue()?robot.JEWEL_ROT_FWD:robot.JEWEL_ROT_REV);
+                sleep(500);
+                detectedJewelColor = true;
+            } else {
+                // We saw neither blue nor red so do nothing
+            }
         }
 
-        // Reset jewel arm
+// Reset jewel arm
         robot.jewelRotServo.setPosition(robot.JEWEL_ROT_HOME);
         armPos = robot.jewelServo.getPosition();
         armIncr = (robot.JEWEL_HOME - armPos)/50;
@@ -274,9 +293,11 @@ public class Auto_Jewel_Blue extends LinearOpMode {
             robot.jewelServo.setPosition(armPos);
             sleep(20);
         }
-        //robot.jewelServo.setPosition(robot.JEWEL_HOME);
+//robot.jewelServo.setPosition(robot.JEWEL_HOME);
         sleep(500);
         robot.jewelCS.enableLed(false);
+
+
 
 
 

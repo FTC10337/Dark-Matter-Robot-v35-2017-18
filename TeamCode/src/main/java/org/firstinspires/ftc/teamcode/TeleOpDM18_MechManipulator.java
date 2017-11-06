@@ -81,7 +81,7 @@ public class TeleOpDM18_MechManipulator extends OpMode {
     float[] adaHSV = {0F, 0F, 0F};
     // adaValues is a reference to the adaHSV array.
     final float adaValues[] = adaHSV;
-    
+
     /*
      * Code to run ONCE when the driver hits INIT
      */

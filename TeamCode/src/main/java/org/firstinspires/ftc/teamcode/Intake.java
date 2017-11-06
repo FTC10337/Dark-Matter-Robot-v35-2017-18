@@ -133,12 +133,30 @@ public class Intake {
         intakeCycle = true;
     }
 
+    public void setInLeftOnly() {
+        lInPower = MAX_IN_POWER;
+        rInPower = 0.0;
+        intakeLeftMotor.setPower(lInPower);
+        intakeRightMotor.setPower(rInPower);
+        isIntakeInOn = true;
+        isIntakeOutOn = false;
+    }
+
+    public void setInRightOnly() {
+        lInPower = 0.0;
+        rInPower = MAX_IN_POWER;
+        intakeLeftMotor.setPower(lInPower);
+        intakeRightMotor.setPower(rInPower);
+        isIntakeInOn = true;
+        isIntakeOutOn = false;
+    }
+
     /**
      * Set the intake feed wheels in
      */
     public void setInAlt() {
-        rInPower = MAX_IN_POWER;
-        lInPower = MIN_IN_POWER;
+        rInPower = MIN_IN_POWER;
+        lInPower = MAX_IN_POWER;
         intakeLeftMotor.setPower(lInPower);
         intakeRightMotor.setPower(rInPower);
         isIntakeInOn = true;
