@@ -724,12 +724,13 @@ public class TeleOpDM18_Janus extends OpMode {
         // Intake SET STOP after glyph detected
         if (robot.intake.isIntakeInOn && robot.intake.detectGlyph()) {
             intakeStopTimer.reset();
+            robot.intake.setInAlt();
             stopIntake = true;
             robot.intake.isIntakeInOn = false;
         }
 
         // Intake STOP after 500 ms
-        if (stopIntake && intakeStopTimer.milliseconds() > 500) {
+        if (stopIntake && intakeStopTimer.milliseconds() > 300) {
             robot.intake.setStop();
             stopIntake = false;
         }

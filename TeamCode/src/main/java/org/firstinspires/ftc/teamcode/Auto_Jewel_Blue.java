@@ -255,36 +255,36 @@ public class Auto_Jewel_Blue extends LinearOpMode {
         robot.jewelCS.enableLed(true);
         sleep(1500);
 
-
         // Slowly raise jewel arm while looking for RED or BLUE
         armPos = robot.jewelServo.getPosition();
-        armIncr = (robot.JEWEL_HOME - armPos)/100;
+        armIncr = -0.01;
+
+        detectColorTimer.reset();
 
         while (armPos > 0.70 && !detectedJewelColor && detectColorTimer.milliseconds() < 1000) {
             armPos += armIncr;
             robot.jewelServo.setPosition(armPos);
-            sleep(20);
+
+            sleep(50);
 
             // Check jewel color
             int jewelColor = JewelColor();
 
-            // Check if we see blue or red
+           // Check if we see blue or red
             if (jewelColor == -1) {
                 // We see red
                 robot.jewelRotServo.setPosition(iAmBlue()?robot.JEWEL_ROT_REV:robot.JEWEL_ROT_FWD);
-                sleep(500);
                 detectedJewelColor = true;
             } else if (jewelColor == 1) {
                 // We see blue
                 robot.jewelRotServo.setPosition(iAmBlue()?robot.JEWEL_ROT_FWD:robot.JEWEL_ROT_REV);
-                sleep(500);
                 detectedJewelColor = true;
-            } else {
-                // We saw neither blue nor red so do nothing
             }
         }
 
-// Reset jewel arm
+        sleep(500);
+
+         // Reset jewel arm
         robot.jewelRotServo.setPosition(robot.JEWEL_ROT_HOME);
         armPos = robot.jewelServo.getPosition();
         armIncr = (robot.JEWEL_HOME - armPos)/50;
@@ -293,18 +293,13 @@ public class Auto_Jewel_Blue extends LinearOpMode {
             robot.jewelServo.setPosition(armPos);
             sleep(20);
         }
-//robot.jewelServo.setPosition(robot.JEWEL_HOME);
+
+         //robot.jewelServo.setPosition(robot.JEWEL_HOME);
         sleep(500);
         robot.jewelCS.enableLed(false);
 
-
-
-
-
         /*
-
         CRYPTO CODE
-
          */
 
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
