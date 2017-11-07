@@ -63,9 +63,11 @@ public class TeleOpDM18_Janus extends OpMode {
 
     States nStates = States.INIT_1;
 
+    boolean startInit = false;
     boolean init_TeleOp = true;
     boolean init_AutoLoad = false;
     boolean init_Reset = false;
+
 
     boolean autoMove = false;
 
@@ -102,7 +104,7 @@ public class TeleOpDM18_Janus extends OpMode {
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap, false);
+        robot.init(hardwareMap, false, false);
 
 
 
@@ -145,14 +147,18 @@ public class TeleOpDM18_Janus extends OpMode {
         if (init_TeleOp) { // AUTO SEQUENCED STATES - INIT, LOAD & RESET
             switch (nStates) {
                 case INIT_1: // INIT DRIVER CONTROL _ RESET LIFT TO TOP AND INIT GRIPPER
-                    if (robot.lift.resetTopPos()) {
-                        // initiates gripper. Init will set grippers closed, flipped in correct orientation, and pusher in home position.
-                        robot.gripper.init(hardwareMap, "gripP", "gripB", "gripRotate", "gripExtend");
-                        robot.gripper.setBothOpen();
-                        robot.gripper.setExtendIn();
-                        nStates = States.INIT_2;
+                    if (gamepad1.left_stick_y > 0.2 || gamepad1.left_stick_y < -0.2 ) { startInit = true; }
 
+                    if (startInit){
+                        if (robot.lift.resetTopPos()) {
+                            // initiates gripper. Init will set grippers closed, flipped in correct orientation, and pusher in home position.
+                            robot.gripper.init(hardwareMap, "gripP", "gripB", "gripRotate", "gripExtend");
+                            robot.gripper.setBothOpen();
+                            robot.gripper.setExtendIn();
+                            nStates = States.INIT_2;
+                        }
                     }
+
                     break;
 
                 case INIT_2: // Wait for the init moves to finish before we lower down
@@ -189,8 +195,8 @@ public class TeleOpDM18_Janus extends OpMode {
         double direction = gamepad1.right_stick_x;
 
         // Driver 1 toggle drive train speed controls
-        if (gamepad1.left_bumper) slowDriveTrain2 = false;
-        if (gamepad1.right_bumper) {
+        if (gamepad1.dpad_up) slowDriveTrain2 = false;
+        if (gamepad1.dpad_down) {
             slowDriveTrain2 = true;
             slowDriveTrainOveride = true;
         }

@@ -76,7 +76,7 @@ public class HardwareDM18
     BNO055IMU adaGyro;
 
     public final static double JEWEL_HOME = 0.15;
-    public final static double JEWEL_DEPLOY = 0.78;
+    public final static double JEWEL_DEPLOY = 0.79;
     public final static double JEWEL_ROT_HOME = 0.54;
     public final static double JEWEL_ROT_FWD = 0.74;
     public final static double JEWEL_ROT_REV = 0.34;
@@ -115,7 +115,7 @@ public class HardwareDM18
     }
 
     /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap, boolean initGripper) {
+    public void init(HardwareMap ahwMap, boolean initGripper, boolean initGyro) {
         // Save reference to Hardware map
         hwMap = ahwMap;
 
@@ -176,6 +176,8 @@ public class HardwareDM18
         // Define color sensor
         jewelCS = hwMap.colorSensor.get("cs");
 
+        if (initGyro){
+
         AdafruitBNO055IMU.Parameters parameters = new AdafruitBNO055IMU.Parameters();
         parameters.angleUnit           = AdafruitBNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = AdafruitBNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -189,7 +191,7 @@ public class HardwareDM18
         // and named "adaGyro".
         adaGyro = hwMap.get(BNO055IMU.class, "gyro");
         adaGyro.initialize(parameters);
-
+        }
 
     }
 

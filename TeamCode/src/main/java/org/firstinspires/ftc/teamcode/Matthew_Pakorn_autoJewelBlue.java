@@ -66,7 +66,7 @@ public class Matthew_Pakorn_autoJewelBlue extends LinearOpMode {
     private ElapsedTime     runtime = new ElapsedTime();
 
     public void runOpMode()  throws InterruptedException{
-        robot.init(hardwareMap, true);
+        robot.init(hardwareMap, true, true);
 
         // Wait for the game to start (driver presses PLAY)
         // Abort this loop is started or stopped.

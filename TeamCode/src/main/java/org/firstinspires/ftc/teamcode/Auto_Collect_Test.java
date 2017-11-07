@@ -132,7 +132,7 @@ public class Auto_Collect_Test extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         // Init the robot hardware -- including gyro and range finder
-        robot.init(hardwareMap, true);
+        robot.init(hardwareMap, true, true);
 
         // Force reset the drive train encoders.  Do it twice as sometimes this gets missed due to USB congestion
         robot.setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

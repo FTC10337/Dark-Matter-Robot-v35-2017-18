@@ -78,7 +78,7 @@ public class TeleOpDM18_IntakeSequenced extends OpMode {
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap, false);
+        robot.init(hardwareMap, false, false);
 
 
 

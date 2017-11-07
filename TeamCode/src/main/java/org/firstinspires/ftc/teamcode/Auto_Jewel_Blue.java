@@ -142,7 +142,7 @@ public class Auto_Jewel_Blue extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         // Init the robot hardware -- including gyro and range finder
-        robot.init(hardwareMap, true);
+        robot.init(hardwareMap, true, true);
 
         // Force reset the drive train encoders.  Do it twice as sometimes this gets missed due to USB congestion
         robot.setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -259,19 +259,11 @@ public class Auto_Jewel_Blue extends LinearOpMode {
         armPos = robot.jewelServo.getPosition();
         armIncr = -0.01;
 
-        detectColorTimer.reset();
+        // Check jewel color
+        int jewelColor = JewelColor();
 
-        while (armPos > 0.70 && !detectedJewelColor && detectColorTimer.milliseconds() < 1000) {
-            armPos += armIncr;
-            robot.jewelServo.setPosition(armPos);
-
-            sleep(50);
-
-            // Check jewel color
-            int jewelColor = JewelColor();
-
-           // Check if we see blue or red
-            if (jewelColor == -1) {
+        // Check if we see blue or red
+        if (jewelColor == -1) {
                 // We see red
                 robot.jewelRotServo.setPosition(iAmBlue()?robot.JEWEL_ROT_REV:robot.JEWEL_ROT_FWD);
                 detectedJewelColor = true;
@@ -279,7 +271,6 @@ public class Auto_Jewel_Blue extends LinearOpMode {
                 // We see blue
                 robot.jewelRotServo.setPosition(iAmBlue()?robot.JEWEL_ROT_FWD:robot.JEWEL_ROT_REV);
                 detectedJewelColor = true;
-            }
         }
 
         sleep(500);
@@ -721,7 +712,14 @@ public class Auto_Jewel_Blue extends LinearOpMode {
      * @return          Always true
      */
 
-    public int JewelColor () {
+    public int JewelColor() {
+        if (robot.jewelCS.red() > robot.jewelCS.blue()) {
+            return -1;
+        } else {
+            return 1;
+        }
+    }
+    public int JewelHue() {
 
         // Return 1 for Blue and -1 for Red
         // convert the RGB adaValues to HSV adaValues.
