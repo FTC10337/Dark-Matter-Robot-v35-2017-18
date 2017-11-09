@@ -24,8 +24,8 @@ public class Gripper {
     public final static double GRIP_CLOSED = 0.2;
     public final static double GRIP_ROTATE_NORMAL = 0.961;
     public final static double GRIP_ROTATE_FLIPPED = .012;
-    public final static double GRIP_EXTEND_HOME = 0.61;
-    public final static double GRIP_EXTEND_OUT = 1.0;
+    public final static double GRIP_EXTEND_HOME = 0.03;
+    public final static double GRIP_EXTEND_OUT = 0.345;
     public final static double FLIP_TIME = 550;        // 1 second for servo to flip gripper
     public final static double GRIP_TIME = 350;        // 1 second for grip to open or close
     public final static double EXTEND_TIME = 500;
@@ -81,7 +81,9 @@ public class Gripper {
             int thePort = blackGrip.getPortNumber();
             PwmControl.PwmRange theRange = new PwmControl.PwmRange(553, 2500);
             theControl.setServoPwmRange(thePort, theRange);
-        }// Set the purple grip servo for extended PWM range
+        }
+
+        // Set the purple grip servo for extended PWM range
         if (purpleGrip.getController() instanceof ServoControllerEx) {
             // Confirm its an extended range servo controller before we try to set to avoid crash
             ServoControllerEx theControl = (ServoControllerEx) purpleGrip.getController();
@@ -89,7 +91,6 @@ public class Gripper {
             PwmControl.PwmRange theRange = new PwmControl.PwmRange(553, 2500);
             theControl.setServoPwmRange(thePort, theRange);
         }
-
 
         // Start with purple on top
         topGrip = purpleGrip;

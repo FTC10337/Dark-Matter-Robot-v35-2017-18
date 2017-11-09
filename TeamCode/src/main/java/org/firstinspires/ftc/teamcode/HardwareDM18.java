@@ -77,7 +77,7 @@ public class HardwareDM18
 
     public final static double JEWEL_HOME = 0.15;
     public final static double JEWEL_DEPLOY = 0.79;
-    public final static double JEWEL_ROT_HOME = 0.54;
+    public final static double JEWEL_ROT_HOME = 0.52;
     public final static double JEWEL_ROT_FWD = 0.74;
     public final static double JEWEL_ROT_REV = 0.34;
 

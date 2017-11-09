@@ -29,7 +29,9 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.app.Activity;
 import android.graphics.Color;
+import android.view.View;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -42,6 +44,7 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
@@ -112,10 +115,10 @@ public class Auto_Jewel_Blue extends LinearOpMode {
     double                  headingBias = 0.0;            // Gyro heading adjustment
 
     // Color Sensor Values
-    static final double     BLUE_MIN                = -180.0;
-    static final double     BLUE_MAX                = -140.0;
-    static final double     RED_MIN                 = -20.0;
-    static final double     RED_MAX                 = 20.0;
+    static final double     BLUE_MIN                = -221.0;
+    static final double     BLUE_MAX                = -139.0;
+    static final double     RED_MIN                 = -21.0;
+    static final double     RED_MAX                 = 21.0;
 
     // Variable for number of glyphs collected
 
@@ -239,6 +242,7 @@ public class Auto_Jewel_Blue extends LinearOpMode {
 
         RobotLog.i("DM10337 - Gyro bias set to " + headingBias);
 
+        robot.lift.resetFloorPos();
 
         /*
         JEWEL CODE
@@ -253,29 +257,25 @@ public class Auto_Jewel_Blue extends LinearOpMode {
         }
 
         robot.jewelCS.enableLed(true);
-        sleep(1500);
-
-        // Slowly raise jewel arm while looking for RED or BLUE
-        armPos = robot.jewelServo.getPosition();
-        armIncr = -0.01;
+        sleep(500);
 
         // Check jewel color
-        int jewelColor = JewelColor();
+        int jewelColor = jewelHue();
 
         // Check if we see blue or red
         if (jewelColor == -1) {
-                // We see red
-                robot.jewelRotServo.setPosition(iAmBlue()?robot.JEWEL_ROT_REV:robot.JEWEL_ROT_FWD);
-                detectedJewelColor = true;
-            } else if (jewelColor == 1) {
-                // We see blue
-                robot.jewelRotServo.setPosition(iAmBlue()?robot.JEWEL_ROT_FWD:robot.JEWEL_ROT_REV);
-                detectedJewelColor = true;
+            // We see red
+            robot.jewelRotServo.setPosition(iAmBlue()?robot.JEWEL_ROT_REV:robot.JEWEL_ROT_FWD);
+            detectedJewelColor = true;
+        } else if (jewelColor == 1) {
+            // We see blue
+            robot.jewelRotServo.setPosition(iAmBlue()?robot.JEWEL_ROT_FWD:robot.JEWEL_ROT_REV);
+            detectedJewelColor = true;
         }
 
         sleep(500);
 
-         // Reset jewel arm
+        // Reset jewel arm
         robot.jewelRotServo.setPosition(robot.JEWEL_ROT_HOME);
         armPos = robot.jewelServo.getPosition();
         armIncr = (robot.JEWEL_HOME - armPos)/50;
@@ -285,8 +285,6 @@ public class Auto_Jewel_Blue extends LinearOpMode {
             sleep(20);
         }
 
-         //robot.jewelServo.setPosition(robot.JEWEL_HOME);
-        sleep(500);
         robot.jewelCS.enableLed(false);
 
         /*
@@ -310,7 +308,7 @@ public class Auto_Jewel_Blue extends LinearOpMode {
             gyroTurn(0.8, 90, P_TURN_COEFF);
             // Outake glyph
             robot.gripper.setBothOpen();
-            sleep (1000);
+            sleep (250);
             // Drive closer to center cryptoglyph
             encoderDrive(0.5, 7.0, 3.0, true, 90);
         }
@@ -325,7 +323,7 @@ public class Auto_Jewel_Blue extends LinearOpMode {
             gyroTurn(0.8, 90, P_TURN_COEFF);
             // Outake glyph
             robot.gripper.setBothOpen();
-            sleep (1000);
+            sleep (250);
             // Drive closer to cryptoglyph
             encoderDrive(0.5, 7.0, 3.0, true, 90);
         }
@@ -340,17 +338,80 @@ public class Auto_Jewel_Blue extends LinearOpMode {
             gyroTurn(0.8, 90, P_TURN_COEFF);
             // Outake glyph
             robot.gripper.setBothOpen();
-            sleep (1000);
+            sleep (250);
             // Drive closer to cryptoglyph
             encoderDrive(0.5, 7.0, 3.0, true, 90);
         }
 
 
         robot.intake.setOut();
-        sleep(1500);
+        sleep(500);
 
         // Drive back, but stay in safe zone
-        encoderDrive(0.6, -4.0, 3.0, true, 90);
+        encoderDrive(0.6, -14.0, 3.0, true, 90);
+
+        robot.intake.setStop();
+
+        gyroTurn(0.8,-90, P_TURN_COEFF);
+
+        // Record drive motor encoder positions. Use these values to return to this position after collecting glyphs
+        int left1Pos = robot.leftDrive1.getCurrentPosition();
+        int left2Pos = robot.leftDrive2.getCurrentPosition();
+        int right1Pos = robot.rightDrive1.getCurrentPosition();
+        int right2Pos = robot.rightDrive2.getCurrentPosition();
+
+        robot.lift.setLiftMid();
+
+        // Drive forward to collect glyph
+        collectGlyph(0.3, 3, true, -90);
+
+        if (robot.intake.detectGlyph()){
+
+            // secure glyph
+            secureGlyph();
+
+            // drive backwards to avoid interference from other glyphs during load
+            encoderDrive(0.3, -4.0, 2.0 ,true,-90);
+
+            // ensure glyph is secured in intake
+            secureGlyph();
+
+            robot.intake.setStop();
+
+            // auto load glyph
+            autoLoadFirstGlyph();
+            glyphsCollected = 1;
+
+        } else {
+            // never detected glyph in intake. Back off and set intake out to clear any potential jams.
+            robot.intake.setOut();
+            encoderDrive(0.3, -7.0, 3.0 ,true, -90);
+            robot.intake.setStop();
+        }
+
+
+        int inches = determineDistance(left1Pos, left2Pos, right1Pos, right2Pos);
+
+        encoderDrive(0.8, -inches, 5, true, -90);
+
+        // Turn toward cryptobox
+        gyroTurn(0.8, 90, P_TURN_COEFF);
+
+        encoderDrive(0.8, 16, 5, true, 90);
+
+        sleep (250);
+
+        // Extend gripper out
+        robot.gripper.setExtendOut();
+
+        while(robot.gripper.isExtending()) idle();
+
+        // Drop glyphs
+        robot.gripper.setBothOpen();
+
+        while (robot.gripper.isMoving()) idle();
+
+        encoderDrive(0.8, -6, 5, true, 90);
 
 
         RobotLog.i("DM10337- Finished last move of auto");
@@ -712,24 +773,28 @@ public class Auto_Jewel_Blue extends LinearOpMode {
      * @return          Always true
      */
 
-    public int JewelColor() {
+    public int jewelColor() {
         if (robot.jewelCS.red() > robot.jewelCS.blue()) {
             return -1;
         } else {
             return 1;
         }
     }
-    public int JewelHue() {
+    public int jewelHue() {
 
         // Return 1 for Blue and -1 for Red
         // convert the RGB adaValues to HSV adaValues.
-        Color.RGBToHSV((robot.jewelCS.red() * 255) / 800, (robot.jewelCS.green() * 255) / 800,
-                (robot.jewelCS.blue() * 255) / 800, adaHSV);
+        Color.RGBToHSV(robot.jewelCS.red() * 255, robot.jewelCS.green() * 255,
+                robot.jewelCS.blue() * 255, adaHSV);
 
-        // Normalize hue to -180 to 180 degrees
-        if (adaHSV[0] > 180.0) {
+        // Normalize hue to -270 to 90 degrees
+        while (adaHSV[0] >= 90.0) {
             adaHSV[0] -= 360.0;
         }
+        while (adaHSV[0] < -270.0) {
+            adaHSV[0] += 360.0;
+        }
+
 
         telemetry.addData("Hue: ", adaHSV[0]);
         telemetry.update();
@@ -788,7 +853,7 @@ public class Auto_Jewel_Blue extends LinearOpMode {
 
         while (opModeIsActive() && (runtime.seconds() < timeout) && !stop) {
 
-            if (robot.intake.detectGlyph()) {
+            if (robot.intake.distanceSensor.getDistance(DistanceUnit.CM) < 12.0 ) {
                 stop = true;
             }
 
@@ -834,16 +899,28 @@ public class Auto_Jewel_Blue extends LinearOpMode {
             idle();
         }
 
-        robot.intake.setStop();
+        robot.intake.intakeRightMotor.setPower(0.35);
+        robot.intake.intakeLeftMotor.setPower(0.35);
         robot.leftDrive1.setPower(0.0);
         robot.leftDrive2.setPower(0.0);
         robot.rightDrive1.setPower(0.0);
         robot.rightDrive2.setPower(0.0);
+
     }
 
     /**
      * Robot returns to designatied encoder position
      **/
+
+    public int determineDistance(int left1Pos, int left2Pos, int right1Pos, int right2Pos) {
+
+        int averageNewPos = (robot.leftDrive1.getCurrentPosition() + robot.leftDrive2.getCurrentPosition() + robot.rightDrive1.getCurrentPosition() + robot.rightDrive2.getCurrentPosition()) / 4;
+        int averageOldPos = (left1Pos + left2Pos + right1Pos + right2Pos) / 4;
+        int difference = Math.abs(averageOldPos - averageNewPos);
+        int inches = (int) (difference / robot.COUNTS_PER_INCH);
+        return inches;
+    }
+
     public void returnToPosition(double speed,
                                  int left1Pos,
                                  int left2Pos,
@@ -854,7 +931,7 @@ public class Auto_Jewel_Blue extends LinearOpMode {
                                  double heading) throws InterruptedException {
 
 
-        // The potentially adjusted current target heading
+        // / The potentially adjusted current target heading
         double curHeading = heading;
 
         // Speed ramp on start of move to avoid wheel slip
@@ -863,26 +940,26 @@ public class Auto_Jewel_Blue extends LinearOpMode {
         double curSpeed;                        // Keep track of speed as we ramp
 
         int averageOriginalPos = (robot.leftDrive1.getCurrentPosition() + robot.leftDrive2.getCurrentPosition() + robot.rightDrive1.getCurrentPosition() + robot.rightDrive2.getCurrentPosition())/4;
-        int averageNewPos = (left1Pos + left2Pos + right1Pos + right2Pos)/4;
+        int averageNewPos = (left1Pos + left2Pos + right1Pos + right2Pos) / 4;
         int difference = averageNewPos - averageOriginalPos;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
 
-            while(robot.leftDrive1.getTargetPosition() != left1Pos){
+            while (robot.leftDrive1.getTargetPosition() != left1Pos) {
                 robot.leftDrive1.setTargetPosition(left1Pos);
                 sleep(1);
             }
-            while(robot.rightDrive1.getTargetPosition() != right1Pos){
+            while (robot.rightDrive1.getTargetPosition() != right1Pos) {
                 robot.rightDrive1.setTargetPosition(right1Pos);
                 sleep(1);
             }
-            while(robot.leftDrive2.getTargetPosition() != left2Pos){
+            while (robot.leftDrive2.getTargetPosition() != left2Pos) {
                 robot.leftDrive2.setTargetPosition(left2Pos);
                 sleep(1);
             }
-            while(robot.rightDrive2.getTargetPosition() != right2Pos){
+            while (robot.rightDrive2.getTargetPosition() != right2Pos) {
                 robot.rightDrive2.setTargetPosition(right2Pos);
                 sleep(1);
             }
@@ -975,54 +1052,66 @@ public class Auto_Jewel_Blue extends LinearOpMode {
         return true;
     }
 
+    public void secureGlyph() {
+
+        robot.intake.setInAlt();
+
+        sleep (250);
+
+        robot.intake.setStop();
+
+        sleep (250);
+
+        robot.intake.setIn();
+
+        sleep (250);
+
+        robot.intake.intakeRightMotor.setPower(0.35);
+        robot.intake.intakeLeftMotor.setPower(0.35);
+    }
+
     public void autoLoadFirstGlyph() {
-
-        robot.gripper.setBtmClosed();
-
-        idleWhile(robot.gripper.btmIsMoving());
-
-        robot.intake.setOpen();
-
-        idleWhile(robot.intake.isMoving());
-
-        robot.lift.setLiftTop();
-
-        idleWhile(!robot.lift.reachedFloor());
-
-        robot.gripper.flip();
-
-        idleWhile(robot.gripper.isFlipping());
 
         robot.lift.setLiftBtm();
 
-        idleWhile(!robot.lift.reachedFloor());
+        while (!robot.lift.reachedFloor()) idle();
 
-        robot.lift.resetFloorPos();
+        robot.gripper.setBtmClosed();
 
-        idleWhile(!robot.lift.resetFloorPos());
+        while (robot.gripper.btmIsMoving()) idle();
 
+        robot.intake.setOpen();
+
+        while (robot.intake.isMoving()) idle();
+
+        robot.lift.setLiftTop();
+
+        while (robot.lift.distFromBottom() < 9.0) idle();
+
+        robot.gripper.flip();
+
+        while (robot.gripper.isFlipping()) idle();
+
+        robot.lift.setLiftHeight(2.0);
     }
 
     public void autoLoadSecondGlyph() {
 
+        robot.lift.setLiftBtm();
+
+        while (!robot.lift.reachedFloor()) idle();
+
         robot.gripper.setBtmClosed();
 
-        idleWhile(robot.gripper.btmIsMoving());
+        while (robot.gripper.btmIsMoving()) idle();
 
         robot.intake.setOpen();
 
-        idleWhile(robot.intake.isMoving());
+        while (robot.intake.isMoving()) idle();
 
-        robot.lift.setLiftTop();
-
-        idleWhile(!robot.lift.reachedFloor());
+        robot.lift.setLiftHeight(8.0);
     }
 
-    public void idleWhile(boolean function){
-        while (function) {
-            idle();
-        }
-    }
     public boolean waitForSwitch() {
         while (!gamepad1.a) {
             idle();

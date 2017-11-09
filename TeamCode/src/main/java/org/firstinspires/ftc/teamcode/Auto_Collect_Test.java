@@ -100,8 +100,8 @@ public class Auto_Collect_Test extends LinearOpMode {
 
     static final double HEADING_THRESHOLD = 2;      // As tight as we can make it with an integer gyro
     static final double P_TURN_COEFF = 0.011;   // Larger is more responsive, but also less accurate
-    static final double P_DRIVE_COEFF_1 = 0.03;  // Larger is more responsive, but also less accurate
-    static final double P_DRIVE_COEFF_2 = 0.02;
+    static final double P_DRIVE_COEFF_1 = 0.01;  // Larger is more responsive, but also less accurate
+    static final double P_DRIVE_COEFF_2 = 0.01;
 
     // Variables used for reading Gyro
     Orientation angles;
@@ -230,135 +230,21 @@ public class Auto_Collect_Test extends LinearOpMode {
         RobotLog.i("DM10337 - Gyro bias set to " + headingBias);
 
 
-        robot.lift.resetFloorPos();
-        robot.gripper.setBothOpen();
-
-        while (!robot.lift.resetFloorPos()) idle();
-
-        robot.lift.setLiftHeight(9.0);
-
         // Record drive motor encoder positions. Use these values to return to this position after collecting glyphs
         int left1Pos = robot.leftDrive1.getCurrentPosition();
         int left2Pos = robot.leftDrive2.getCurrentPosition();
         int right1Pos = robot.rightDrive1.getCurrentPosition();
         int right2Pos = robot.rightDrive2.getCurrentPosition();
 
-        // FIRST ATTEMPT to collect glyph into intake
-        collectGlyph(0.25, 24, 5, true, 0);
 
-        if (robot.intake.detectGlyph()) {
-            autoLoadFirstGlyph();
+        encoderDrive(0.8, 30, 5, true, 0);
 
-            if (isGlyphLoaded()) {
-                glyphsCollected = 1;
-            }
-        }
+        int inches = determineDistance(left1Pos, left2Pos, right1Pos, right2Pos);
 
-        // SECOND ATTEMPT to collect glyph into intake
-        collectGlyph(0.25, (glyphsCollected == 0) ? 6 : 10, 3, true, 0);
+        encoderDrive(0.8, -inches, 5, true, 0);
 
-        if (robot.intake.detectGlyph() && glyphsCollected == 0) {
-            autoLoadFirstGlyph();
+        //returnToPosition(0.8, left1Pos, left2Pos, right1Pos, right2Pos, 5.0, true, 0);
 
-            if (isGlyphLoaded()) {
-                glyphsCollected = 1;
-            }
-        }
-
-        if (robot.intake.detectGlyph() && glyphsCollected == 1) {
-            autoLoadSecondGlyph();
-
-            if (isGlyphLoaded()) {
-                glyphsCollected = 2;
-            }
-        }
-
-        // THIRD ATTEMPT to collect glyph into intake
-        if (glyphsCollected != 2) {
-            collectGlyph(0.25, 6, 3, true, 0);
-
-            if (robot.intake.detectGlyph() && glyphsCollected == 0) {
-                autoLoadFirstGlyph();
-
-                if (isGlyphLoaded()) {
-                    glyphsCollected = 1;
-                }
-
-            }
-
-            if (robot.intake.detectGlyph() && glyphsCollected == 1) {
-                autoLoadSecondGlyph();
-
-                if (isGlyphLoaded()) {
-                    glyphsCollected = 2;
-                }
-            }
-        }
-
-        returnToPosition(0.5, left1Pos, left2Pos, right1Pos, right2Pos, 5.0, true, 0);
-
-        sleep(1000);
-        waitForSwitch();
-
- /*
-            // DETERMINE how many GLYPHS have been COLLECTED and either park in safe zone or attempt to score glyph(s)
-
-            // One glyph collected. Attempt to score.
-            if (glyphsCollected == 1 && completeTask) {
-
-                gyroTurn(0.8, 180, P_TURN_COEFF);
-
-                sleep(150);
-
-                robot.lift.setLiftHeight(8.0);
-
-                encoderDrive(0.6, 15, 3, true, 180);
-
-                while (!robot.lift.reachedFloor()) idle();
-
-                robot.gripper.setExtendOut();
-
-                while (robot.gripper.isExtending()) idle();
-
-                robot.gripper.setBothPartialOpen();
-
-                while(robot.gripper.isMoving()) idle();
-
-                encoderDrive(0.5, -10, 3, false, 180);
-
-                robot.gripper.setExtendIn();
-
-            }
-
-
-            // Two glyphs collected. Attempt to score.
-            if (glyphsCollected == 2 && completeTask) {
-
-                gyroTurn(0.8, 180, P_TURN_COEFF);
-
-                sleep(150);
-
-                robot.lift.setLiftHeight(8.0);
-
-                encoderDrive(0.6, 15, 3, true, 180);
-
-                while (!robot.lift.reachedFloor()) idle();
-
-                robot.gripper.setExtendOut();
-
-                while (robot.gripper.isExtending()) idle();
-
-                robot.gripper.setBothPartialOpen();
-
-                while(robot.gripper.isMoving()) idle();
-
-                encoderDrive(0.5, -10, 3, false, 180);
-
-                robot.gripper.setExtendIn();
-
-            }
-
-*/
         RobotLog.i("DM10337- Finished last move of auto");
 
 
@@ -868,6 +754,15 @@ public class Auto_Collect_Test extends LinearOpMode {
     /**
      * Robot returns to designated encoder position
      **/
+
+    public int determineDistance(int left1Pos, int left2Pos, int right1Pos, int right2Pos) {
+
+        int averageNewPos = (robot.leftDrive1.getCurrentPosition() + robot.leftDrive2.getCurrentPosition() + robot.rightDrive1.getCurrentPosition() + robot.rightDrive2.getCurrentPosition()) / 4;
+        int averageOldPos = (left1Pos + left2Pos + right1Pos + right2Pos) / 4;
+        int difference = Math.abs(averageOldPos - averageNewPos);
+        int inches = (int) (difference / robot.COUNTS_PER_INCH);
+        return inches;
+    }
 
     public void returnToPosition(double speed,
                                  int left1Pos,

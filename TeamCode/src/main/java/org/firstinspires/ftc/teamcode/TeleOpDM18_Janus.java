@@ -486,7 +486,7 @@ public class TeleOpDM18_Janus extends OpMode {
                     telemetry.clearAll();
                     telemetry.addData("Reset: ", "2");
                     if (!robot.intake.isMoving() && !robot.gripper.isMoving()){
-                        if (robot.lift.distFromBottom() < 8.5) {
+                        if (robot.lift.distFromBottom() < 8.6) {
                             robot.lift.setLiftHeight(9.0);
                             nStates = States.RESET_2_1;
                         } else nStates = States.RESET_2_1;
@@ -495,7 +495,7 @@ public class TeleOpDM18_Janus extends OpMode {
                 case RESET_2_1: // PUSHER IN & OPEN GRIPPERS
                     telemetry.clearAll();
                     telemetry.addData("Reset: ", "2_1");
-                    if (robot.lift.distFromBottom() > 8.5) {
+                    if (robot.lift.distFromBottom() > 8.4) {
                         robot.gripper.setExtendIn();
                         robot.gripper.setBothOpen();
                         topGripisClosed = false;

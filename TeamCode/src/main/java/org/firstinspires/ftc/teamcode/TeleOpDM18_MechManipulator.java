@@ -29,7 +29,9 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.app.Activity;
 import android.graphics.Color;
+import android.view.View;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -79,6 +81,7 @@ public class TeleOpDM18_MechManipulator extends OpMode {
     // Storage for reading adaFruit color sensor for beacon sensing
     // adaHSV is an array that will hold the hue, saturation, and value information.
     float[] adaHSV = {0F, 0F, 0F};
+
     // adaValues is a reference to the adaHSV array.
     final float adaValues[] = adaHSV;
 
@@ -252,15 +255,21 @@ public class TeleOpDM18_MechManipulator extends OpMode {
                 telemetry.addData("JEWEL", "ROTATE");
                 telemetry.addData("Pos: ", robot.jewelRotServo.getPosition());
 
-                Color.RGBToHSV((robot.jewelCS.red() * 255) / 800, (robot.jewelCS.green() * 255) / 800,
-                        (robot.jewelCS.blue() * 255) / 800, adaHSV);
+                Color.RGBToHSV(robot.jewelCS.red() * 255, robot.jewelCS.green() * 255,
+                        robot.jewelCS.blue() * 255, adaHSV);
 
-                // Normalize hue to -180 to 180 degrees
-                if (adaHSV[0] > 180.0) {
+                // Normalize hue to -270 to 90 degrees
+                while (adaHSV[0] >= 90.0) {
                     adaHSV[0] -= 360.0;
                 }
+                while (adaHSV[0] < -270.0) {
+                    adaHSV[0] += 360.0;
+                }
+
 
                 telemetry.addData("Hue: ", adaHSV[0]);
+                telemetry.update();
+
 
                 Pos = robot.jewelRotServo.getPosition();
 
@@ -278,22 +287,28 @@ public class TeleOpDM18_MechManipulator extends OpMode {
                 telemetry.addData("JEWEL", "DEPLOY");
                 telemetry.addData("Pos: ", robot.jewelServo.getPosition());
 
-                Color.RGBToHSV((robot.jewelCS.red() * 255) / 800, (robot.jewelCS.green() * 255) / 800,
-                        (robot.jewelCS.blue() * 255) / 800, adaHSV);
+                // convert the RGB adaValues to HSV adaValues.
+                Color.RGBToHSV(robot.jewelCS.red() * 255, robot.jewelCS.green() * 255,
+                        robot.jewelCS.blue() * 255, adaHSV);
 
-                // Normalize hue to -180 to 180 degrees
-                if (adaHSV[0] > 180.0) {
+                // Normalize hue to -270 to 90 degrees
+                while (adaHSV[0] >= 90.0) {
                     adaHSV[0] -= 360.0;
                 }
+                while (adaHSV[0] < -270.0) {
+                    adaHSV[0] += 360.0;
+                }
+
 
                 telemetry.addData("Hue: ", adaHSV[0]);
+                telemetry.update();
 
                 Pos = robot.jewelServo.getPosition();
 
                 if (gamepad2.x) {
-                    Pos += 0.001;
+                    Pos += 0.005;
                 } else if (gamepad2.b) {
-                    Pos -= 0.001;
+                    Pos -= 0.005;
                 }
 
                 Range.clip(Pos, 0, 1);
