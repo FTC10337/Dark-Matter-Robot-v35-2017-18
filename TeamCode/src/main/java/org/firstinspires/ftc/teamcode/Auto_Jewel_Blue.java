@@ -389,6 +389,38 @@ public class Auto_Jewel_Blue extends LinearOpMode {
             robot.intake.setStop();
         }
 
+        // Drive forward to collect glyph
+        collectGlyph(0.3, 3, true, -90);
+
+        if (robot.intake.detectGlyph()){
+
+            // secure glyph
+            secureGlyph();
+
+            // drive backwards to avoid interference from other glyphs during load
+            encoderDrive(0.3, -4.0, 2.0 ,true,-90);
+
+            // ensure glyph is secured in intake
+            secureGlyph();
+
+            robot.intake.setStop();
+
+            if (glyphsCollected == 0){
+                // auto load first glyph
+                autoLoadFirstGlyph();
+                glyphsCollected = 1;
+            } else if (glyphsCollected == 1) {
+                // auto load second glyph
+                autoLoadSecondGlyph();
+                glyphsCollected = 2;
+            }
+
+        } else {
+            // never detected glyph in intake. Back off and set intake out to clear any potential jams.
+            robot.intake.setOut();
+            encoderDrive(0.3, -7.0, 3.0 ,true, -90);
+            robot.intake.setStop();
+        }
 
         int inches = determineDistance(left1Pos, left2Pos, right1Pos, right2Pos);
 
@@ -401,18 +433,20 @@ public class Auto_Jewel_Blue extends LinearOpMode {
 
         sleep (250);
 
-        // Extend gripper out
-        robot.gripper.setExtendOut();
+        if (glyphsCollected > 0){
 
-        while(robot.gripper.isExtending()) idle();
+            // Extend gripper out
+            robot.gripper.setExtendOut();
 
-        // Drop glyphs
-        robot.gripper.setBothOpen();
+            while(robot.gripper.isExtending()) idle();
+
+            // Drop glyphs
+            robot.gripper.setBothOpen();
+        }
 
         while (robot.gripper.isMoving()) idle();
 
         encoderDrive(0.8, -6, 5, true, 90);
-
 
         RobotLog.i("DM10337- Finished last move of auto");
 
@@ -1092,7 +1126,7 @@ public class Auto_Jewel_Blue extends LinearOpMode {
 
         while (robot.gripper.isFlipping()) idle();
 
-        robot.lift.setLiftHeight(2.0);
+        robot.lift.setLiftHeight(7.0);
     }
 
     public void autoLoadSecondGlyph() {
