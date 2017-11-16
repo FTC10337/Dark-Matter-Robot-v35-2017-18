@@ -29,16 +29,14 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.app.Activity;
 import android.graphics.Color;
-import android.view.View;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.RobotLog;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -51,7 +49,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-
 
 
 /**
@@ -74,9 +71,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Jewel Blue", group="DM18")
+@Autonomous(name="Auto Blue 2G_C", group="DM18")
 //@Disabled
-public class Auto_Jewel_Blue extends LinearOpMode {
+public class Auto_Blue_2G_C extends LinearOpMode {
 
 
     /* Declare OpMode members. */
@@ -904,6 +901,11 @@ public class Auto_Jewel_Blue extends LinearOpMode {
                 // adjust relative speed based on heading
                 double error = getError(curHeading);
                 double steer = getSteer(error, P_DRIVE_COEFF_1);
+
+                // stop trying to collect glyph if degree error is 5 or greater
+                if (error >= 7.0) {
+                    stop = true;
+                }
 
                 // if driving in reverse, the motor correction also needs to be reversed
                 //if (distance < 0)

@@ -24,7 +24,7 @@ public class Gripper {
     public final static double GRIP_CLOSED = 0.2;
     public final static double GRIP_ROTATE_NORMAL = 0.961;
     public final static double GRIP_ROTATE_FLIPPED = .012;
-    public final static double GRIP_EXTEND_HOME = 0.11;
+    public final static double GRIP_EXTEND_HOME = 0.118;
     public final static double GRIP_EXTEND_OUT = 0.35;
     public final static double FLIP_TIME = 550;        // 1 second for servo to flip gripper
     public final static double GRIP_TIME = 350;        // 1 second for grip to open or close
