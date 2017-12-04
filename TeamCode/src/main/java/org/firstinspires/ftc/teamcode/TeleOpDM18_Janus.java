@@ -419,28 +419,17 @@ public class TeleOpDM18_Janus extends OpMode {
             topGripisClosed = true;
         }
 
-        // open grippers partially if pusher is extended or fully if not
+        // open grippers
         if ((gamepad2.left_trigger > 0.5) && !init_TeleOp && !init_AutoLoad) {
-            if (robot.gripper.isPusherOut()) {
-                // Set to partial open since we are extended
-                robot.gripper.setBtmPartialOpen();
-            } else {
-                // Set fully open since we are all the way in
+            // Set fully open
                 robot.gripper.setBtmOpen();
-            }
+
         }
         if (gamepad2.left_bumper && !isButtonPressed && !init_TeleOp&& !init_AutoLoad) {
-            if (robot.gripper.isPusherOut()) {
-                // Set to partial open since we are extended
-                robot.gripper.setTopPartialOpen();
-                topGripisClosed = true;
-                isButtonPressed = true;
-            } else {
-                // Set fully open since we are all the way in
+            // Set fully open
                 robot.gripper.setTopOpen();
                 topGripisClosed = false;
                 isButtonPressed = true;
-            }
         }
 
         /*
