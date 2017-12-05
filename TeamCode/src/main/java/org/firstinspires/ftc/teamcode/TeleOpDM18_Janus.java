@@ -194,15 +194,17 @@ public class TeleOpDM18_Janus extends OpMode {
         double throttle = -gamepad1.left_stick_y;
         double direction = gamepad1.right_stick_x;
 
-        // Driver 1 toggle drive train speed controls
+        // Driver 1 toggle drive train speed controls\
+        /*
         if (gamepad1.dpad_up) slowDriveTrain2 = false;
         if (gamepad1.dpad_down) {
             slowDriveTrain2 = true;
             slowDriveTrainOveride = true;
         }
+        */
 
         // Toggle drive train speed to SLOW when pusher is OUT
-        if (!init_TeleOp && robot.gripper.isPusherOut()) {
+        if (!init_TeleOp && robot.gripper.isPusherOut()  && !init_Reset ) {
             slowDriveTrain = true;
             slowDriveTrainOveride = true;
         } else slowDriveTrain = false;
