@@ -112,7 +112,6 @@ public class TeleOpDM18_IntakeSequenced extends OpMode {
 
         telemetry.addData("curState: ", curState);
         telemetry.addData("glyph? ", robot.intake.detectGlyph());
-        telemetry.addData("dist: ", robot.intake.distanceSensor.getDistance(DistanceUnit.CM));
         telemetry.addData("flipTimer: ", robot.gripper.flipTimer);
         telemetry.update();
 

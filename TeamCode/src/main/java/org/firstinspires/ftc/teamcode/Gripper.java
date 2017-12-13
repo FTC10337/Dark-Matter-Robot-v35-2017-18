@@ -19,13 +19,13 @@ public class Gripper {
     public Servo extendGrip = null;
 
     // Servo constants
-    public final static double GRIP_OPEN = 1.0;
-    public final static double GRIP_PARTIAL_OPEN = 0.23; // Changed to same as full close
-    public final static double GRIP_CLOSED = 0.23;
+    public final static double GRIP_OPEN = 0.79;
+    public final static double GRIP_PARTIAL_OPEN = 0.79; // Changed to same as full close
+    public final static double GRIP_CLOSED = 0.475;
     public final static double GRIP_ROTATE_NORMAL = 0.961;
     public final static double GRIP_ROTATE_FLIPPED = .012;
-    public final static double GRIP_EXTEND_HOME = 0.984;
-    public final static double GRIP_EXTEND_OUT = 0.733;
+    public final static double GRIP_EXTEND_HOME = 0.83;
+    public final static double GRIP_EXTEND_OUT = 0.486;
     public final static double FLIP_TIME = 550;        // 1 second for servo to flip gripper
     public final static double GRIP_TIME = 350;        // 1 second for grip to open or close
     public final static double EXTEND_TIME = 500;
@@ -178,7 +178,7 @@ public class Gripper {
     public void moveInOut(double speed) {
         speed = Range.clip(speed, -1, 1);
         double current = extendGrip.getPosition();
-        double target =  current + (((GRIP_EXTEND_OUT - GRIP_EXTEND_HOME) * speed) / 10);   // At full stick will take 20 cycles
+        double target =  current + (((GRIP_EXTEND_OUT - GRIP_EXTEND_HOME) * speed) / 4);   // At full stick will take 20 cycles
         target = Range.clip(target, GRIP_EXTEND_OUT, GRIP_EXTEND_HOME);
         extendGrip.setPosition(target);
         extendTimer.reset();

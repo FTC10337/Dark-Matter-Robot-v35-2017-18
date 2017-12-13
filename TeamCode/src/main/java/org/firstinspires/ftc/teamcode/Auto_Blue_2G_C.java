@@ -884,7 +884,7 @@ public class Auto_Blue_2G_C extends LinearOpMode {
 
         while (opModeIsActive() && (runtime.seconds() < timeout) && !stop) {
 
-            if (robot.intake.distanceSensor.getDistance(DistanceUnit.CM) < 12.0 ) {
+            if (robot.intake.distanceSensor_right.getDistance(DistanceUnit.CM) < 12.0 ) {
                 stop = true;
             }
 

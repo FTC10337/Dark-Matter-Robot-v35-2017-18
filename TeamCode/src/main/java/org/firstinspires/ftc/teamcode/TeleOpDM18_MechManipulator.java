@@ -317,7 +317,12 @@ public class TeleOpDM18_MechManipulator extends OpMode {
 
             case 9:// DISTANCE SENSOR
                 telemetry.addData("DISTANCE", "SENSOR");
-                telemetry.addData("Distance: ", robot.intake.distanceSensor.getDistance(DistanceUnit.CM));
+                telemetry.addData("Dist Right: ", robot.intake.distanceSensor_right.getDistance(DistanceUnit.CM));
+                telemetry.addData("Dist RIGHTAvg: ", robot.intake.distRight());
+                telemetry.addData("Dist Left: ", robot.intake.distanceSensor_left.getDistance(DistanceUnit.CM));
+                telemetry.addData("Dist LEFTAvg: ", robot.intake.distLeft());
+                telemetry.addData("Alpha:", robot.intake.glyphColorSensor.alpha());
+
                 break;
 
             case 10: // LIFT MOTOR

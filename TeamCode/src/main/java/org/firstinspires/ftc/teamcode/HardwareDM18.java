@@ -131,7 +131,7 @@ public class HardwareDM18
         rightDrive2.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
 
         // Setup intake mapped to hardware
-        intake.init(hwMap, "intakeLeft", "intakeRight", "ils", "irs", "ds");
+        intake.init(hwMap, "intakeLeft", "intakeRight", "ils", "irs", "ds_left", "ds_right");
 
         if (initGripper){
             // Setup gripper mapped to hardware

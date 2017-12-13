@@ -2,6 +2,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -25,7 +26,12 @@ public class Intake {
 
 
     // Digital channel - distance sensor
-    public DistanceSensor distanceSensor = null;
+    public DistanceSensor distanceSensor_left = null;
+    public DistanceSensor distanceSensor_right = null;
+    public MovingAvg distSensor_leftAvg = new MovingAvg(5);
+    public MovingAvg distSensor_rightAvg = new MovingAvg(5);
+
+    public ColorSensor  glyphColorSensor = null;
 
     // Intake constants
     final static double INTAKE_LEFT_HOME = 0.0;
@@ -67,7 +73,7 @@ public class Intake {
      * @param ls Name of left intake arm servo
      * @param rs Name of right intake arm servo
      */
-    public void init(HardwareMap hw, String lm, String rm, String ls, String rs, String ds) {
+    public void init(HardwareMap hw, String lm, String rm, String ls, String rs, String ds_left, String ds_right) {
         // Define and Initialize intake Motors
         intakeLeftMotor = hw.dcMotor.get(lm);
         intakeRightMotor = hw.dcMotor.get(rm);
@@ -85,7 +91,10 @@ public class Intake {
         setClosed();
 
         // Define distance sensor
-        distanceSensor = hw.get(DistanceSensor.class, ds);
+        distanceSensor_left = hw.get(DistanceSensor.class, ds_left);
+        distanceSensor_right = hw.get(DistanceSensor.class, ds_right);
+
+        glyphColorSensor = hw.colorSensor.get("ds_left");
 
     }
 
@@ -138,6 +147,7 @@ public class Intake {
         rInPower = -0.2;
         intakeLeftMotor.setPower(lInPower);
         intakeRightMotor.setPower(rInPower);
+        isIntakeInOn = true;
         isIntakeOutOn = false;
     }
 
@@ -146,6 +156,7 @@ public class Intake {
         rInPower = MAX_IN_POWER;
         intakeLeftMotor.setPower(lInPower);
         intakeRightMotor.setPower(rInPower);
+        isIntakeInOn = true;
         isIntakeOutOn = false;
     }
 
@@ -280,7 +291,23 @@ public class Intake {
     }
 
     public boolean detectGlyph() {
-        if (distanceSensor.getDistance(DistanceUnit.CM) < intakeDistance) return true; else return false;
+        glyphColorWhite();
+        if ((distLeft() < intakeDistance) || (distRight() < intakeDistance))  return true; else return false;
+    }
+
+    public void glyphColorWhite() {
+        if (glyphColorSensor.alpha() > 60.0) intakeDistance = 6.0;
+        else intakeDistance = 8.25;
+    }
+
+    public double distRight() {
+        distSensor_rightAvg.add(distanceSensor_right.getDistance(DistanceUnit.CM));
+        return distSensor_rightAvg.average();
+    }
+
+    public double distLeft() {
+        distSensor_leftAvg.add(distanceSensor_left.getDistance(DistanceUnit.CM));
+        return distSensor_leftAvg.average();
     }
 }
 

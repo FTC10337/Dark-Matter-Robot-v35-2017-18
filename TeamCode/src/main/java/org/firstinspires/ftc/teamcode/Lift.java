@@ -31,7 +31,7 @@ public class Lift {
     static final double     LIFT_POWER = 1.0;
     static final int        LIFT_COUNTS_PER_MOTOR_REV    = 7 ;    // Neverrest
     static final double     LIFT_DRIVE_GEAR_REDUCTION    = 20; // Neverest 20:1
-    static final double     LIFT_PULLEY_DIAMETER_INCHES   = 0.955;     // For figuring circumference
+    static final double     LIFT_PULLEY_DIAMETER_INCHES   = 0.955 * 15/10;     // For figuring circumference
     static final double     LIFT_COUNTS_PER_INCH         = (4 * LIFT_COUNTS_PER_MOTOR_REV * LIFT_DRIVE_GEAR_REDUCTION) /
             (LIFT_PULLEY_DIAMETER_INCHES * 3.1415);
 

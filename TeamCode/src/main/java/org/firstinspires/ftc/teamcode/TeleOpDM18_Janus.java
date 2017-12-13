@@ -35,6 +35,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 /**
  * This file provides basic Telop driving for a Pushbot robot.
  * The code is structured as an Iterative OpMode
@@ -88,6 +90,7 @@ public class TeleOpDM18_Janus extends OpMode {
     boolean slowDriveTrainOveride = false;
 
     boolean stopIntake = false;
+    boolean unevenIntake = false;
 
     int turnCoefficient = 1;
     int driveCoefficient = 1;
@@ -136,6 +139,7 @@ public class TeleOpDM18_Janus extends OpMode {
     public void loop() {
 
 
+        telemetry.addData("alpha: " + robot.intake.glyphColorSensor.alpha(), "dist: " + robot.intake.intakeDistance);
         telemetry.update();
 
         // Give the intake a chance to adjust speeds in cycle
@@ -701,6 +705,7 @@ public class TeleOpDM18_Janus extends OpMode {
         if (gamepad1.right_trigger > 0.5 && !init_AutoLoad && !init_Reset) {
             robot.intake.setIn();
             robot.intake.setClosed();
+            stopIntake = false;
         }
 
         // Intake IN - LEFT only
@@ -719,17 +724,28 @@ public class TeleOpDM18_Janus extends OpMode {
         }
 
         // Intake SET STOP after glyph detected
-        if (robot.intake.isIntakeInOn && robot.intake.detectGlyph()) {
+        if (!stopIntake && robot.intake.detectGlyph()) {
             intakeStopTimer.reset();
-            robot.intake.setInAlt();
+            //robot.intake.setInAlt();
             stopIntake = true;
-            robot.intake.isIntakeInOn = false;
+
         }
 
         // Intake STOP after 500 ms
-        if (stopIntake && intakeStopTimer.milliseconds() > 300) {
-            robot.intake.setStop();
-            stopIntake = false;
+        if (stopIntake && intakeStopTimer.milliseconds() > 100) {
+            if (Math.abs(robot.intake.distLeft() - robot.intake.distRight()) > 1.0){
+                if (robot.intake.distRight() > robot.intake.distLeft()) {
+                    robot.intake.intakeRightMotor.setPower(1.0);
+                    robot.intake.intakeLeftMotor.setPower(0.0);
+                }
+                if (robot.intake.distLeft() > robot.intake.distRight()) {
+                    robot.intake.intakeRightMotor.setPower(0.0);
+                    robot.intake.intakeLeftMotor.setPower(1.0);
+                }
+            } else {
+                robot.intake.setStop();
+                stopIntake = false;
+            }
         }
 
         // Intake OUT
