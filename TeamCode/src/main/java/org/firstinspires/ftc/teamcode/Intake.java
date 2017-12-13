@@ -38,7 +38,7 @@ public class Intake {
     final static double INTAKE_LEFT_RELEASE = 0.208;
     final static double INTAKE_RIGHT_HOME = 1.0;
     final static double INTAKE_RIGHT_RELEASE = 0.81;
-    final static double INTAKE_MOVE_TIME = 200;     // 0.5 seconds to open or close intake
+    final static double INTAKE_MOVE_TIME = 50;     // 0.5 seconds to open or close intake
     final static double MAX_IN_POWER = 1.0;
     final static double MIN_IN_POWER = 0.6;
     final static double IN_POWER_DELTA = 0.02;      // Amount to increment/decrement power per cycle
@@ -48,6 +48,7 @@ public class Intake {
     boolean isIntakeClosed = true;
     boolean isIntakeInOn = false;
     boolean isIntakeOutOn = false;
+
 
     // Place to track desired left/right motor power as we cycle them
     double rInPower = 0.0;
@@ -296,8 +297,25 @@ public class Intake {
     }
 
     public void glyphColorWhite() {
-        if (glyphColorSensor.alpha() > 60.0) intakeDistance = 6.0;
+        if (glyphColorSensor.alpha() > 60.0) intakeDistance = 6.5;
         else intakeDistance = 8.25;
+    }
+
+    public void squareGlyph() {
+        glyphColorWhite();
+        if (distRight() < intakeDistance && distRight() > distLeft()) {
+            intakeRightMotor.setPower(1.0);
+            intakeLeftMotor.setPower(-0.2);
+        } else if (distLeft() < intakeDistance && distLeft() > distRight()) {
+            intakeRightMotor.setPower(-0.2);
+            intakeLeftMotor.setPower(1.0);
+        } else if (distRight() > distLeft()) {
+            intakeRightMotor.setPower(1.0);
+            intakeLeftMotor.setPower(0.0);
+        } else if (distLeft() > distRight()) {
+            intakeRightMotor.setPower(0.0);
+            intakeLeftMotor.setPower(1.0);
+        }
     }
 
     public double distRight() {

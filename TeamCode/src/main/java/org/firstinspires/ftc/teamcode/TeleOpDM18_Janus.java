@@ -140,6 +140,10 @@ public class TeleOpDM18_Janus extends OpMode {
 
 
         telemetry.addData("alpha: " + robot.intake.glyphColorSensor.alpha(), "dist: " + robot.intake.intakeDistance);
+        telemetry.addData("LEFT_AVG: ", robot.intake.distSensor_leftAvg.average());
+        telemetry.addData("RIGHT_AVG: ", robot.intake.distSensor_rightAvg.average());
+        telemetry.addData("LEFT: ", robot.intake.distanceSensor_left.getDistance(DistanceUnit.CM));
+        telemetry.addData("RIGHT: ", robot.intake.distanceSensor_right.getDistance(DistanceUnit.CM));
         telemetry.update();
 
         // Give the intake a chance to adjust speeds in cycle
@@ -270,6 +274,7 @@ public class TeleOpDM18_Janus extends OpMode {
 
             if (init_TeleOp) {
                 robot.gripper.init(hardwareMap, "gripP", "gripB", "gripRotate", "gripExtend");
+                if (!robot.intake.detectGlyph()) robot.gripper.setBothOpen();
                 init_TeleOp = false;
             }
 
@@ -724,29 +729,24 @@ public class TeleOpDM18_Janus extends OpMode {
         }
 
         // Intake SET STOP after glyph detected
-        if (!stopIntake && robot.intake.detectGlyph()) {
+        if (robot.intake.isIntakeInOn && robot.intake.detectGlyph()) {
             intakeStopTimer.reset();
             //robot.intake.setInAlt();
-            stopIntake = true;
-
+            //stopIntake = true;
+            robot.intake.setStop();
         }
 
         // Intake STOP after 500 ms
-        if (stopIntake && intakeStopTimer.milliseconds() > 100) {
-            if (Math.abs(robot.intake.distLeft() - robot.intake.distRight()) > 1.0){
-                if (robot.intake.distRight() > robot.intake.distLeft()) {
-                    robot.intake.intakeRightMotor.setPower(1.0);
-                    robot.intake.intakeLeftMotor.setPower(0.0);
-                }
-                if (robot.intake.distLeft() > robot.intake.distRight()) {
-                    robot.intake.intakeRightMotor.setPower(0.0);
-                    robot.intake.intakeLeftMotor.setPower(1.0);
-                }
-            } else {
-                robot.intake.setStop();
-                stopIntake = false;
-            }
-        }
+//        if (stopIntake && intakeStopTimer.milliseconds() > 300) {
+            // check to see if glyph is squared against backplate
+            //if (Math.abs(robot.intake.distLeft() - robot.intake.distRight()) > 1.0){
+                // square glyph
+               // robot.intake.squareGlyph();
+            //} else {
+  //              robot.intake.setStop();
+    //            stopIntake = false;
+
+      //  }
 
         // Intake OUT
         if (gamepad1.left_trigger > 0.5 && !init_AutoLoad && !init_Reset) {
