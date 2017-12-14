@@ -89,8 +89,8 @@ public class TeleOpDM18_Janus extends OpMode {
     boolean slowDriveTrain2 = false;
     boolean slowDriveTrainOveride = false;
 
-    boolean stopIntake = false;
-    boolean unevenIntake = false;
+    boolean squaringGlyph = false;
+    boolean timedStopIntake = false;
 
     int turnCoefficient = 1;
     int driveCoefficient = 1;
@@ -144,6 +144,8 @@ public class TeleOpDM18_Janus extends OpMode {
         telemetry.addData("RIGHT_AVG: ", robot.intake.distSensor_rightAvg.average());
         telemetry.addData("LEFT: ", robot.intake.distanceSensor_left.getDistance(DistanceUnit.CM));
         telemetry.addData("RIGHT: ", robot.intake.distanceSensor_right.getDistance(DistanceUnit.CM));
+        telemetry.addData("timer: "+ intakeStopTimer.milliseconds() +
+                "sqg: " + squaringGlyph +"  tsi:  ", timedStopIntake);
         telemetry.update();
 
         // Give the intake a chance to adjust speeds in cycle
@@ -706,57 +708,71 @@ public class TeleOpDM18_Janus extends OpMode {
 
     public void intakeControl()  {
 
+        // Update the distance sensor rolling averages
+        robot.intake.updateDistAvg();
+
         // Intake IN
         if (gamepad1.right_trigger > 0.5 && !init_AutoLoad && !init_Reset) {
             robot.intake.setIn();
             robot.intake.setClosed();
-            stopIntake = false;
+            squaringGlyph = false;
+            timedStopIntake = false;
         }
 
         // Intake IN - LEFT only
         if (gamepad1.left_bumper && !init_AutoLoad && !init_Reset) {
             robot.intake.setInLeftOnly();
-            intakeStopTimer.reset();
-            stopIntake = true;
+            squaringGlyph = true;
+            timedStopIntake = false;
         }
 
         // Intake IN - RIGHT only
         if (gamepad1.right_bumper && !init_AutoLoad && !init_Reset) {
             robot.intake.setInRightOnly();
-            intakeStopTimer.reset();
-            stopIntake = true;
+            squaringGlyph = true;
+            timedStopIntake = false;
 
         }
 
         // Intake SET STOP after glyph detected
-        if (robot.intake.isIntakeInOn && robot.intake.detectGlyph()) {
-            intakeStopTimer.reset();
-            //robot.intake.setInAlt();
-            //stopIntake = true;
-            robot.intake.setStop();
+        if (!timedStopIntake && robot.intake.isIntakeInOn && robot.intake.detectGlyph()) {
+            squaringGlyph = true;
         }
 
-        // Intake STOP after 500 ms
-//        if (stopIntake && intakeStopTimer.milliseconds() > 300) {
+        // Intake STOP - square glyph if necessary then stop intaking
+        if (squaringGlyph) {
             // check to see if glyph is squared against backplate
-            //if (Math.abs(robot.intake.distLeft() - robot.intake.distRight()) > 1.0){
+            if (Math.abs(robot.intake.distLeft() - robot.intake.distRight()) > 1.0){
                 // square glyph
-               // robot.intake.squareGlyph();
-            //} else {
-  //              robot.intake.setStop();
-    //            stopIntake = false;
+                robot.intake.squareGlyph();
+            } else {
+                intakeStopTimer.reset();
+                robot.intake.setIn();
+                squaringGlyph = false;
+                timedStopIntake = true;
+            }
+        }
 
-      //  }
+        if (timedStopIntake && intakeStopTimer.milliseconds() > 50) {
+            robot.intake.setStop();
+            timedStopIntake = false;
+        }
+
+
 
         // Intake OUT
         if (gamepad1.left_trigger > 0.5 && !init_AutoLoad && !init_Reset) {
             robot.intake.setOut();
             robot.intake.setClosed();
+            timedStopIntake = false;
+            squaringGlyph = false;
         }
 
         // Intake STOP
         if (gamepad1.a && !init_AutoLoad && !init_Reset) {
             robot.intake.setStop();
+            squaringGlyph = false;
+            timedStopIntake = false;
         }
 
         // Intake open & close

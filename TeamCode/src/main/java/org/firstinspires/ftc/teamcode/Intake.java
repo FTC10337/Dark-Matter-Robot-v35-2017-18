@@ -292,40 +292,46 @@ public class Intake {
     }
 
     public boolean detectGlyph() {
-        glyphColorWhite();
-        if ((distLeft() < intakeDistance) || (distRight() < intakeDistance))  return true; else return false;
+        setIntakeDistance();
+        if ((distLeftAvg() < intakeDistance) || (distRightAvg() < intakeDistance))  return true;
+        else return false;
     }
 
-    public void glyphColorWhite() {
+    public void setIntakeDistance() {
         if (glyphColorSensor.alpha() > 60.0) intakeDistance = 6.5;
         else intakeDistance = 8.25;
     }
 
     public void squareGlyph() {
-        glyphColorWhite();
-        if (distRight() < intakeDistance && distRight() > distLeft()) {
-            intakeRightMotor.setPower(1.0);
-            intakeLeftMotor.setPower(-0.2);
-        } else if (distLeft() < intakeDistance && distLeft() > distRight()) {
+        setIntakeDistance();
+        if (distLeft() > distRight()) {
             intakeRightMotor.setPower(-0.2);
             intakeLeftMotor.setPower(1.0);
         } else if (distRight() > distLeft()) {
             intakeRightMotor.setPower(1.0);
-            intakeLeftMotor.setPower(0.0);
-        } else if (distLeft() > distRight()) {
-            intakeRightMotor.setPower(0.0);
-            intakeLeftMotor.setPower(1.0);
+            intakeLeftMotor.setPower(-0.2);
         }
     }
 
+    public double distLeft() {
+        return distanceSensor_left.getDistance(DistanceUnit.CM);
+    }
+
     public double distRight() {
-        distSensor_rightAvg.add(distanceSensor_right.getDistance(DistanceUnit.CM));
+        return distanceSensor_right.getDistance(DistanceUnit.CM);
+    }
+
+    public double distRightAvg() {
         return distSensor_rightAvg.average();
     }
 
-    public double distLeft() {
-        distSensor_leftAvg.add(distanceSensor_left.getDistance(DistanceUnit.CM));
+    public double distLeftAvg() {
         return distSensor_leftAvg.average();
     }
-}
 
+    public void updateDistAvg() {
+        distSensor_rightAvg.add(distanceSensor_right.getDistance(DistanceUnit.CM));
+        distSensor_leftAvg.add(distanceSensor_left.getDistance(DistanceUnit.CM));
+    }
+
+}
