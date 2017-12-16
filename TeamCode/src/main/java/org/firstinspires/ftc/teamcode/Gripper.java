@@ -19,9 +19,9 @@ public class Gripper {
     public Servo extendGrip = null;
 
     // Servo constants
-    public final static double GRIP_OPEN = 0.79;
-    public final static double GRIP_PARTIAL_OPEN = 0.79; // Changed to same as full close
-    public final static double GRIP_CLOSED = 0.475;
+    public final static double GRIP_OPEN = 0.83;
+    public final static double GRIP_PARTIAL_OPEN = 0.83; // Changed to same as full close
+    public final static double GRIP_CLOSED = 0.225;
     public final static double GRIP_ROTATE_NORMAL = 0.74;
     public final static double GRIP_ROTATE_FLIPPED = .057;
     public final static double GRIP_EXTEND_HOME = 0.83;
