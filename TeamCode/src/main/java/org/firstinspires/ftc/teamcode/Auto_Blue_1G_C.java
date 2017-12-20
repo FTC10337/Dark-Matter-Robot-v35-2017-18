@@ -97,6 +97,7 @@ public class Auto_Blue_1G_C extends LinearOpMode {
         AutoHelper auto = new AutoHelper();
         auto.init(robot, hardwareMap, this, iAmBlue());
 
+        robot.intake.setStop();
         // Set a flipTimer of how often to update gyro status telemetry
         ElapsedTime updateGyroStartTimer = new ElapsedTime();
         updateGyroStartTimer.reset();
@@ -204,8 +205,7 @@ public class Auto_Blue_1G_C extends LinearOpMode {
 
         robot.intake.setStop();
 
-        /*
-        gyroTurn(0.8,-90, P_TURN_COEFF);
+        auto.gyroTurn(0.8,-90, auto.P_TURN_COEFF);
 
         // Record drive motor encoder positions. Use these values to return to this position after collecting glyphs
         int left1Pos = robot.leftDrive1.getCurrentPosition();
@@ -216,44 +216,46 @@ public class Auto_Blue_1G_C extends LinearOpMode {
         robot.lift.setLiftMid();
 
         // Drive forward to collect glyph
-        collectGlyph(0.3, 3, true, -90);
+        auto.collectGlyph(0.3, 3, true, -90);
 
-        if (robot.intake.detectGlyph()){
+        // Check if glyph is in intake
+        if (robot.intake.distLeft() < 12.0 || robot.intake.distRight() < 12.0){
 
-            // secure glyph
-            secureGlyph();
+            // square glyph
+            auto.squareGlyph(1.0,-0.15,500);
+
+            // intake on to hold glyph while driving back
+            robot.intake.intakeLeftMotor.setPower(0.30);
+            robot.intake.intakeRightMotor.setPower(0.30);
 
             // drive backwards to avoid interference from other glyphs during load
-            encoderDrive(0.3, -4.0, 2.0 ,true,-90);
-
-            // ensure glyph is secured in intake
-            secureGlyph();
+            auto.encoderDrive(0.3, -4.0, 2.0 ,true,-90);
 
             robot.intake.setStop();
 
-            // auto load glyph
-            autoLoadFirstGlyph();
-            glyphsCollected = 1;
+            // Auto load glyph
+            auto.autoLoadFirstGlyph();
+            auto.glyphsCollected = 1;
 
         } else {
             // never detected glyph in intake. Back off and set intake out to clear any potential jams.
             robot.intake.setOut();
-            encoderDrive(0.3, -7.0, 3.0 ,true, -90);
+            auto.encoderDrive(0.3, -7.0, 3.0 ,true, -90);
             robot.intake.setStop();
         }
 
-        int inches = determineDistance(left1Pos, left2Pos, right1Pos, right2Pos);
+        int inches = auto.determineDistance(left1Pos, left2Pos, right1Pos, right2Pos);
 
-        encoderDrive(0.8, -inches, 5, true, -90);
+        auto.encoderDrive(0.8, -inches, 5, true, -90);
 
         // Turn toward cryptobox
-        gyroTurn(0.8, 90, P_TURN_COEFF);
+        auto.gyroTurn(0.8, 90, auto.P_TURN_COEFF);
 
-        encoderDrive(0.8, 16, 5, true, 90);
+        auto.encoderDrive(0.8, 16, 5, true, 90);
 
         sleep (250);
 
-        if (glyphsCollected > 0){
+        if (auto.glyphsCollected > 0){
 
             // Extend gripper out
             robot.gripper.setExtendOut();
@@ -266,7 +268,7 @@ public class Auto_Blue_1G_C extends LinearOpMode {
 
         while (robot.gripper.isMoving()) idle();
 
-        encoderDrive(0.8, -6, 5, true, 90);
+        auto.encoderDrive(0.8, -6, 5, true, 90);
 
         RobotLog.i("DM10337- Finished last move of auto");
 
@@ -274,13 +276,8 @@ public class Auto_Blue_1G_C extends LinearOpMode {
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
-    */
 
-    /*
-     *
-     */
 
-    }
 
     public boolean iAmBlue() {
         return true;

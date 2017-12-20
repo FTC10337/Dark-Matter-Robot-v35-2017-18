@@ -638,7 +638,7 @@ public class AutoHelper {
 
         while (opMode.opModeIsActive() && (runtime.seconds() < timeout) && !stop) {
 
-            if ((robot.intake.distanceSensor_right.getDistance(DistanceUnit.CM) < 12.0) || (robot.intake.distanceSensor_right.getDistance(DistanceUnit.CM) < 12.0)) {
+            if ((robot.intake.distRight() < 12.0) || (robot.intake.distLeft() < 12.0)) {
                 stop = true;
             }
 
@@ -689,8 +689,8 @@ public class AutoHelper {
             sleep(1);;
         }
 
-        robot.intake.intakeRightMotor.setPower(0.35);
-        robot.intake.intakeLeftMotor.setPower(0.35);
+        robot.intake.intakeRightMotor.setPower(0.0);
+        robot.intake.intakeLeftMotor.setPower(0.0);
         robot.leftDrive1.setPower(0.0);
         robot.leftDrive2.setPower(0.0);
         robot.rightDrive1.setPower(0.0);
@@ -837,23 +837,6 @@ public class AutoHelper {
             robot.setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
-    public void secureGlyph() {
-
-        robot.intake.setInAlt();
-
-        sleep (250);
-
-        robot.intake.setStop();
-
-        sleep (250);
-
-        robot.intake.setIn();
-
-        sleep (250);
-
-        robot.intake.intakeRightMotor.setPower(0.35);
-        robot.intake.intakeLeftMotor.setPower(0.35);
-    }
 
     public void autoLoadFirstGlyph() {
 
@@ -895,6 +878,24 @@ public class AutoHelper {
         while (robot.intake.isMoving()) sleep(1);;
 
         robot.lift.setLiftHeight(8.0);
+    }
+
+    public void squareGlyph(double inSpeed, double outSpeed, double timeOut) {
+
+        runtime.reset();
+
+        while ((Math.abs(robot.intake.distLeft() - robot.intake.distRight()) > 1.0) || runtime.milliseconds() < timeOut) {
+            if (robot.intake.distLeft() > robot.intake.distRight()) {
+                robot.intake.intakeLeftMotor.setPower(inSpeed);
+                robot.intake.intakeRightMotor.setPower(outSpeed);
+            } else if (robot.intake.distRight() > robot.intake.distLeft()) {
+                robot.intake.intakeLeftMotor.setPower(outSpeed);
+                robot.intake.intakeRightMotor.setPower(inSpeed);
+            }
+        }
+
+        robot.intake.intakeRightMotor.setPower(0.30);
+        robot.intake.intakeLeftMotor.setPower(0.30);
     }
 
     public boolean waitForSwitch() {
