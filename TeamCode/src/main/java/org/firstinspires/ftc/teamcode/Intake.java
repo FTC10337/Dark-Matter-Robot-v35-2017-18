@@ -28,8 +28,8 @@ public class Intake {
     // Digital channel - distance sensor
     public DistanceSensor distanceSensor_left = null;
     public DistanceSensor distanceSensor_right = null;
-    public MovingAvg distSensor_leftAvg = new MovingAvg(5);
-    public MovingAvg distSensor_rightAvg = new MovingAvg(5);
+    public MovingAvg distSensor_leftAvg = new MovingAvg(1);
+    public MovingAvg distSensor_rightAvg = new MovingAvg(1);
 
     public ColorSensor  glyphColorSensor = null;
 
@@ -298,7 +298,7 @@ public class Intake {
     }
 
     public void setIntakeDistance() {
-        if (glyphColorSensor.alpha() > 60.0) intakeDistance = 6.5;
+        if (glyphColorSensor.alpha() > 75.0) intakeDistance = 6.5;
         else intakeDistance = 8.25;
     }
 

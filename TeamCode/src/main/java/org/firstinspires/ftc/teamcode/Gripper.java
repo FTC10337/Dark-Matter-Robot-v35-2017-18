@@ -19,15 +19,19 @@ public class Gripper {
     public Servo extendGrip = null;
 
     // Servo constants
-    public final static double GRIP_OPEN = 0.83;
-    public final static double GRIP_PARTIAL_OPEN = 0.83; // Changed to same as full close
-    public final static double GRIP_CLOSED = 0.225;
-    public final static double GRIP_ROTATE_NORMAL = 0.74;
-    public final static double GRIP_ROTATE_FLIPPED = .057;
-    public final static double GRIP_EXTEND_HOME = 0.83;
-    public final static double GRIP_EXTEND_OUT = 0.486;
-    public final static double FLIP_TIME = 350;        // 1 second for servo to flip gripper
-    public final static double GRIP_TIME = 150;        // 1 second for grip to open or close
+    public final static double B_GRIP_OPEN = 0.80;
+    public final static double B_GRIP_PARTIAL_OPEN = 0.80; // Changed to same as full close
+    public final static double B_GRIP_CLOSED = 0.20;
+    public final static double P_GRIP_OPEN = 0.80;
+    public final static double P_GRIP_PARTIAL_OPEN = 0.80;
+    public final static double P_GRIP_CLOSED = 0.20;
+
+    public final static double GRIP_ROTATE_NORMAL = 0.745;
+    public final static double GRIP_ROTATE_FLIPPED = .06;
+    public final static double GRIP_EXTEND_HOME = 0.848;
+    public final static double GRIP_EXTEND_OUT = 0.456;
+    public final static double FLIP_TIME = 450;        // 1 second for servo to flip gripper
+    public final static double GRIP_TIME = 225;        // 1 second for grip to open or close
     public final static double EXTEND_TIME = 250;
 
     /* Gripper state variables */
@@ -109,7 +113,7 @@ public class Gripper {
      */
     public void setPurpleOpen() {
 
-        purpleGrip.setPosition(GRIP_OPEN);
+        purpleGrip.setPosition(P_GRIP_OPEN);
         purpleTimer.reset();
     }
 
@@ -118,7 +122,7 @@ public class Gripper {
      */
     public void setBlackOpen() {
 
-        blackGrip.setPosition(GRIP_OPEN);
+        blackGrip.setPosition(B_GRIP_OPEN);
         blackTimer.reset();
     }
 
@@ -127,7 +131,7 @@ public class Gripper {
      */
     public void setTopOpen() {
 
-        topGrip.setPosition(GRIP_OPEN);
+        topGrip.setPosition(isGripFlipped ? B_GRIP_OPEN: P_GRIP_OPEN);
         topTimer.reset();
     }
 
@@ -136,7 +140,7 @@ public class Gripper {
      */
     public void setBtmOpen() {
 
-        btmGrip.setPosition(GRIP_OPEN);
+        btmGrip.setPosition(isGripFlipped ? B_GRIP_OPEN: P_GRIP_OPEN);
         btmTimer.reset();
     }
 
@@ -157,12 +161,12 @@ public class Gripper {
     }
 
     public void setBtmPartialOpen() {
-        btmGrip.setPosition(GRIP_PARTIAL_OPEN);
+        btmGrip.setPosition(isGripFlipped ? B_GRIP_PARTIAL_OPEN: P_GRIP_PARTIAL_OPEN);
         btmTimer.reset();
     }
 
     public void setTopPartialOpen() {
-        topGrip.setPosition(GRIP_PARTIAL_OPEN);
+        topGrip.setPosition(isGripFlipped ? B_GRIP_PARTIAL_OPEN: P_GRIP_PARTIAL_OPEN);
         topTimer.reset();
     }
 
@@ -178,7 +182,7 @@ public class Gripper {
     public void moveInOut(double speed) {
         speed = Range.clip(speed, -1, 1);
         double current = extendGrip.getPosition();
-        double target =  current + (((GRIP_EXTEND_OUT - GRIP_EXTEND_HOME) * speed) / 4);   // At full stick will take 20 cycles
+        double target =  current + (((GRIP_EXTEND_OUT - GRIP_EXTEND_HOME) * speed) / 3);   // At full stick will take 20 cycles
         target = Range.clip(target, GRIP_EXTEND_OUT, GRIP_EXTEND_HOME);
         extendGrip.setPosition(target);
         extendTimer.reset();
@@ -198,7 +202,7 @@ public class Gripper {
      */
     public void setPurpleClosed() {
 
-        purpleGrip.setPosition(GRIP_CLOSED);
+        purpleGrip.setPosition(P_GRIP_CLOSED);
         purpleTimer.reset();
     }
 
@@ -207,7 +211,7 @@ public class Gripper {
      */
     public void setBlackClosed() {
 
-        blackGrip.setPosition(GRIP_CLOSED);
+        blackGrip.setPosition(B_GRIP_CLOSED);
         blackTimer.reset();
     }
 
@@ -216,7 +220,7 @@ public class Gripper {
      */
     public void setTopClosed() {
 
-        topGrip.setPosition(GRIP_CLOSED);
+        topGrip.setPosition(isGripFlipped ? B_GRIP_CLOSED: P_GRIP_CLOSED);
         topTimer.reset();
     }
 
@@ -225,7 +229,7 @@ public class Gripper {
      */
     public void setBtmClosed() {
 
-        btmGrip.setPosition(GRIP_CLOSED);
+        btmGrip.setPosition(isGripFlipped ? B_GRIP_CLOSED: P_GRIP_CLOSED);
         btmTimer.reset();
     }
 
@@ -239,28 +243,28 @@ public class Gripper {
 
 
     public boolean isTopClosed() {
-        return (almostEqual(topGrip.getPosition(), GRIP_CLOSED));
+        return (almostEqual(topGrip.getPosition(), (isGripFlipped ? B_GRIP_CLOSED: P_GRIP_CLOSED)));
     }
 
     public boolean isBtmClosed() {
-        return (almostEqual(btmGrip.getPosition(), GRIP_CLOSED));
+        return (almostEqual(btmGrip.getPosition(), B_GRIP_CLOSED));
     }
 
     public boolean isPurpleClosed() {
-        return (almostEqual(purpleGrip.getPosition(), GRIP_CLOSED));
+        return (almostEqual(purpleGrip.getPosition(), B_GRIP_CLOSED));
     }
 
     public boolean isBlackClosed() {
-        return (almostEqual(blackGrip.getPosition(), GRIP_CLOSED));
+        return (almostEqual(blackGrip.getPosition(), B_GRIP_CLOSED));
     }
 
-    public boolean isBtmOpen() { return (almostEqual(btmGrip.getPosition(), GRIP_OPEN)); }
+    public boolean isBtmOpen() { return (almostEqual(btmGrip.getPosition(), B_GRIP_OPEN)); }
 
-    public boolean isTopOpen() { return (almostEqual(topGrip.getPosition(), GRIP_OPEN)); }
+    public boolean isTopOpen() { return (almostEqual(topGrip.getPosition(), B_GRIP_OPEN)); }
 
-    public boolean isBtmPartialOpen() { return (almostEqual(btmGrip.getPosition(), GRIP_PARTIAL_OPEN)); }
+    public boolean isBtmPartialOpen() { return (almostEqual(btmGrip.getPosition(), B_GRIP_PARTIAL_OPEN)); }
 
-    public boolean isTopPartialOpen() { return (almostEqual(topGrip.getPosition(), GRIP_PARTIAL_OPEN)); }
+    public boolean isTopPartialOpen() { return (almostEqual(topGrip.getPosition(), B_GRIP_PARTIAL_OPEN)); }
 
     public boolean isPusherOut() { return (Math.abs(extendGrip.getPosition() - GRIP_EXTEND_HOME) > 0.02); }
 

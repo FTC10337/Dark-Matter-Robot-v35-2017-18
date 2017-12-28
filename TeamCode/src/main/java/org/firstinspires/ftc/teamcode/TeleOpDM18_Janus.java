@@ -488,8 +488,8 @@ public class TeleOpDM18_Janus extends OpMode {
                     telemetry.clearAll();
                     telemetry.addData("Reset: ", "2");
                     if (!robot.intake.isMoving() && !robot.gripper.isMoving()){
-                        if (robot.lift.distFromBottom() < 8.6) {
-                            robot.lift.setLiftHeight(9.0);
+                        if (robot.lift.distFromBottom() < 4.5) {
+                            robot.lift.setLiftHeight(5.0);
                             nStates = States.RESET_2_1;
                         } else nStates = States.RESET_2_1;
                     }
@@ -497,7 +497,7 @@ public class TeleOpDM18_Janus extends OpMode {
                 case RESET_2_1: // PUSHER IN & OPEN GRIPPERS
                     telemetry.clearAll();
                     telemetry.addData("Reset: ", "2_1");
-                    if (robot.lift.distFromBottom() > 8.4) {
+                    if (robot.lift.distFromBottom() > 4.5) {
                         robot.gripper.setExtendIn();
                         robot.gripper.setBothOpen();
                         topGripisClosed = false;
@@ -581,16 +581,16 @@ public class TeleOpDM18_Janus extends OpMode {
                     break;
 
                 // LOAD SEQUENCE FOR FIRST GLYPH - Determined if top gripper is OPEN, therefore does not have glyph.
-                case AUTO_LOAD_2: // LIFT TO TOP
+                case AUTO_LOAD_2: // LIFT TO LIFT POSITION
                     // Set lift position to move to top after intake has opened
                     if (!robot.intake.isMoving()) {
-                        robot.lift.setLiftTop();
+                        robot.lift.setLiftHeight(8.25);
                         nStates = States.AUTO_LOAD_3;
                     }
                     break;
 
                 case AUTO_LOAD_3: // FLIP AFTER FLIP HEIGHT REACHED
-                    if (robot.lift.distFromBottom() > 9.0) { // Check to see if lift reached height to flip
+                    if (robot.lift.distFromBottom() > 7.75) { // Check to see if lift reached height to flip
                         // If it reached target position, set intake back to closed position and start intaking again
                         robot.intake.setClosed();
                         robot.intake.setIn();
@@ -603,7 +603,7 @@ public class TeleOpDM18_Janus extends OpMode {
                 case AUTO_LOAD_4: // MOVE TO BTM FLOOR
 
                     if (!robot.gripper.isFlipping()) {
-                        robot.lift.setLiftBtm(); // Move lift to btm position after gripper is done flipping
+                        robot.lift.setLiftHeight(0.5); // Move lift to btm position after gripper is done flipping
                         //nStates = States.AUTO_LOAD_5;
                         init_AutoLoad = false;
                     }

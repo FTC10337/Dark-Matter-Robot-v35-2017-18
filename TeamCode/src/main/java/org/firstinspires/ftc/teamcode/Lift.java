@@ -38,10 +38,10 @@ public class Lift {
 
     // Lift variables
     public final int LIFT_TOP_POS = (int) (12.75*LIFT_COUNTS_PER_INCH);
-    public final int LIFT_MID_POS = (int) (7*LIFT_COUNTS_PER_INCH);
+    public final int LIFT_MID_POS = (int) (8.22*LIFT_COUNTS_PER_INCH);
     public final int LIFT_BTM_POS = (int) (0.5*LIFT_COUNTS_PER_INCH);
 
-    public final int LIFT_TOP_OFFSET = 2300;       // Encoder reading when we hit top limit switch
+    public final int LIFT_TOP_OFFSET = 1600;       // Encoder reading when we hit top limit switch
     public final int LIFT_BTM_OFFSET = 0;
     public int liftOffset = LIFT_BTM_OFFSET;                     // Normal position is we start at bottom
 
