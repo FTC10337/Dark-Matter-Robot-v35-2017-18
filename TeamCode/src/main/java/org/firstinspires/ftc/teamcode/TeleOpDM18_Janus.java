@@ -152,12 +152,14 @@ public class TeleOpDM18_Janus extends OpMode {
         telemetry.addData("RIGHT: ", robot.intake.distanceSensor_right.getDistance(DistanceUnit.CM));
         telemetry.addData("timer: "+ intakeStopTimer.milliseconds() +
                 "sqg: " + squaringGlyph +"  tsi:  ", timedStopIntake);
-        telemetry.update();
+
 
         // Log gyro readings
         angles = readGyro();
-        RobotLog.i ("DM10377: Gyro 1: " + angles.firstAngle + "  2: " + angles.secondAngle +
-                "  3: " + angles.thirdAngle);
+        telemetry.addData("Gyro: " + angles.firstAngle + " " + angles.secondAngle + " ",
+                angles.thirdAngle);
+
+        telemetry.update();
 
         // Give the intake a chance to adjust speeds in cycle
         //robot.intake.updateInPower();   // Must be called each cycle for speed to vary properly
@@ -316,7 +318,7 @@ public class TeleOpDM18_Janus extends OpMode {
                 liftPower = Range.clip(liftPower, 0, 1);
             } else liftPower = Range.clip(liftPower, -1, 1);
 
-            robot.lift.liftMotor.setPower(liftPower);
+            robot.lift.setPower(liftPower);
 
         } else if (!autoMove && !init_TeleOp) {
             // Stops lift if no joystick input or auto moves active
