@@ -34,8 +34,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
  * This file provides basic Telop driving for a Pushbot robot.
@@ -99,6 +103,8 @@ public class TeleOpDM18_Janus extends OpMode {
 
     ElapsedTime intakeStopTimer = new ElapsedTime();
 
+    Orientation angles;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -107,7 +113,7 @@ public class TeleOpDM18_Janus extends OpMode {
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap, false, false);
+        robot.init(hardwareMap, false, true);
 
 
 
@@ -147,6 +153,11 @@ public class TeleOpDM18_Janus extends OpMode {
         telemetry.addData("timer: "+ intakeStopTimer.milliseconds() +
                 "sqg: " + squaringGlyph +"  tsi:  ", timedStopIntake);
         telemetry.update();
+
+        // Log gyro readings
+        angles = readGyro();
+        RobotLog.i ("DM10377: Gyro 1: " + angles.firstAngle + "  2: " + angles.secondAngle +
+                "  3: " + angles.thirdAngle);
 
         // Give the intake a chance to adjust speeds in cycle
         //robot.intake.updateInPower();   // Must be called each cycle for speed to vary properly
@@ -786,6 +797,19 @@ public class TeleOpDM18_Janus extends OpMode {
 
     }
 
+
+    /**
+     * Read the current heading direction.  Use a heading bias if we recorded one at start to account for drift during
+     * the init phase of match
+     *
+     * @return      Current heading (Z axis)
+     */
+    Orientation readGyro() {
+        Orientation gyroRead;
+
+        gyroRead = robot.adaGyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+        return gyroRead;
+    }
 
 }
 

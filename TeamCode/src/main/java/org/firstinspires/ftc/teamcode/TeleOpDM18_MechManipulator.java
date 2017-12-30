@@ -77,6 +77,8 @@ public class TeleOpDM18_MechManipulator extends OpMode {
     int curState = 0;
     int lastState = 0;
     double Pos = 0;
+    double Pivot = 0.0;
+    double Claw = 0.0;
 
     // Storage for reading adaFruit color sensor for beacon sensing
     // adaHSV is an array that will hold the hue, saturation, and value information.
@@ -136,7 +138,7 @@ public class TeleOpDM18_MechManipulator extends OpMode {
             isButtonPressed = true;
             telemetry.clearAll();
         }
-        curState%=13;   // Wrap around
+        curState%=15;   // Wrap around
 
         if (!gamepad2.dpad_left && !gamepad2.dpad_right && isButtonPressed)isButtonPressed = false;
 
@@ -424,6 +426,60 @@ public class TeleOpDM18_MechManipulator extends OpMode {
                 robot.leftDrive2.setPower(left);
                 robot.rightDrive1.setPower(right);
                 robot.rightDrive2.setPower(right);
+
+                break;
+
+            case 13: // Relic linear slide
+                telemetry.addData("RELIC", "MOTOR");
+                telemetry.addData("EncPos: ", robot.relic.relicMotor.getCurrentPosition());
+                // Tune the motor PID parameters
+                if (robot.lift.liftMotor instanceof DcMotorEx) {
+                    DcMotorEx theLift = (DcMotorEx) robot.lift.liftMotor;
+                    PIDCoefficients pid = theLift.getPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
+                    telemetry.addData("p: ", pid.p);
+                    telemetry.addData("i: ", pid.i);
+                    telemetry.addData("d: ", pid.d);
+                    telemetry.update();
+                }
+                if (gamepad2.right_stick_y > 0.2 || gamepad2.right_stick_y < -0.2){
+                    robot.relic.relicMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    double liftPower = -gamepad2.right_stick_y;
+                    liftPower = smoothPowerCurve(deadzone(liftPower, 0.10));
+                    Range.clip(liftPower, -1, 1);
+                    robot.relic.relicMotor.setPower(liftPower);
+                    autoLift = false;
+                } else  {
+                    robot.relic.relicMotor.setPower(0.0);
+                }
+
+                break;
+
+            case 14: // RELIC SERVOS
+                telemetry.addData("RELIC", "GRIPPER");
+                telemetry.addData("Pivot: ", robot.relic.relicPivot.getPosition());
+                telemetry.addData("Claw: ", robot.relic.relicGrip.getPosition());
+
+                Pivot = robot.relic.relicPivot.getPosition();
+                Claw = robot.relic.relicGrip.getPortNumber();
+
+                if (gamepad2.x) {
+                    Pivot += 0.001;
+                } else if (gamepad2.b) {
+                    Pivot -= 0.001;
+                }
+
+                Pos = Range.clip(Pos, 0, 1);
+                robot.relic.relicPivot.setPosition(Pivot);
+
+                if (gamepad2.y) {
+                    Claw += 0.001;
+                } else if (gamepad2.a) {
+                    Claw -= 0.001;
+                }
+
+                Claw = Range.clip(Claw, 0, 1);
+                robot.relic.relicGrip.setPosition(Claw);
+
 
                 break;
 

@@ -21,15 +21,15 @@ public class Gripper {
     // Servo constants
     public final static double B_GRIP_OPEN = 0.80;
     public final static double B_GRIP_PARTIAL_OPEN = 0.80; // Changed to same as full close
-    public final static double B_GRIP_CLOSED = 0.20;
+    public final static double B_GRIP_CLOSED = 0.234;
     public final static double P_GRIP_OPEN = 0.80;
     public final static double P_GRIP_PARTIAL_OPEN = 0.80;
-    public final static double P_GRIP_CLOSED = 0.20;
+    public final static double P_GRIP_CLOSED = 0.234;
 
     public final static double GRIP_ROTATE_NORMAL = 0.745;
     public final static double GRIP_ROTATE_FLIPPED = .06;
-    public final static double GRIP_EXTEND_HOME = 0.848;
-    public final static double GRIP_EXTEND_OUT = 0.456;
+    public final static double GRIP_EXTEND_HOME = 0.87;
+    public final static double GRIP_EXTEND_OUT = 0.46;
     public final static double FLIP_TIME = 450;        // 1 second for servo to flip gripper
     public final static double GRIP_TIME = 225;        // 1 second for grip to open or close
     public final static double EXTEND_TIME = 250;
@@ -140,7 +140,7 @@ public class Gripper {
      */
     public void setBtmOpen() {
 
-        btmGrip.setPosition(isGripFlipped ? B_GRIP_OPEN: P_GRIP_OPEN);
+        btmGrip.setPosition(isGripFlipped ? P_GRIP_OPEN: B_GRIP_OPEN);
         btmTimer.reset();
     }
 
@@ -161,7 +161,7 @@ public class Gripper {
     }
 
     public void setBtmPartialOpen() {
-        btmGrip.setPosition(isGripFlipped ? B_GRIP_PARTIAL_OPEN: P_GRIP_PARTIAL_OPEN);
+        btmGrip.setPosition(isGripFlipped ? P_GRIP_PARTIAL_OPEN: B_GRIP_PARTIAL_OPEN);
         btmTimer.reset();
     }
 
@@ -229,7 +229,7 @@ public class Gripper {
      */
     public void setBtmClosed() {
 
-        btmGrip.setPosition(isGripFlipped ? B_GRIP_CLOSED: P_GRIP_CLOSED);
+        btmGrip.setPosition(isGripFlipped ? P_GRIP_CLOSED: B_GRIP_CLOSED);
         btmTimer.reset();
     }
 
@@ -247,7 +247,7 @@ public class Gripper {
     }
 
     public boolean isBtmClosed() {
-        return (almostEqual(btmGrip.getPosition(), B_GRIP_CLOSED));
+        return (almostEqual(btmGrip.getPosition(), isGripFlipped ? P_GRIP_CLOSED: B_GRIP_CLOSED));
     }
 
     public boolean isPurpleClosed() {
@@ -258,13 +258,13 @@ public class Gripper {
         return (almostEqual(blackGrip.getPosition(), B_GRIP_CLOSED));
     }
 
-    public boolean isBtmOpen() { return (almostEqual(btmGrip.getPosition(), B_GRIP_OPEN)); }
+    public boolean isBtmOpen() { return (almostEqual(btmGrip.getPosition(), isGripFlipped ? P_GRIP_OPEN: B_GRIP_OPEN)); }
 
-    public boolean isTopOpen() { return (almostEqual(topGrip.getPosition(), B_GRIP_OPEN)); }
+    public boolean isTopOpen() { return (almostEqual(topGrip.getPosition(), isGripFlipped ? B_GRIP_OPEN: P_GRIP_OPEN)); }
 
-    public boolean isBtmPartialOpen() { return (almostEqual(btmGrip.getPosition(), B_GRIP_PARTIAL_OPEN)); }
+    public boolean isBtmPartialOpen() { return (almostEqual(btmGrip.getPosition(), isGripFlipped ? P_GRIP_PARTIAL_OPEN: B_GRIP_PARTIAL_OPEN)); }
 
-    public boolean isTopPartialOpen() { return (almostEqual(topGrip.getPosition(), B_GRIP_PARTIAL_OPEN)); }
+    public boolean isTopPartialOpen() { return (almostEqual(topGrip.getPosition(), isGripFlipped ? B_GRIP_PARTIAL_OPEN: P_GRIP_PARTIAL_OPEN)); }
 
     public boolean isPusherOut() { return (Math.abs(extendGrip.getPosition() - GRIP_EXTEND_HOME) > 0.02); }
 
