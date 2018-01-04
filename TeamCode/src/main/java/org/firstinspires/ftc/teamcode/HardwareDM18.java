@@ -189,7 +189,7 @@ public class HardwareDM18
             parameters.angleUnit           = AdafruitBNO055IMU.AngleUnit.DEGREES;
             parameters.accelUnit           = AdafruitBNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
             parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
-            parameters.mode = AdafruitBNO055IMU.SensorMode.GYRONLY;
+            parameters.mode = AdafruitBNO055IMU.SensorMode.IMU;
             parameters.loggingEnabled      = true;
             parameters.loggingTag          = "IMU";
             //parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();

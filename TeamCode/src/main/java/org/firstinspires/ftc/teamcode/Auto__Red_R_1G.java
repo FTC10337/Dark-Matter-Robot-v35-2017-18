@@ -53,9 +53,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Red 1G_C", group="DM18")
-@Disabled
-public class Auto__Red1GC extends Auto_Blue_R_2G {
+@Autonomous(name="Auto Red R 1G", group="DM18")
+//@Disabled
+public class Auto__Red_R_1G extends Auto_Blue_L_1G {
 
 
 

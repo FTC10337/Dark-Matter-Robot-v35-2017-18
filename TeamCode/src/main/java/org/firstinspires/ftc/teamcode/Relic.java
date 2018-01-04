@@ -1,5 +1,6 @@
 
 
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -22,22 +23,25 @@ public class Relic {
 
     // Servo Constants
     static final double RELIC_GRIP_OPEN =  0.0;
-    static final double RELIC_GRIP_CLOSE = 1.0;
-    static final double RELIC_PIVOT_HOME = 0.0;
-    static final double RELIC_PIVOT_OUT = 1.0;
+    static final double RELIC_GRIP_CLOSE = 0.67;
+    static final double RELIC_GRIP_GRAB = 0.566;
+    static final double RELIC_PIVOT_HOME = 0.917;
+    static final double RELIC_PIVOT_KICKSTAND = 0.78;
+    static final double RELIC_PIVOT_GRAB_POS = 0.166;
+    static final double RELIC_PIVOT_OUT = 0.0;
 
     /* Lift constants */
     static final double     RELIC_POWER = 1.0;
     static final int        EXTENSION_COUNTS_PER_MOTOR_REV    = 7 ;    // Neverrest
-    static final double     EXTENSION_DRIVE_GEAR_REDUCTION    = 20; // Neverest 20:1
-    static final double     EXTENSION_PULLEY_DIAMETER_INCHES   = 3.0;     // For figuring circumference
+    static final double     EXTENSION_DRIVE_GEAR_REDUCTION    = 40; // Neverest 20:1
+    static final double     EXTENSION_PULLEY_DIAMETER_INCHES   = 2.5;     // For figuring circumference
     static final double     EXTENSION_COUNTS_PER_INCH         = (4 * EXTENSION_COUNTS_PER_MOTOR_REV * EXTENSION_DRIVE_GEAR_REDUCTION) /
             (EXTENSION_PULLEY_DIAMETER_INCHES * 3.1415);
 
 
     // Lift variables
-    public final int RELIC_OUT_POS = (int) (36*EXTENSION_COUNTS_PER_INCH);
-    public final int RELIC_IN_POS = (int) (1*EXTENSION_COUNTS_PER_INCH);
+    public final int RELIC_OUT_POS = (int) (-30*EXTENSION_COUNTS_PER_INCH);
+    public final int RELIC_IN_POS = (int) (-0.5*EXTENSION_COUNTS_PER_INCH);
 
     /**
      * Constructor
@@ -88,12 +92,13 @@ public class Relic {
         relicMotor.setPower(RELIC_POWER);
     }
 
+
     // Set relic arm to IN position
     public void setRelicExtensionIn() {
         relicMotor.setTargetPosition(RELIC_IN_POS);
         relicMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         relicMotor.setPower(RELIC_POWER);
-        }
+    }
 
     // Hard Stop relic
     public void stopRelicExtension() {
@@ -107,18 +112,27 @@ public class Relic {
     // Set relic grip closed
     public void setRelicGripClose() { relicGrip.setPosition(RELIC_GRIP_CLOSE);}
 
+    // Set relic grip to grab
+    public void setRelicGripGrab() { relicGrip.setPosition(RELIC_GRIP_GRAB);}
+
     // Set relic pivot to home position
     public void setRelicPivotHome() { relicPivot.setPosition(RELIC_PIVOT_HOME);}
 
     // Set relic pivot to out position
     public void setRelicPivotOut() { relicPivot.setPosition(RELIC_PIVOT_OUT);}
 
+    // Set relic pivot to grab position
+    public void setRelicPivotGrabPos() { relicPivot.setPosition(RELIC_PIVOT_GRAB_POS);}
+
+    // Set relic pivot to kickstand position
+    public void setRelicPivotKickstand() { relicPivot.setPosition(RELIC_PIVOT_KICKSTAND);}
+
     // Manually rotate relic pivot
     public void rotate(double speed) {
         speed = Range.clip(speed, -1, 1);
         double current = relicPivot.getPosition();
-        double target =  current + (((RELIC_PIVOT_OUT - RELIC_PIVOT_HOME) * speed) / 4);   // At full stick will take 20 cycles
-        target = Range.clip(target, RELIC_PIVOT_OUT, RELIC_PIVOT_HOME);
+        double target =  current + (((RELIC_PIVOT_OUT - RELIC_PIVOT_HOME) * speed) / 6);   // At full stick will take 20 cycles
+        target = Range.clip(target, RELIC_PIVOT_OUT, RELIC_PIVOT_KICKSTAND);
         relicPivot.setPosition(target);
     }
 

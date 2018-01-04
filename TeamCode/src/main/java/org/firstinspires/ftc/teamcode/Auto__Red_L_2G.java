@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
 /**
@@ -52,9 +53,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Red 2G_C", group="DM18")
-//@Disabled
-public class Auto__Red2GC extends Auto_Blue_2G_C {
+@Autonomous(name="Auto Red L 2G", group="DM18")
+@Disabled
+public class Auto__Red_L_2G extends Auto_Blue_R_2G {
 
 
 

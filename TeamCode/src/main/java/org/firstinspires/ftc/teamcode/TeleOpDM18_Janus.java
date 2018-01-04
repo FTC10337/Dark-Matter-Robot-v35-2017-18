@@ -74,6 +74,8 @@ public class TeleOpDM18_Janus extends OpMode {
     boolean init_AutoLoad = false;
     boolean init_Reset = false;
 
+    boolean glyphMode = true;
+    boolean relicMode = false;
 
     boolean autoMove = false;
 
@@ -145,13 +147,16 @@ public class TeleOpDM18_Janus extends OpMode {
     public void loop() {
 
 
-        telemetry.addData("alpha: " + robot.intake.glyphColorSensor.alpha(), "dist: " + robot.intake.intakeDistance);
-        telemetry.addData("LEFT_AVG: ", robot.intake.distSensor_leftAvg.average());
-        telemetry.addData("RIGHT_AVG: ", robot.intake.distSensor_rightAvg.average());
-        telemetry.addData("LEFT: ", robot.intake.distanceSensor_left.getDistance(DistanceUnit.CM));
-        telemetry.addData("RIGHT: ", robot.intake.distanceSensor_right.getDistance(DistanceUnit.CM));
-        telemetry.addData("timer: "+ intakeStopTimer.milliseconds() +
-                "sqg: " + squaringGlyph +"  tsi:  ", timedStopIntake);
+        telemetry.addData("Relic Mode: ", relicMode);
+        telemetry.addData("Start", gamepad2.start);
+
+        //telemetry.addData("alpha: " + robot.intake.glyphColorSensor.alpha(), "dist: " + robot.intake.intakeDistance);
+        //telemetry.addData("LEFT_AVG: ", robot.intake.distSensor_leftAvg.average());
+        //telemetry.addData("RIGHT_AVG: ", robot.intake.distSensor_rightAvg.average());
+        //telemetry.addData("LEFT: ", robot.intake.distanceSensor_left.getDistance(DistanceUnit.CM));
+        //telemetry.addData("RIGHT: ", robot.intake.distanceSensor_right.getDistance(DistanceUnit.CM));
+        //telemetry.addData("timer: "+ intakeStopTimer.milliseconds() +
+        //        "sqg: " + squaringGlyph +"  tsi:  ", timedStopIntake);
 
 
         // Log gyro readings
@@ -161,18 +166,17 @@ public class TeleOpDM18_Janus extends OpMode {
 
         telemetry.update();
 
-        // Give the intake a chance to adjust speeds in cycle
-        //robot.intake.updateInPower();   // Must be called each cycle for speed to vary properly
-
         /*
         INITIATION SEQUENCE. RESETS LIFT AND GRIPPER
          */
         if (init_TeleOp) { // AUTO SEQUENCED STATES - INIT, LOAD & RESET
             switch (nStates) {
                 case INIT_1: // INIT DRIVER CONTROL _ RESET LIFT TO TOP AND INIT GRIPPER
-                    if (gamepad1.left_stick_y > 0.2 || gamepad1.left_stick_y < -0.2 ) { startInit = true; }
+                    if (gamepad1.left_stick_y > 0.2 || gamepad1.left_stick_y < -0.2) {
+                        startInit = true;
+                    }
 
-                    if (startInit){
+                    if (startInit) {
                         if (robot.lift.resetTopPos()) {
                             // initiates gripper. Init will set grippers closed, flipped in correct orientation, and pusher in home position.
                             robot.gripper.init(hardwareMap, "gripP", "gripB", "gripRotate", "gripExtend");
@@ -227,7 +231,7 @@ public class TeleOpDM18_Janus extends OpMode {
         */
 
         // Toggle drive train speed to SLOW when pusher is OUT
-        if (!init_TeleOp && robot.gripper.isPusherOut()  && !init_Reset ) {
+        if (!init_TeleOp && robot.gripper.isPusherOut() && !init_Reset) {
             slowDriveTrain = true;
             slowDriveTrainOveride = true;
         } else slowDriveTrain = false;
@@ -242,7 +246,7 @@ public class TeleOpDM18_Janus extends OpMode {
         }
 
         // Smooth and deadzone the joystick values
-        throttle = smoothPowerCurve(deadzone(throttle, 0.10)) / driveCoefficient ;
+        throttle = smoothPowerCurve(deadzone(throttle, 0.10)) / driveCoefficient;
         direction = (smoothPowerCurve(deadzone(direction, 0.10))) / turnCoefficient;
 
         // Calculate the drive motors for left and right
@@ -265,393 +269,490 @@ public class TeleOpDM18_Janus extends OpMode {
         robot.rightDrive1.setPower(right);
         robot.rightDrive2.setPower(right);
 
-
-        /*
-          LIFT DRIVER_2 CONTROLS
-         */
-
-        // Determine if button is still pressed. Used to prevent multiple firing of robot actions when button is held down.
-        if (!gamepad2.a && !gamepad2.x && !gamepad2.y && !gamepad2.b && !gamepad2.left_bumper && !gamepad2.right_bumper && !gamepad2.dpad_down
-                && !gamepad2.dpad_left && !gamepad2.dpad_right && !gamepad2.dpad_up){
-            isButtonPressed = false;
-        }
-
         // Determine if glyph is detected in intake. Necessary to start auto-load sequence
         glyphDetected = robot.intake.detectGlyph();
 
 
         /*
-        MANUAL LIFT CONTROLS - DRIVER 2
+          DRIVER_2 CONTROLS
          */
 
-        // / MANUAL MOVEMENT OF LIFT _ Moving right stick stops all auto movements
-        if (gamepad2.right_stick_y > 0.2 || gamepad2.right_stick_y < -0.2){
-
-            if (init_TeleOp) {
-                robot.gripper.init(hardwareMap, "gripP", "gripB", "gripRotate", "gripExtend");
-                if (!robot.intake.detectGlyph()) robot.gripper.setBothOpen();
-                init_TeleOp = false;
-            }
-
-            // Override auto moves
-            autoMove = false;
-            init_AutoLoad = false;
-            init_Reset = false;
-
-            // reset all auto lift booleans to default
-            resetLiftBtm = false;
-            resetLiftTop = false;
-            liftChangePos = false;
-            flip = false;
-
-            // Open intake wheels
-            robot.intake.setOpen();
-            robot.intake.setStop();
-
-            // Move lift
-            robot.lift.liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            double liftPower = -gamepad2.right_stick_y;
-            liftPower = smoothPowerCurve(deadzone(liftPower, 0.20));
-            if (!robot.lift.liftLimitT.getState()) {
-                liftPower = Range.clip(liftPower, -1, 0);
-            } else if (!robot.lift.liftLimitB.getState()){
-                liftPower = Range.clip(liftPower, 0, 1);
-            } else liftPower = Range.clip(liftPower, -1, 1);
-
-            robot.lift.setPower(liftPower);
-
-        } else if (!autoMove && !init_TeleOp) {
-            // Stops lift if no joystick input or auto moves active
-            robot.lift.stopLift();
+        // Determine if button is still pressed. Used to prevent multiple firing of robot actions when button is held down.
+        if (!gamepad2.a && !gamepad2.x && !gamepad2.y && !gamepad2.b && !gamepad2.left_bumper && !gamepad2.right_bumper && !gamepad2.dpad_down
+                && !gamepad2.dpad_left && !gamepad2.dpad_right && !gamepad2.dpad_up && !gamepad2.start) {
+            isButtonPressed = false;
         }
 
-        // SETS LIFT POSITION
-        if (gamepad2.dpad_up && !isButtonPressed) {
-            isButtonPressed = true;
-            liftFloorTarget = 2;            // Top floor
-            liftChangePos = true;
-            autoMove = true;
-        }
+        /*
+         GLYPH MODE CONTROLS for DRIVER 2
+          */
 
-        if ((gamepad2.dpad_left || gamepad2.dpad_right) && !isButtonPressed) {
-            isButtonPressed = true;
-            liftFloorTarget = 1;            // Middle floor
-            liftChangePos = true;
-            autoMove = true;
-        }
+        // Driver 2 can switch between glyph mode and relic mode by pressing "dpad_down" and "b" simultaneously
 
-        if (gamepad2.dpad_down && !isButtonPressed) {
-            isButtonPressed = true;
-            liftFloorTarget = 0;            // Bottom floor
-            liftChangePos = true;
-            autoMove = true;
-        }
+        if (glyphMode) {
 
+            // SETS DRIVER 2 to RELIC MODE
+            if (gamepad2.start && !isButtonPressed) {
 
-        // SETS LIFT POSITION AND MOVES LIFT
-        if (liftChangePos && autoMove) {
-            switch(liftFloorTarget){
-                case 0:
-                    robot.lift.setLiftBtm();
-                    liftChangePos = false;
-                    resetLiftBtm = true;
-                    break;
-                case 1:
-                    robot.lift.setLiftMid();
-                    liftChangePos = false;
-                    break;
-                case 2:
-                    robot.lift.setLiftTop();
-                    liftChangePos = false;
-                    resetLiftTop = true;
-                    break;
-            }
-        }
+                isButtonPressed = true;
 
-        // Find BTM limit switch after changing lift position BTM
-        if (resetLiftBtm && robot.lift.reachedFloor() && autoMove) {
-            if (robot.lift.resetFloorPos()){
+                // Override auto moves
+                autoMove = false;
+                init_AutoLoad = false;
+                init_Reset = false;
+
+                // reset all auto lift booleans to default
                 resetLiftBtm = false;
-            }
-        }
-
-        // Find TOP limit switch after changing lift position to TOP
-        if (resetLiftTop && robot.lift.reachedFloor() && autoMove) {
-            if (robot.lift.resetTopPos()) {
                 resetLiftTop = false;
+                liftChangePos = false;
+                flip = false;
+
+                // set DRIVE MODE to RELIC
+                relicMode = true;
+                glyphMode = false;
             }
-        }
+
+            /*
+            MANUAL LIFT CONTROLS - DRIVER 2
+            */
+
+            // / MANUAL MOVEMENT OF LIFT _ Moving right stick stops all auto movements
+            if (gamepad2.right_stick_y > 0.2 || gamepad2.right_stick_y < -0.2) {
+
+                if (init_TeleOp) {
+                    robot.gripper.init(hardwareMap, "gripP", "gripB", "gripRotate", "gripExtend");
+                    if (!robot.intake.detectGlyph()) robot.gripper.setBothOpen();
+                    init_TeleOp = false;
+                }
+
+                // Override auto moves
+                autoMove = false;
+                init_AutoLoad = false;
+                init_Reset = false;
+
+                // reset all auto lift booleans to default
+                resetLiftBtm = false;
+                resetLiftTop = false;
+                liftChangePos = false;
+                flip = false;
+
+                // Open intake wheels
+                robot.intake.setOpen();
+                robot.intake.setStop();
+
+                // Move lift
+                robot.lift.liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                double liftPower = -gamepad2.right_stick_y;
+                liftPower = smoothPowerCurve(deadzone(liftPower, 0.20));
+                if (!robot.lift.liftLimitT.getState()) {
+                    liftPower = Range.clip(liftPower, -1, 0);
+                } else if (!robot.lift.liftLimitB.getState()) {
+                    liftPower = Range.clip(liftPower, 0, 1);
+                } else liftPower = Range.clip(liftPower, -1, 1);
+
+                robot.lift.liftMotor.setPower(liftPower);
+
+            } else if (!autoMove && !init_TeleOp) {
+                // Stops lift if no joystick input or auto moves active
+                robot.lift.stopLift();
+            }
+
+            // SETS LIFT POSITION
+            if (gamepad2.dpad_up && !isButtonPressed) {
+                isButtonPressed = true;
+                liftFloorTarget = 2;            // Top floor
+                liftChangePos = true;
+                autoMove = true;
+            }
+
+            if ((gamepad2.dpad_left || gamepad2.dpad_right) && !isButtonPressed) {
+                isButtonPressed = true;
+                liftFloorTarget = 1;            // Middle floor
+                liftChangePos = true;
+                autoMove = true;
+            }
+
+            if (gamepad2.dpad_down && !gamepad2.b && !isButtonPressed) {
+                isButtonPressed = true;
+                liftFloorTarget = 0;            // Bottom floor
+                liftChangePos = true;
+                autoMove = true;
+            }
+
+            // SETS LIFT POSITION AND MOVES LIFT
+            if (liftChangePos && autoMove) {
+                switch (liftFloorTarget) {
+                    case 0:
+                        robot.lift.setLiftBtm();
+                        liftChangePos = false;
+                        resetLiftBtm = true;
+                        break;
+                    case 1:
+                        robot.lift.setLiftMid();
+                        liftChangePos = false;
+                        break;
+                    case 2:
+                        robot.lift.setLiftTop();
+                        liftChangePos = false;
+                        resetLiftTop = true;
+                        break;
+                }
+            }
+
+            // Find BTM limit switch after changing lift position BTM
+            if (resetLiftBtm && robot.lift.reachedFloor() && autoMove) {
+                if (robot.lift.resetFloorPos()) {
+                    resetLiftBtm = false;
+                }
+            }
+
+            // Find TOP limit switch after changing lift position to TOP
+            if (resetLiftTop && robot.lift.reachedFloor() && autoMove) {
+                if (robot.lift.resetTopPos()) {
+                    resetLiftTop = false;
+                }
+            }
 
         /*
           GRIPPER CONTROLS - DRIVER 2
          */
 
-        // INITIATE FLIP
-        if (gamepad2.x && !isButtonPressed && !init_TeleOp && !init_AutoLoad) {
-            isButtonPressed = true;
-            flip = true;
-            autoMove = true;
-        }
+            // INITIATE FLIP
+            if (gamepad2.x && !isButtonPressed && !init_TeleOp && !init_AutoLoad) {
+                isButtonPressed = true;
+                flip = true;
+                autoMove = true;
+            }
 
-        // FLIP GRIPPER
-        if (flip && autoMove && (robot.lift.distFromBottom() >= 9.0) && !init_AutoLoad) {
-            // Flip after determining gripper is high enough
-            robot.gripper.flip();
-            flip = false;
-        } else if ((flip && autoMove && robot.lift.distFromBottom() < 9.0) && !init_AutoLoad) {
-            // Move gripper to top position before flipping if in another lift position
-            robot.lift.setLiftHeight(10.0);
-        }
+            // FLIP GRIPPER
+            if (flip && autoMove && (robot.lift.distFromBottom() >= 5.0) && !init_AutoLoad) {
+                // Flip after determining gripper is high enough
+                robot.gripper.flip();
+                flip = false;
+            } else if ((flip && autoMove && robot.lift.distFromBottom() < 5.0) && !init_AutoLoad) {
+                // Move gripper to top position before flipping if in another lift position
+                robot.lift.setLiftHeight(5.5);
+            }
 
-        // PUSHER IN/OUT
-        if (gamepad2.left_stick_y > 0.2 && !init_TeleOp || gamepad2.left_stick_y < -0.2 && !init_TeleOp) {
+            // PUSHER IN/OUT
+            if (gamepad2.left_stick_y > 0.2 && !init_TeleOp || gamepad2.left_stick_y < -0.2 && !init_TeleOp) {
 
-            // Override auto moves
-            autoMove = false;
-            init_AutoLoad = false;
-            init_Reset = false;
+                // Override auto moves
+                autoMove = false;
+                init_AutoLoad = false;
+                init_Reset = false;
 
-            // reset all auto lift booleans to default
-            resetLiftBtm = false;
-            resetLiftTop = false;
-            liftChangePos = false;
-            flip = false;
+                // reset all auto lift booleans to default
+                resetLiftBtm = false;
+                resetLiftTop = false;
+                liftChangePos = false;
+                flip = false;
 
 
-            if ((robot.lift.distFromBottom() > 8) ||
-                    (!robot.intake.isClosed() && !robot.intake.isMoving() &&
-                            (robot.gripper.isBtmClosed() || robot.gripper.isBtmPartialOpen()) && !robot.gripper.isMoving())) {
-                double speed = smoothPowerCurve(deadzone(-gamepad2.left_stick_y, 0.2));
-                speed = Range.clip(speed, -1, 1);
-                robot.gripper.moveInOut(speed);
-            } else {
-                robot.intake.setOpen();
-                if (robot.gripper.isBtmOpen()) {
-                    robot.gripper.setBtmPartialOpen();
+                if ((robot.lift.distFromBottom() > 8) ||
+                        (!robot.intake.isClosed() && !robot.intake.isMoving() &&
+                                (robot.gripper.isBtmClosed() || robot.gripper.isBtmPartialOpen()) && !robot.gripper.isMoving())) {
+                    double speed = smoothPowerCurve(deadzone(-gamepad2.left_stick_y, 0.2));
+                    speed = Range.clip(speed, -1, 1);
+                    robot.gripper.moveInOut(speed);
+                } else {
+                    robot.intake.setOpen();
+                    if (robot.gripper.isBtmOpen()) {
+                        robot.gripper.setBtmClosed();
 
+                    }
                 }
             }
-        }
 
 
-        // OPEN & CLOSE GRIPPERS
-        // close grippers
-        if ((gamepad2.right_trigger > 0.5) && !init_TeleOp && !init_AutoLoad) {
-            robot.gripper.setBtmClosed();
-        }
-        if ((gamepad2.right_bumper && !isButtonPressed && !init_TeleOp) && !init_AutoLoad) {
-            robot.gripper.setTopClosed();
-            isButtonPressed = true;
-            topGripisClosed = true;
-        }
+            // OPEN & CLOSE GRIPPERS
+            // close grippers
+            if ((gamepad2.right_trigger > 0.5) && !init_TeleOp && !init_AutoLoad) {
+                robot.gripper.setBtmClosed();
+            }
+            if ((gamepad2.right_bumper && !isButtonPressed && !init_TeleOp) && !init_AutoLoad) {
+                robot.gripper.setTopClosed();
+                isButtonPressed = true;
+                topGripisClosed = true;
+            }
 
-        // open grippers
-        if ((gamepad2.left_trigger > 0.5) && !init_TeleOp && !init_AutoLoad) {
-            // Set fully open
+            // open grippers
+            if ((gamepad2.left_trigger > 0.5) && !init_TeleOp && !init_AutoLoad) {
+                // Set fully open
                 robot.gripper.setBtmOpen();
 
-        }
-        if (gamepad2.left_bumper && !isButtonPressed && !init_TeleOp&& !init_AutoLoad) {
-            // Set fully open
+            }
+            if (gamepad2.left_bumper && !isButtonPressed && !init_TeleOp && !init_AutoLoad) {
+                // Set fully open
                 robot.gripper.setTopOpen();
                 topGripisClosed = false;
                 isButtonPressed = true;
-        }
+            }
 
         /*
         AUTO RESET LIFT/GRIPPER SEQUENCE
          */
 
-        // RESET auto load sequence. To be used by both drivers is something in sequence goes wrong
-        if (gamepad2.y && gamepad2.b && !isButtonPressed && !init_TeleOp) {
-            isButtonPressed = true;
-            autoMove = true;
-            init_Reset = true;
-            init_AutoLoad = false;
+            // RESET auto load sequence. To be used by both drivers is something in sequence goes wrong
+            if (gamepad2.y && gamepad2.b && !isButtonPressed && !init_TeleOp) {
+                isButtonPressed = true;
+                autoMove = true;
+                init_Reset = true;
+                init_AutoLoad = false;
 
-            // reset all auto lift booleans to default
-            resetLiftBtm = false;
-            resetLiftTop = false;
-            liftChangePos = false;
-            flip = false;
+                // reset all auto lift booleans to default
+                resetLiftBtm = false;
+                resetLiftTop = false;
+                liftChangePos = false;
+                flip = false;
 
-            nStates = States.RESET_1;
-        }
-
-        if (init_Reset && autoMove) {
-            switch (nStates) {
-
-                case RESET_1: // OPEN INTAKE
-                    telemetry.clearAll();
-                    telemetry.addData("Reset: ", "1");
-
-                    slowDriveTrainOveride = false;
-
-                    if (robot.intake.isClosed()) {
-                        robot.intake.setOpen();
-                        robot.gripper.setBothOpen();
-                        nStates = States.RESET_2;
-                    } else {
-                        robot.gripper.setBothOpen();
-                        nStates = States.RESET_2;
-                    }
-                    break;
-
-                case RESET_2: // LIFT ABOVE INTAKE IF NOT ALREADY
-                    telemetry.clearAll();
-                    telemetry.addData("Reset: ", "2");
-                    if (!robot.intake.isMoving() && !robot.gripper.isMoving()){
-                        if (robot.lift.distFromBottom() < 4.5) {
-                            robot.lift.setLiftHeight(5.0);
-                            nStates = States.RESET_2_1;
-                        } else nStates = States.RESET_2_1;
-                    }
-
-                case RESET_2_1: // PUSHER IN & OPEN GRIPPERS
-                    telemetry.clearAll();
-                    telemetry.addData("Reset: ", "2_1");
-                    if (robot.lift.distFromBottom() > 4.5) {
-                        robot.gripper.setExtendIn();
-                        robot.gripper.setBothOpen();
-                        topGripisClosed = false;
-                        nStates = States.RESET_3;
-                    }
-                    break;
-
-                case RESET_3:
-                    telemetry.clearAll();
-                    telemetry.addData("Reset: ", "3");
-                    if (!robot.gripper.isExtending()) {
-                        robot.lift.setLiftBtm();
-                        nStates = States.RESET_4;
-                    }
-                    break;
-
-                case RESET_4:
-                    telemetry.clearAll();
-                    telemetry.addData("Reset: ", "4");
-                    if (robot.lift.reachedFloor()){
-                        if (robot.lift.resetFloorPos()) {
-                            init_Reset = false;
-                        }
-                    }
-
+                nStates = States.RESET_1;
             }
-        }
 
+            if (init_Reset && autoMove) {
+                switch (nStates) {
+
+                    case RESET_1: // OPEN INTAKE
+                        telemetry.clearAll();
+                        telemetry.addData("Reset: ", "1");
+
+                        slowDriveTrainOveride = false;
+
+                        if (robot.intake.isClosed()) {
+                            robot.intake.setOpen();
+                            robot.gripper.setBothOpen();
+                            nStates = States.RESET_2;
+                        } else {
+                            robot.gripper.setBothOpen();
+                            nStates = States.RESET_2;
+                        }
+                        break;
+
+                    case RESET_2: // LIFT ABOVE INTAKE IF NOT ALREADY
+                        telemetry.clearAll();
+                        telemetry.addData("Reset: ", "2");
+                        if (!robot.intake.isMoving() && !robot.gripper.isMoving()) {
+                            if (robot.lift.distFromBottom() < 5.0) {
+                                robot.lift.setLiftHeight(5.5);
+                                nStates = States.RESET_2_1;
+                            } else nStates = States.RESET_2_1;
+                        }
+
+                    case RESET_2_1: // PUSHER IN & OPEN GRIPPERS
+                        telemetry.clearAll();
+                        telemetry.addData("Reset: ", "2_1");
+                        if (robot.lift.distFromBottom() > 5.0) {
+                            robot.gripper.setExtendIn();
+                            robot.gripper.setBothOpen();
+                            topGripisClosed = false;
+                            nStates = States.RESET_3;
+                        }
+                        break;
+
+                    case RESET_3:
+                        telemetry.clearAll();
+                        telemetry.addData("Reset: ", "3");
+                        if (!robot.gripper.isExtending()) {
+                            robot.lift.setLiftBtm();
+                            nStates = States.RESET_4;
+                        }
+                        break;
+
+                    case RESET_4:
+                        telemetry.clearAll();
+                        telemetry.addData("Reset: ", "4");
+                        if (robot.lift.reachedFloor()) {
+                            if (robot.lift.resetFloorPos()) {
+                                init_Reset = false;
+                            }
+                        }
+
+                }
+            }
 
         /*
         AUTO LOAD GLYPH SEQUENCE
          */
 
-        // INITIATE AUTO LOAD - DRIVER 2 - Can be activated when glyph is detected
-        if (gamepad2.a && glyphDetected && !isButtonPressed && !init_TeleOp && !init_AutoLoad) {
-            isButtonPressed = true;
-            nStates = States.AUTO_LOAD_INIT;
-            init_AutoLoad = true;
-            autoMove = true;
-            init_Reset = false;
-        }
+            // INITIATE AUTO LOAD - DRIVER 2 - Can be activated when glyph is detected
+            if (gamepad2.a && glyphDetected && !isButtonPressed && !init_TeleOp && !init_AutoLoad) {
+                isButtonPressed = true;
+                nStates = States.AUTO_LOAD_INIT;
+                init_AutoLoad = true;
+                autoMove = true;
+                init_Reset = false;
+            }
 
-        if (init_AutoLoad && autoMove) {
+            if (init_AutoLoad && autoMove) {
 
-            switch (nStates) {
+                switch (nStates) {
 
-                case AUTO_LOAD_INIT: // CHECK TO SEE IF LIFT IS AT BTM POS AND BTM GRIPPERS ARE OPEN
-                    if (robot.gripper.isBtmClosed()) {
-                        robot.gripper.setBtmOpen();
-                    } else if (!robot.gripper.btmIsMoving()){
-                        robot.lift.setLiftBtm();
-                    }
-                    if (!robot.gripper.isBtmClosed()&& robot.lift.targetPos == robot.lift.LIFT_BTM_POS && robot.lift.reachedFloor()){
-                        // Move lift down to BTM limit switch
-                        if (robot.lift.resetFloorPos()) {
-                            nStates = States.AUTO_LOAD_1;
+                    case AUTO_LOAD_INIT: // CHECK TO SEE IF LIFT IS AT BTM POS AND BTM GRIPPERS ARE OPEN
+                        if (robot.gripper.isBtmClosed()) {
+                            robot.gripper.setBtmOpen();
+                        } else if (!robot.gripper.btmIsMoving()) {
+                            robot.lift.setLiftBtm();
                         }
-                    }
-                    break;
-
-                case AUTO_LOAD_1: // GRAB GLYPH & OPEN INTAKE WHEELS
-                    // Grab glyph with BTM gripper
-                    if(!robot.gripper.isBtmClosed()) {
-                        robot.gripper.setBtmClosed();
-                        nStates = States.AUTO_LOAD_1_2;
-                    }
-                    break;
-
-                case AUTO_LOAD_1_2:
-                    // Open intake after gripper has closed
-                    telemetry.clearAll();
-                    telemetry.addData("Top is closed:", topGripisClosed);
-                    if (!robot.gripper.btmIsMoving()) {
-                        robot.intake.setOpen();
-                        if (!topGripisClosed) {
-                            nStates = States.AUTO_LOAD_2;
-                        } else {
-                            nStates = States.AUTO_LOAD_SECOND;
+                        if (!robot.gripper.isBtmClosed() && robot.lift.targetPos == robot.lift.LIFT_BTM_POS && robot.lift.reachedFloor()) {
+                            // Move lift down to BTM limit switch
+                            if (robot.lift.resetFloorPos()) {
+                                nStates = States.AUTO_LOAD_1;
+                            }
                         }
-                    }
-                    break;
+                        break;
 
-                // LOAD SEQUENCE FOR FIRST GLYPH - Determined if top gripper is OPEN, therefore does not have glyph.
-                case AUTO_LOAD_2: // LIFT TO LIFT POSITION
-                    // Set lift position to move to top after intake has opened
-                    if (!robot.intake.isMoving()) {
-                        robot.lift.setLiftHeight(8.25);
-                        nStates = States.AUTO_LOAD_3;
-                    }
-                    break;
+                    case AUTO_LOAD_1: // GRAB GLYPH & OPEN INTAKE WHEELS
+                        // Grab glyph with BTM gripper
+                        if (!robot.gripper.isBtmClosed()) {
+                            robot.gripper.setBtmClosed();
+                            nStates = States.AUTO_LOAD_1_2;
+                        }
+                        break;
 
-                case AUTO_LOAD_3: // FLIP AFTER FLIP HEIGHT REACHED
-                    if (robot.lift.distFromBottom() > 7.75) { // Check to see if lift reached height to flip
-                        // If it reached target position, set intake back to closed position and start intaking again
-                        robot.intake.setClosed();
-                        robot.intake.setIn();
-                        robot.gripper.flip(); // Flip gripper
-                        topGripisClosed = true;
-                        nStates = States.AUTO_LOAD_4; // Go to next state in auto load sequence
-                    }
-                    break;
+                    case AUTO_LOAD_1_2:
+                        // Open intake after gripper has closed
+                        telemetry.clearAll();
+                        telemetry.addData("Top is closed:", topGripisClosed);
+                        if (!robot.gripper.btmIsMoving()) {
+                            robot.intake.setOpen();
+                            if (!topGripisClosed) {
+                                nStates = States.AUTO_LOAD_2;
+                            } else {
+                                nStates = States.AUTO_LOAD_SECOND;
+                            }
+                        }
+                        break;
 
-                case AUTO_LOAD_4: // MOVE TO BTM FLOOR
+                    // LOAD SEQUENCE FOR FIRST GLYPH - Determined if top gripper is OPEN, therefore does not have glyph.
+                    case AUTO_LOAD_2: // LIFT TO LIFT POSITION
+                        // Set lift position to move to top after intake has opened
+                        if (!robot.intake.isMoving()) {
+                            robot.lift.setLiftHeight(8.25);
+                            nStates = States.AUTO_LOAD_3;
+                        }
+                        break;
 
-                    if (!robot.gripper.isFlipping()) {
-                        robot.lift.setLiftHeight(0.5); // Move lift to btm position after gripper is done flipping
-                        //nStates = States.AUTO_LOAD_5;
-                        init_AutoLoad = false;
-                    }
-                    break;
+                    case AUTO_LOAD_3: // FLIP AFTER FLIP HEIGHT REACHED
+                        if (robot.lift.distFromBottom() > 7.75) { // Check to see if lift reached height to flip
+                            // If it reached target position, set intake back to closed position and start intaking again
+                            robot.intake.setClosed();
+                            robot.intake.setIn();
+                            robot.gripper.flip(); // Flip gripper
+                            topGripisClosed = true;
+                            nStates = States.AUTO_LOAD_4; // Go to next state in auto load sequence
+                        }
+                        break;
 
-                case AUTO_LOAD_5: // RESET ENCODER TO '0' USING BTM LIMIT SWITCH
-                    if (robot.lift.reachedFloor()) {
-                        robot.lift.resetFloorPos();
-                        init_AutoLoad = false;
-                    }
-                    break;
+                    case AUTO_LOAD_4: // MOVE TO BTM FLOOR
 
-                // LOAD SEQUENCE FOR SECOND GLYPH - Determined if top gripper is CLOSED, therefore assumed it has a glyph.
-                case AUTO_LOAD_SECOND: // LIFT TO DRIVE
-                    if (!robot.intake.isMoving()) {
-                        robot.lift.setLiftHeight(1.0); // Lift above ground to drive
-                        init_AutoLoad = false;
-                    }
-                    break;
+                        if (!robot.gripper.isFlipping()) {
+                            robot.lift.setLiftHeight(0.5); // Move lift to btm position after gripper is done flipping
+                            //nStates = States.AUTO_LOAD_5;
+                            init_AutoLoad = false;
+                        }
+                        break;
+
+                    case AUTO_LOAD_5: // RESET ENCODER TO '0' USING BTM LIMIT SWITCH
+                        if (robot.lift.reachedFloor()) {
+                            robot.lift.resetFloorPos();
+                            init_AutoLoad = false;
+                        }
+                        break;
+
+                    // LOAD SEQUENCE FOR SECOND GLYPH - Determined if top gripper is CLOSED, therefore assumed it has a glyph.
+                    case AUTO_LOAD_SECOND: // LIFT TO DRIVE
+                        if (!robot.intake.isMoving()) {
+                            robot.lift.setLiftHeight(1.0); // Lift above ground to drive
+                            init_AutoLoad = false;
+                        }
+                        break;
+                }
             }
         }
 
+        /*
+        RELIC MODE CONTROLS for DRIVER 2 //
+        */
+
+        // Driver 2 can switch between glyph mode and relic mode by pressing "dpad_down" and "b" simultaneously
+
+        if (relicMode) {
+
+            // SETS DRIVER 2 to GLYPH MODE
+            if (gamepad2.start && !isButtonPressed) {
+
+                isButtonPressed = true;
+
+                // set DRIVE MODE to GLYPH
+                relicMode = false;
+                glyphMode = true;
+            }
+
+            // / MANUAL MOVEMENT OF RELIC EXTENSION
+
+
+            if (gamepad2.left_stick_y > 0.2 || gamepad2.left_stick_y < -0.2) {
+                autoMove = false;
+                robot.relic.relicMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                double relicPower = gamepad2.left_stick_y;
+                relicPower = smoothPowerCurve(deadzone(relicPower, 0.20));
+                if (robot.relic.relicMotor.getCurrentPosition() <= 0) {
+                    relicPower = Range.clip(relicPower, -1, 1);
+                } else {
+                    relicPower = Range.clip(relicPower, -1, 0);
+                }
+                robot.relic.relicMotor.setPower(relicPower);
+            } else if (!autoMove) robot.relic.stopRelicExtension();
+
+            // Set relic extension to out position
+            if (gamepad2.dpad_up) {
+                robot.relic.setRelicExtensionOut();
+                autoMove = true;
+            }
+
+            // Set relic extension to in position
+            if (gamepad2.dpad_down) {
+                robot.relic.setRelicExtensionIn();
+                autoMove = true;
+            }
+
+            // MANUAL MOVEMENT OF RELIC PIVOT
+            if (gamepad2.right_stick_y > 0.2 || gamepad2.right_stick_y < -0.2) {
+                double speed = smoothPowerCurve(deadzone(-gamepad2.right_stick_y, 0.2));
+                speed = Range.clip(speed, -1, 1);
+                robot.relic.rotate(speed);
+            }
+
+            // Relic grip open
+            if (gamepad2.right_trigger > 0.2) {
+                robot.relic.setRelicGripOpen();
+            }
+
+            // Relic grip grab
+            if (gamepad2.left_trigger > 0.2) {
+                robot.relic.setRelicGripGrab();
+            }
+
+            // RESET RELIC mechanism to home positions
+            if (gamepad2.b && gamepad2.y) {
+                robot.relic.setRelicExtensionIn();
+                robot.relic.setRelicPivotKickstand();
+                autoMove = true;
+            }
+
+            // Set relic pivot to home position
+            if (gamepad2.a) {
+                robot.relic.setRelicPivotKickstand();
+            }
+
+            // Set relic pivot to grab position and open claw
+            if (gamepad2.x) {
+                robot.relic.setRelicPivotGrabPos();
+                robot.relic.setRelicGripOpen();
+            }
+
+        }
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     /*
      * Code to run ONCE after the driver hits STOP
@@ -772,7 +873,6 @@ public class TeleOpDM18_Janus extends OpMode {
         }
 
 
-
         // Intake OUT
         if (gamepad1.left_trigger > 0.5 && !init_AutoLoad && !init_Reset) {
             robot.intake.setOut();
@@ -799,7 +899,6 @@ public class TeleOpDM18_Janus extends OpMode {
 
     }
 
-
     /**
      * Read the current heading direction.  Use a heading bias if we recorded one at start to account for drift during
      * the init phase of match
@@ -812,6 +911,5 @@ public class TeleOpDM18_Janus extends OpMode {
         gyroRead = robot.adaGyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
         return gyroRead;
     }
-
 }
 

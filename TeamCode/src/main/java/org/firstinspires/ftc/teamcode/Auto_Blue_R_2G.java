@@ -74,12 +74,19 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Blue 1G_C", group="DM18")
+@Autonomous(name="Auto Blue R 2G", group="DM18")
 //@Disabled
-public class Auto_Blue_1G_C extends LinearOpMode {
+public class Auto_Blue_R_2G extends LinearOpMode {
 
     HardwareDM18         robot   = new HardwareDM18 ();   // Use a Pushbot's hardware
+    AutoHelper auto = new AutoHelper();
 
+    RelicRecoveryVuMark vuMark;
+
+    int left1Pos;
+    int left2Pos;
+    int right1Pos;
+    int right2Pos;
 
 
     /**
@@ -94,7 +101,7 @@ public class Auto_Blue_1G_C extends LinearOpMode {
         robot.init(hardwareMap, true, true);
 
         // Start up all the common Auto stuff
-        AutoHelper auto = new AutoHelper();
+
         auto.init(robot, hardwareMap, this, iAmBlue());
 
         robot.intake.setStop();
@@ -139,15 +146,36 @@ public class Auto_Blue_1G_C extends LinearOpMode {
         */
         auto.processJewel();
 
+        readVuMark();
 
-        /*
-        CRYPTO CODE
-         */
+        driveToBox();
 
-        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(auto.relicTemplate);
+        driveToPile();
+
+        loadExtraGlyphs();
+
+        returnToBox();
+
+        placeExtraGlyphs();
+
+        park();
+
+        RobotLog.i("DM10337- Finished last move of auto");
+
+
+        telemetry.addData("Path", "Complete");
+        telemetry.update();
+    }
+
+
+    public void readVuMark() {
+        vuMark = RelicRecoveryVuMark.from(auto.relicTemplate);
 
         telemetry.addData("VuMark", "%s visible", vuMark);
 
+    }
+
+    public void driveToBox() throws InterruptedException {
 
         if (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN) {
             // Drive forward to lineup with center cryptoglyph
@@ -157,14 +185,7 @@ public class Auto_Blue_1G_C extends LinearOpMode {
                 auto.encoderDrive(0.5, -36.0, 5.0, true, 0.0);
             }
 
-            // Turn toward center cryptoglyph
-            auto.gyroTurn(0.8, 90, auto.P_TURN_COEFF);
-            // Outake glyph
-            robot.gripper.setBothOpen();
-            sleep(250);
-            // Drive closer to center cryptoglyph
-            auto.encoderDrive(0.5, 7.0, 3.0, true, 90);
-        }
+                    }
         if (vuMark == RelicRecoveryVuMark.RIGHT) {
             // Drive forward to lineup with center cryptoglyph
             if (iAmBlue()) {
@@ -172,13 +193,7 @@ public class Auto_Blue_1G_C extends LinearOpMode {
             } else {
                 auto.encoderDrive(0.5, -36.0 + 7.5, 5.0, true, 0.0);
             }
-            // Turn toward center cryptoglyph
-            auto.gyroTurn(0.8, 90, auto.P_TURN_COEFF);
-            // Outake glyph
-            robot.gripper.setBothOpen();
-            sleep(250);
-            // Drive closer to cryptoglyph
-            auto.encoderDrive(0.5, 7.0, 3.0, true, 90);
+
         }
         if (vuMark == RelicRecoveryVuMark.LEFT) {
             // Drive forward to lineup with center cryptoglyph
@@ -187,49 +202,56 @@ public class Auto_Blue_1G_C extends LinearOpMode {
             } else {
                 auto.encoderDrive(0.5, -36.0 - 7.5, 5.0, true, 0.0);
             }
-            // Turn toward center cryptoglyph
-            auto.gyroTurn(0.8, 90, auto.P_TURN_COEFF);
-            // Outake glyph
-            robot.gripper.setBothOpen();
-            sleep(250);
-            // Drive closer to cryptoglyph
-            auto.encoderDrive(0.5, 7.0, 3.0, true, 90);
+
         }
 
+        // Turn toward center cryptoglyph
+        auto.gyroTurn(0.8, 90, auto.P_TURN_COEFF);
+        // Outake glyph
+        robot.gripper.setBothOpen();
+        sleep(250);
+        // Drive closer to center cryptoglyph
+        auto.encoderDrive(0.5, 7.0, 3.0, true, 90);
 
         robot.intake.setOut();
         sleep(500);
+    }
 
+    public void park() throws InterruptedException {
         // Drive back, but stay in safe zone
-        auto.encoderDrive(0.6, -14.0, 3.0, true, 90);
+        auto.encoderDrive(0.6, -8.0, 3.0, true, 90);
 
         robot.intake.setStop();
+    }
 
+    public void driveToPile() {
         auto.gyroTurn(0.8,-90, auto.P_TURN_COEFF);
 
         // Record drive motor encoder positions. Use these values to return to this position after collecting glyphs
-        int left1Pos = robot.leftDrive1.getCurrentPosition();
-        int left2Pos = robot.leftDrive2.getCurrentPosition();
-        int right1Pos = robot.rightDrive1.getCurrentPosition();
-        int right2Pos = robot.rightDrive2.getCurrentPosition();
+        left1Pos = robot.leftDrive1.getCurrentPosition();
+        left2Pos = robot.leftDrive2.getCurrentPosition();
+        right1Pos = robot.rightDrive1.getCurrentPosition();
+        right2Pos = robot.rightDrive2.getCurrentPosition();
 
         robot.lift.setLiftMid();
 
         // Drive forward to collect glyph
         auto.collectGlyph(0.3, 3, true, -90);
 
+    }
+
+    public void loadExtraGlyphs() throws InterruptedException {
         // Check if glyph is in intake
-        if (robot.intake.distLeft() < 12.0 || robot.intake.distRight() < 12.0){
+        if (robot.intake.distLeft() < 12.0 || robot.intake.distRight() < 12.0) {
 
             // square glyph
-            auto.squareGlyph(1.0,-0.15,500);
+            auto.squareGlyph(1.0, -0.15, 500);
 
             // intake on to hold glyph while driving back
             robot.intake.intakeLeftMotor.setPower(0.30);
             robot.intake.intakeRightMotor.setPower(0.30);
-
             // drive backwards to avoid interference from other glyphs during load
-            auto.encoderDrive(0.3, -4.0, 2.0 ,true,-90);
+            auto.encoderDrive(0.3, -4.0, 2.0, true, -90);
 
             robot.intake.setStop();
 
@@ -240,10 +262,12 @@ public class Auto_Blue_1G_C extends LinearOpMode {
         } else {
             // never detected glyph in intake. Back off and set intake out to clear any potential jams.
             robot.intake.setOut();
-            auto.encoderDrive(0.3, -7.0, 3.0 ,true, -90);
+            auto.encoderDrive(0.3, -7.0, 3.0, true, -90);
             robot.intake.setStop();
         }
+    }
 
+    public void returnToBox() throws InterruptedException {
         int inches = auto.determineDistance(left1Pos, left2Pos, right1Pos, right2Pos);
 
         auto.encoderDrive(0.8, -inches, 5, true, -90);
@@ -253,6 +277,9 @@ public class Auto_Blue_1G_C extends LinearOpMode {
 
         auto.encoderDrive(0.8, 16, 5, true, 90);
 
+    }
+
+    public void placeExtraGlyphs(){
         sleep (250);
 
         if (auto.glyphsCollected > 0){
@@ -268,16 +295,9 @@ public class Auto_Blue_1G_C extends LinearOpMode {
 
         while (robot.gripper.isMoving()) idle();
 
-        auto.encoderDrive(0.8, -6, 5, true, 90);
-
-        RobotLog.i("DM10337- Finished last move of auto");
 
 
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
     }
-
-
 
     public boolean iAmBlue() {
         return true;
