@@ -115,7 +115,7 @@ public class TeleOpDM18_Janus extends OpMode {
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap, false, true);
+        robot.init(hardwareMap, false, false);
 
 
 

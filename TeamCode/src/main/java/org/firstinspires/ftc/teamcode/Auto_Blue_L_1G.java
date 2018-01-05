@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 @Autonomous(name="Auto Blue L 1G", group="DM18")
 //@Disabled
-public class Auto_Blue_L_1G extends Auto_Blue_R_1G {
+public class Auto_Blue_L_1G extends Auto_Master {
     @Override
     public void driveToBox() throws InterruptedException {
 
@@ -86,5 +86,10 @@ public class Auto_Blue_L_1G extends Auto_Blue_R_1G {
         }
 
         robot.intake.setStop();
+    }
+
+    @Override
+    public boolean iAmBlue() {
+        return true;
     }
 }

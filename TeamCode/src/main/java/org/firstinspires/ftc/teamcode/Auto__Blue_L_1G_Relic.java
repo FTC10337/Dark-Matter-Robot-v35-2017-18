@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
 /**
@@ -53,13 +52,22 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Red L 2G", group="DM18")
-@Disabled
-public class Auto__Red_L_2G extends Auto_Blue_R_2G_Old {
+@Autonomous(name="Auto Red R 1G", group="DM18")
+//@Disabled
+public class Auto__Blue_L_1G_Relic extends Auto_Blue_L_1G {
 
 
+    @Override
+    public void readyForRelic() {
+        // Now turn and get ready to load relic
+        auto.gyroTurn(0.8, iAmBlue()? -60 : 60, auto.P_TURN_COEFF);
 
-    public boolean iAmBlue() {
-        return false;
+        // Set relic arm ready to grab relic
+        robot.relic.setRelicPivotGrabPos();
+        robot.relic.setRelicGripOpen();
+
+        // Would like to extend relic arm here but concerned it will mess up encoders for TeleOp
+
     }
+
 }

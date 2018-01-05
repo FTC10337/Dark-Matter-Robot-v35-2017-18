@@ -74,7 +74,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 @Autonomous(name="Auto Blue 2G_C", group="DM18")
 @Disabled
-public class Auto_Blue_2G_C extends LinearOpMode {
+public class Auto_Blue_Old_3G extends LinearOpMode {
 
 
     /* Declare OpMode members. */
