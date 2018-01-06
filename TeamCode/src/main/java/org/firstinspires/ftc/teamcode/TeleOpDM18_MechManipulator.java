@@ -138,7 +138,7 @@ public class TeleOpDM18_MechManipulator extends OpMode {
             isButtonPressed = true;
             telemetry.clearAll();
         }
-        curState%=15;   // Wrap around
+        curState= (curState+15)%15;   // Wrap around
 
         if (!gamepad2.dpad_left && !gamepad2.dpad_right && isButtonPressed)isButtonPressed = false;
 
@@ -460,7 +460,7 @@ public class TeleOpDM18_MechManipulator extends OpMode {
                 telemetry.addData("Claw: ", robot.relic.relicGrip.getPosition());
 
                 Pivot = robot.relic.relicPivot.getPosition();
-                Claw = robot.relic.relicGrip.getPortNumber();
+                Claw = robot.relic.relicGrip.getPosition();
 
                 if (gamepad2.x) {
                     Pivot += 0.001;

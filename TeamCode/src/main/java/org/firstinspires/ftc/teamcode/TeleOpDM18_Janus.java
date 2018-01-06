@@ -158,12 +158,6 @@ public class TeleOpDM18_Janus extends OpMode {
         //telemetry.addData("timer: "+ intakeStopTimer.milliseconds() +
         //        "sqg: " + squaringGlyph +"  tsi:  ", timedStopIntake);
 
-
-        // Log gyro readings
-        angles = readGyro();
-        telemetry.addData("Gyro: " + angles.firstAngle + " " + angles.secondAngle + " ",
-                angles.thirdAngle);
-
         telemetry.update();
 
         /*
@@ -221,20 +215,17 @@ public class TeleOpDM18_Janus extends OpMode {
         double throttle = -gamepad1.left_stick_y;
         double direction = gamepad1.right_stick_x;
 
-        // Driver 1 toggle drive train speed controls\
-        /*
-        if (gamepad1.dpad_up) slowDriveTrain2 = false;
-        if (gamepad1.dpad_down) {
-            slowDriveTrain2 = true;
-            slowDriveTrainOveride = true;
-        }
-        */
-
-        // Toggle drive train speed to SLOW when pusher is OUT
-        if (!init_TeleOp && robot.gripper.isPusherOut() && !init_Reset) {
+        // Toggle drive train speed to SLOW when pusher is OUT or RELIC is extended
+        if (!init_TeleOp && !init_Reset && robot.gripper.isPusherOut()) {
             slowDriveTrain = true;
             slowDriveTrainOveride = true;
         } else slowDriveTrain = false;
+
+        // Driver 1 ability to slow down drivetrain
+        if (gamepad1.left_bumper && !init_AutoLoad && !init_Reset) {
+            slowDriveTrain2 = true;
+            slowDriveTrainOveride = true;
+        } else slowDriveTrain2 = false;
 
         // Change drive and turn speed coefficient
         if (!init_TeleOp && (slowDriveTrain || slowDriveTrain2) && slowDriveTrainOveride) {
@@ -292,7 +283,7 @@ public class TeleOpDM18_Janus extends OpMode {
         if (glyphMode) {
 
             // SETS DRIVER 2 to RELIC MODE
-            if (gamepad2.start && !isButtonPressed) {
+            if (gamepad2.start && gamepad2.y && !isButtonPressed) {
 
                 isButtonPressed = true;
 
@@ -310,6 +301,8 @@ public class TeleOpDM18_Janus extends OpMode {
                 // set DRIVE MODE to RELIC
                 relicMode = true;
                 glyphMode = false;
+
+                robot.relic.setRelicPivotGrabPos();
             }
 
             /*
@@ -679,7 +672,7 @@ public class TeleOpDM18_Janus extends OpMode {
         if (relicMode) {
 
             // SETS DRIVER 2 to GLYPH MODE
-            if (gamepad2.start && !isButtonPressed) {
+            if (gamepad2.start && gamepad2.b && !isButtonPressed) {
 
                 isButtonPressed = true;
 
@@ -696,6 +689,11 @@ public class TeleOpDM18_Janus extends OpMode {
                 robot.relic.relicMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 double relicPower = gamepad2.left_stick_y;
                 relicPower = smoothPowerCurve(deadzone(relicPower, 0.20));
+                // Driver 2 control to slow down extension speed for fine adjustments
+                if (gamepad2.right_bumper || gamepad2.left_bumper) {
+                    relicPower = relicPower / 2;
+                    }
+
                 if (robot.relic.relicMotor.getCurrentPosition() <= 0) {
                     relicPower = Range.clip(relicPower, -1, 1);
                 } else {
@@ -719,8 +717,12 @@ public class TeleOpDM18_Janus extends OpMode {
             // MANUAL MOVEMENT OF RELIC PIVOT
             if (gamepad2.right_stick_y > 0.2 || gamepad2.right_stick_y < -0.2) {
                 double speed = smoothPowerCurve(deadzone(-gamepad2.right_stick_y, 0.2));
+                speed = (speed / (1 + robot.relic.relicPivot.getPosition()));
+                if (gamepad2.left_bumper || gamepad2.right_bumper) {
+                    speed = speed / 3;
+                }
                 speed = Range.clip(speed, -1, 1);
-                robot.relic.rotate(speed);
+                robot.relic.rotate(-speed);
             }
 
             // Relic grip open
@@ -746,9 +748,10 @@ public class TeleOpDM18_Janus extends OpMode {
             }
 
             // Set relic pivot to grab position and open claw
-            if (gamepad2.x) {
+            if (gamepad2.x && robot.relic.isGripHoldingRelic()) {
+                robot.relic.setRelicPivotDropPos();
+            } else if (gamepad2.x && !robot.relic.isGripHoldingRelic()) {
                 robot.relic.setRelicPivotGrabPos();
-                robot.relic.setRelicGripOpen();
             }
 
         }
@@ -833,19 +836,10 @@ public class TeleOpDM18_Janus extends OpMode {
             timedStopIntake = false;
         }
 
-        // Intake IN - LEFT only
-        if (gamepad1.left_bumper && !init_AutoLoad && !init_Reset) {
-            robot.intake.setInLeftOnly();
-            squaringGlyph = true;
-            timedStopIntake = false;
-        }
-
-        // Intake IN - RIGHT only
+        // Intake IN - Start Squaring Glyph
         if (gamepad1.right_bumper && !init_AutoLoad && !init_Reset) {
-            robot.intake.setInRightOnly();
             squaringGlyph = true;
             timedStopIntake = false;
-
         }
 
         // Intake SET STOP after glyph detected
