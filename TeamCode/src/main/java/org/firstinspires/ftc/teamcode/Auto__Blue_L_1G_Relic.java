@@ -60,7 +60,7 @@ public class Auto__Blue_L_1G_Relic extends Auto_Blue_L_1G {
     @Override
     public void readyForRelic() {
         // Now turn and get ready to load relic
-        auto.gyroTurn(0.8, iAmBlue()? -60 : 60, auto.P_TURN_COEFF);
+        auto.gyroTurn(0.8, iAmBlue()? -135 : -60, auto.P_TURN_COEFF);
 
         // Set relic arm ready to grab relic
         robot.relic.setRelicPivotGrabPos();
@@ -70,4 +70,4 @@ public class Auto__Blue_L_1G_Relic extends Auto_Blue_L_1G {
 
     }
 
-}
+  }

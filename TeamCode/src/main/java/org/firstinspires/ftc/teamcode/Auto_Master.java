@@ -140,9 +140,8 @@ public abstract class Auto_Master extends LinearOpMode {
         robot.lift.resetFloorPos();
 
 
-        /*
-        JEWEL CODE
-        */
+     // Main robot auto sequence
+
         auto.processJewel();
 
         readVuMark();
