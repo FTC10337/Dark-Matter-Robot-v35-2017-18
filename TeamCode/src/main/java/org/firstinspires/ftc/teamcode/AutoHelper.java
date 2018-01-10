@@ -73,6 +73,8 @@ public class AutoHelper {
     // Variable for number of glyphs collected
 
     int glyphsCollected = 0;
+    int firstGlyphColor = 0; // 0 for gray 1 for brown
+    int secondGlyphColor = 0; // 0 for gray 1 for brown
 
     // Timer for detecting jewel color
     ElapsedTime             detectColorTimer        = new ElapsedTime();
@@ -198,7 +200,6 @@ public class AutoHelper {
         sleep(500);
 
         // Reset jewel arm
-        robot.jewelRotServo.setPosition(robot.JEWEL_ROT_HOME);
         armPos = robot.jewelServo.getPosition();
         armIncr = (robot.JEWEL_HOME - armPos)/50;
         while (armPos > robot.JEWEL_HOME) {
@@ -206,6 +207,7 @@ public class AutoHelper {
             robot.jewelServo.setPosition(armPos);
             sleep(20);
         }
+        robot.jewelRotServo.setPosition(robot.JEWEL_ROT_HOME);
 
         robot.jewelCS.enableLed(false);
 
@@ -852,22 +854,28 @@ public class AutoHelper {
 
         while (robot.intake.isMoving()) sleep(1);;
 
-        robot.lift.setLiftTop();
+        robot.lift.setLiftHeight(7.0);
+    }
 
-        while (robot.lift.distFromBottom() < 9.0) sleep(1);;
+    public void flpToLoadSecondGlyph() {
+
+        robot.lift.setLiftHeight(8.25);
+
+        while (robot.lift.distFromBottom() < 7.75) sleep(1);;
 
         robot.gripper.flip();
 
         while (robot.gripper.isFlipping()) sleep(1);;
 
         robot.lift.setLiftHeight(7.0);
+
     }
 
     public void autoLoadSecondGlyph() {
 
         robot.lift.setLiftBtm();
 
-        while (!robot.lift.reachedFloor()) sleep(1);;
+        while (!robot.lift.resetFloorPos()) sleep(1);;
 
         robot.gripper.setBtmClosed();
 
@@ -877,14 +885,22 @@ public class AutoHelper {
 
         while (robot.intake.isMoving()) sleep(1);;
 
-        robot.lift.setLiftHeight(8.0);
+        if ((firstGlyphColor + secondGlyphColor == 1) && firstGlyphColor == 1) {
+
+            robot.lift.setLiftHeight(8.25);
+
+            while (robot.lift.distFromBottom() < 7.75) sleep(1);;
+
+            robot.gripper.flip();
+
+        } else robot.lift.setLiftHeight(8.25);
     }
 
     public void squareGlyph(double inSpeed, double outSpeed, double timeOut) {
 
         runtime.reset();
 
-        while ((Math.abs(robot.intake.distLeft() - robot.intake.distRight()) > 1.0) || runtime.milliseconds() < timeOut) {
+        while ((Math.abs(robot.intake.distLeft() - robot.intake.distRight()) > 1.0) && runtime.seconds() < timeOut) {
             if (robot.intake.distLeft() > robot.intake.distRight()) {
                 robot.intake.intakeLeftMotor.setPower(inSpeed);
                 robot.intake.intakeRightMotor.setPower(outSpeed);

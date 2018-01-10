@@ -224,7 +224,7 @@ public class Intake {
      * Feed the intake in reverse
      */
     public void setOut() {
-        intakeLeftMotor.setPower(-1.0);
+        intakeLeftMotor.setPower(-0.60);
         intakeRightMotor.setPower(-1.0);
         isIntakeInOn = false;
         isIntakeOutOn = true;
@@ -300,6 +300,11 @@ public class Intake {
     public void setIntakeDistance() {
         if (glyphColorSensor.alpha() > 75.0) intakeDistance = 6.5;
         else intakeDistance = 8.25;
+    }
+
+    public int setGlyphColor() {
+        if (glyphColorSensor.alpha() > 75.0) return 0; // 0 for gray
+        else return 1; // 1 for brown
     }
 
     public void squareGlyph() {

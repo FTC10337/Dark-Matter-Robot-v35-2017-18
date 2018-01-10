@@ -29,30 +29,11 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.app.Activity;
-import android.graphics.Color;
-import android.view.View;
-
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-
 
 
 /**
@@ -139,6 +120,11 @@ public abstract class Auto_Master extends LinearOpMode {
 
         robot.lift.resetFloorPos();
 
+        robot.relic.setRelicPivotGrabPos();
+
+        sleep (200);
+
+        robot.relic.setRelicPivotKickstand();
 
      // Main robot auto sequence
 
@@ -150,7 +136,19 @@ public abstract class Auto_Master extends LinearOpMode {
 
         driveToPile();
 
-        loadExtraGlyphs();
+        loadFirstGlyph();
+
+        if (auto.glyphsCollected == 1){
+
+            collectSecondGlyph();
+
+            loadSecondGlyph();
+
+        } else {
+
+            auto.collectGlyph(0.3, 3, true, -90);
+            loadFirstGlyph();
+        }
 
         returnToBox();
 
@@ -180,16 +178,26 @@ public abstract class Auto_Master extends LinearOpMode {
 
     public abstract void park() throws InterruptedException;
 
-    public void driveToPile() {
+
+    public void driveToPile() throws InterruptedException {
     }
 
-    public void loadExtraGlyphs() throws InterruptedException {
+    public void loadFirstGlyph() throws InterruptedException {
+
+    }
+
+    public void collectSecondGlyph() throws InterruptedException{
+
+    }
+
+    public void loadSecondGlyph() throws InterruptedException {
+
     }
 
     public void returnToBox() throws InterruptedException {
     }
 
-    public void placeExtraGlyphs(){
+    public void placeExtraGlyphs() throws InterruptedException {
     }
 
     public abstract boolean iAmBlue();

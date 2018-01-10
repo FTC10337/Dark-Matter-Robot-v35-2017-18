@@ -55,6 +55,8 @@ public class Auto_Blue_R_1G extends Auto_Master {
 
         robot.intake.setOut();
         sleep(500);
+        robot.intake.setOpen();
+        robot.intake.setStop();
     }
 
 

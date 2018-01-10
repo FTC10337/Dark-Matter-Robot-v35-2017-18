@@ -141,6 +141,9 @@ public class TeleOpDM18_Janus extends OpMode {
     @Override
     public void start() {
 
+        robot.relic.setRelicPivotKickstand();
+        robot.relic.setRelicGripOpen();
+
     }
 
     /*
@@ -752,6 +755,7 @@ public class TeleOpDM18_Janus extends OpMode {
             if (gamepad2.y && !isButtonPressed) {
                 robot.relic.setRelicGripOpen();
                 robot.relic.setRelicPivotKickstand();
+                isButtonPressed = true;
             }
 
             // Set relic pivot to grab position and open claw
