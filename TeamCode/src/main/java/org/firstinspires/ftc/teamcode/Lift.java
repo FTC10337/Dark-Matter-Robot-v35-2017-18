@@ -173,23 +173,20 @@ public class Lift {
         if (liftMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
             // Only do this if we are just stopping
             stopTimer.reset();
-            liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             int curPos = liftMotor.getCurrentPosition();
+            liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             liftMotor.setTargetPosition(curPos);
+        }
+
+        if (!liftLimitT.getState() ) {
+                // We are against  limit switch so keep power low so we don't burn motors
+                liftMotor.setPower(0.2);
         }
 
         if ((stopTimer.seconds() > 20) || !liftLimitB.getState()) {
             liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             liftMotor.setPower(0.0);
         }
-        if (!liftLimitT.getState() ) {
-                // We are against  limit switch so keep power low so we don't burn motors
-                liftMotor.setPower(0.2);
-            } else {
-                // We slipped down so give it some juice
-                liftMotor.setPower(LIFT_POWER);
-            }
-
     }
 
     // Resets lift encoder to 0 using lift limit switch

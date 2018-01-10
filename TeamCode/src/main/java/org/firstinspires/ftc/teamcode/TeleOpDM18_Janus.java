@@ -76,6 +76,9 @@ public class TeleOpDM18_Janus extends OpMode {
 
     boolean glyphMode = true;
     boolean relicMode = false;
+    boolean firstModeChange = true;
+
+    boolean reverseDrive = false;
 
     boolean autoMove = false;
 
@@ -148,8 +151,7 @@ public class TeleOpDM18_Janus extends OpMode {
 
 
         telemetry.addData("Relic Mode: ", relicMode);
-        telemetry.addData("Start", gamepad2.start);
-
+        telemetry.addData("Pivot: ", robot.relic.relicPivot.getPosition());
         //telemetry.addData("alpha: " + robot.intake.glyphColorSensor.alpha(), "dist: " + robot.intake.intakeDistance);
         //telemetry.addData("LEFT_AVG: ", robot.intake.distSensor_leftAvg.average());
         //telemetry.addData("RIGHT_AVG: ", robot.intake.distSensor_rightAvg.average());
@@ -214,6 +216,10 @@ public class TeleOpDM18_Janus extends OpMode {
 
         double throttle = -gamepad1.left_stick_y;
         double direction = gamepad1.right_stick_x;
+
+        if (reverseDrive) {
+            throttle = -throttle;
+        }
 
         // Toggle drive train speed to SLOW when pusher is OUT or RELIC is extended
         if (!init_TeleOp && !init_Reset && robot.gripper.isPusherOut()) {
@@ -302,7 +308,10 @@ public class TeleOpDM18_Janus extends OpMode {
                 relicMode = true;
                 glyphMode = false;
 
-                robot.relic.setRelicPivotGrabPos();
+                if (firstModeChange) {
+                    robot.relic.setRelicGripOpen();
+                    firstModeChange = false;
+                }
             }
 
             /*
@@ -524,12 +533,13 @@ public class TeleOpDM18_Janus extends OpMode {
                     case RESET_2: // LIFT ABOVE INTAKE IF NOT ALREADY
                         telemetry.clearAll();
                         telemetry.addData("Reset: ", "2");
-                        if (!robot.intake.isMoving() && !robot.gripper.isMoving()) {
+                        if (!robot.intake.isMoving() && !robot.gripper.isReleasing()) {
                             if (robot.lift.distFromBottom() < 5.0) {
                                 robot.lift.setLiftHeight(5.5);
                                 nStates = States.RESET_2_1;
                             } else nStates = States.RESET_2_1;
                         }
+                        break;
 
                     case RESET_2_1: // PUSHER IN & OPEN GRIPPERS
                         telemetry.clearAll();
@@ -687,17 +697,17 @@ public class TeleOpDM18_Janus extends OpMode {
             if (gamepad2.left_stick_y > 0.2 || gamepad2.left_stick_y < -0.2) {
                 autoMove = false;
                 robot.relic.relicMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                double relicPower = gamepad2.left_stick_y;
+                double relicPower = -gamepad2.left_stick_y;
                 relicPower = smoothPowerCurve(deadzone(relicPower, 0.20));
                 // Driver 2 control to slow down extension speed for fine adjustments
                 if (gamepad2.right_bumper || gamepad2.left_bumper) {
                     relicPower = relicPower / 2;
                     }
 
-                if (robot.relic.relicMotor.getCurrentPosition() <= 0) {
+                if (robot.relic.relicMotor.getCurrentPosition() >= 0) {
                     relicPower = Range.clip(relicPower, -1, 1);
                 } else {
-                    relicPower = Range.clip(relicPower, -1, 0);
+                    relicPower = Range.clip(relicPower, 0, 1);
                 }
                 robot.relic.relicMotor.setPower(relicPower);
             } else if (!autoMove) robot.relic.stopRelicExtension();
@@ -719,31 +729,28 @@ public class TeleOpDM18_Janus extends OpMode {
                 double speed = smoothPowerCurve(deadzone(-gamepad2.right_stick_y, 0.2));
                 speed = (speed / (1 + robot.relic.relicPivot.getPosition()));
                 if (gamepad2.left_bumper || gamepad2.right_bumper) {
-                    speed = speed / 3;
+                    speed = speed / 8;
                 }
                 speed = Range.clip(speed, -1, 1);
                 robot.relic.rotate(-speed);
             }
 
-            // Relic grip open
-            if (gamepad2.right_trigger > 0.2) {
-                robot.relic.setRelicGripOpen();
-            }
-
             // Relic grip grab
-            if (gamepad2.left_trigger > 0.2) {
-                robot.relic.setRelicGripGrab();
+            if (gamepad2.a && !isButtonPressed) {
+                isButtonPressed = true;
+                if (robot.relic.isGripClosed()) {
+                    robot.relic.setRelicGripOpen();
+                } else { robot.relic.setRelicGripGrab(); }
             }
 
-            // RESET RELIC mechanism to home positions
-            if (gamepad2.b && gamepad2.y) {
-                robot.relic.setRelicExtensionIn();
+            // Relic arm to kickstand position
+            if (gamepad2.b) {
                 robot.relic.setRelicPivotKickstand();
                 autoMove = true;
-            }
+             }
 
-            // Set relic pivot to home position
-            if (gamepad2.a) {
+            if (gamepad2.y && !isButtonPressed) {
+                robot.relic.setRelicGripOpen();
                 robot.relic.setRelicPivotKickstand();
             }
 
@@ -889,6 +896,12 @@ public class TeleOpDM18_Janus extends OpMode {
         if (gamepad1.b && !init_AutoLoad && !init_Reset) {
             robot.intake.setOpen();
 
+        }
+        if (gamepad1.dpad_up) {
+            reverseDrive = false;
+        }
+        if (gamepad1.dpad_down) {
+            reverseDrive = true;
         }
 
     }

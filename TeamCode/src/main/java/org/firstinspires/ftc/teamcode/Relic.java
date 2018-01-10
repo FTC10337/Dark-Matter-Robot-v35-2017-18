@@ -22,14 +22,15 @@ public class Relic {
 
 
     // Servo Constants
-    static final double RELIC_GRIP_OPEN =  0.1;
+    static final double RELIC_GRIP_OPEN =  0.17;
     static final double RELIC_GRIP_CLOSE = 0.67;
-    static final double RELIC_GRIP_GRAB = 0.566;
+    static final double RELIC_GRIP_GRAB = 0.63;
     static final double RELIC_PIVOT_HOME = 1.0;
-    static final double RELIC_PIVOT_KICKSTAND = 0.864;
-    static final double RELIC_PIVOT_GRAB_POS = 0.245;
-    static final double RELIC_PIVOT_DROP_POS = 0.30;
+    static final double RELIC_PIVOT_KICKSTAND = 0.82;
     static final double RELIC_PIVOT_OUT = 0.0;
+
+    double relicPivotGrabPos = 0.25;
+    double relicPivotDropPos = 0.25;
 
     /* Lift constants */
     static final double     RELIC_POWER = 1.0;
@@ -41,8 +42,8 @@ public class Relic {
 
 
     // Lift variables
-    public final int RELIC_OUT_POS = (int) (-30*EXTENSION_COUNTS_PER_INCH);
-    public final int RELIC_IN_POS = (int) (-0.5*EXTENSION_COUNTS_PER_INCH);
+    public final int RELIC_OUT_POS = (int) (6000);
+    public final int RELIC_IN_POS = (int) (120);
 
     /**
      * Constructor
@@ -63,7 +64,7 @@ public class Relic {
     public void init (HardwareMap hw, String motor, String servoGrip, String servoPivot) {
         // Define and Initialize intake Motors
         relicMotor = hw.dcMotor.get(motor);
-        relicMotor.setDirection(DcMotor.Direction.FORWARD);
+        relicMotor.setDirection(DcMotor.Direction.REVERSE);
         relicMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Tune the motor PID parameters
@@ -123,10 +124,34 @@ public class Relic {
     public void setRelicPivotOut() { relicPivot.setPosition(RELIC_PIVOT_OUT);}
 
     // Set relic pivot to grab position
-    public void setRelicPivotGrabPos() { relicPivot.setPosition(RELIC_PIVOT_GRAB_POS);}
+    public void setRelicPivotGrabPos() {
+        if (getExtensionEncoder() >= 7000) {
+            relicPivotGrabPos = 0.273;
+        } else if (getExtensionEncoder() >= 6000) {
+            relicPivotGrabPos = 0.265;
+        } else if (getExtensionEncoder() >= 5000) {
+            relicPivotGrabPos = 0.257;
+        } else {
+            relicPivotGrabPos = 0.25;
+        }
+        relicPivot.setPosition(relicPivotGrabPos);
+    }
 
     // Set relic pivot to grab position
-    public void setRelicPivotDropPos() { relicPivot.setPosition(RELIC_PIVOT_DROP_POS);}
+    public void setRelicPivotDropPos() {
+        if (getExtensionEncoder() >= 7000) {
+            relicPivotDropPos = 0.287;
+        } else if (getExtensionEncoder() >= 6000) {
+            relicPivotDropPos = 0.276;
+        } else if (getExtensionEncoder() >= 5000) {
+            relicPivotDropPos = 0.265;
+        } else if (getExtensionEncoder() >= 2000) {
+            relicPivotDropPos = 0.259;
+        } else {
+            relicPivotDropPos = 0.245;
+        }
+        relicPivot.setPosition(relicPivotDropPos);
+    }
 
     // Set relic pivot to kickstand position
     public void setRelicPivotKickstand() { relicPivot.setPosition(RELIC_PIVOT_KICKSTAND);}
@@ -140,12 +165,21 @@ public class Relic {
         relicPivot.setPosition(target);
     }
 
-    public double getExtensionDistance() {
+    public double getExtensionDistanceInches() {
         return (relicMotor.getCurrentPosition()/EXTENSION_COUNTS_PER_INCH);
+    }
+
+    public double getExtensionEncoder() {
+        return (relicMotor.getCurrentPosition());
     }
 
     public boolean isGripHoldingRelic() {
         return (almostEqual(relicGrip.getPosition(), RELIC_GRIP_GRAB));
+    }
+
+    public boolean isGripClosed() {
+        if (relicGrip.getPosition() > 0.5) return true;
+        else return false;
     }
 
     public boolean almostEqual(double val1, double val2) {

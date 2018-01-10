@@ -19,11 +19,11 @@ public class Gripper {
     public Servo extendGrip = null;
 
     // Servo constants
-    public final static double B_GRIP_OPEN = 0.72;
-    public final static double B_GRIP_PARTIAL_OPEN = 0.80; // Changed to same as full close
+    public final static double B_GRIP_OPEN = 0.71;
+    public final static double B_GRIP_PARTIAL_OPEN = 0.71; // Changed to same as full close
     public final static double B_GRIP_CLOSED = 0.234;
-    public final static double P_GRIP_OPEN = 0.80;
-    public final static double P_GRIP_PARTIAL_OPEN = 0.80;
+    public final static double P_GRIP_OPEN = 0.71;
+    public final static double P_GRIP_PARTIAL_OPEN = 0.71;
     public final static double P_GRIP_CLOSED = 0.234;
 
     public final static double GRIP_ROTATE_NORMAL = 0.745;
@@ -31,7 +31,8 @@ public class Gripper {
     public final static double GRIP_EXTEND_HOME = 0.87;
     public final static double GRIP_EXTEND_OUT = 0.46;
     public final static double FLIP_TIME = 450;        // 1 second for servo to flip gripper
-    public final static double GRIP_TIME = 225;        // 1 second for grip to open or close
+    public final static double GRIP_TIME_GRAB = 225;        // 1 second for grip to open or close
+    public final static double GRIP_TIME_RELEASE = 350;
     public final static double EXTEND_TIME = 250;
 
     /* Gripper state variables */
@@ -298,24 +299,44 @@ public class Gripper {
     public boolean isFlipping() { return (flipTimer.milliseconds() < FLIP_TIME); }
 
     public boolean topIsMoving() {
-        return (topTimer.milliseconds() < GRIP_TIME);
+        return (topTimer.milliseconds() < GRIP_TIME_GRAB);
     }
 
-    public boolean btmIsMoving() {
-        return (btmTimer.milliseconds() < GRIP_TIME);
+    public boolean btmIsMoving() { return (btmTimer.milliseconds() < GRIP_TIME_GRAB);
     }
 
     public boolean purpleIsMoving() {
-        return (purpleTimer.milliseconds() < GRIP_TIME);
+        return (purpleTimer.milliseconds() < GRIP_TIME_GRAB);
     }
 
     public boolean blackIsMoving() {
-        return (blackTimer.milliseconds() < GRIP_TIME);
+        return (blackTimer.milliseconds() < GRIP_TIME_GRAB);
     }
 
     public boolean isMoving() {
         return (purpleIsMoving() || blackIsMoving() || btmIsMoving() || topIsMoving() || isFlipping());
     }
+
+
+    public boolean topIsReleasing() {
+        return (topTimer.milliseconds() < GRIP_TIME_RELEASE);
+    }
+
+    public boolean btmIsReleasing() { return (btmTimer.milliseconds() < GRIP_TIME_RELEASE);
+    }
+
+    public boolean purpleIsReleasing() {
+        return (purpleTimer.milliseconds() < GRIP_TIME_RELEASE);
+    }
+
+    public boolean blackIsReleasing() {
+        return (blackTimer.milliseconds() < GRIP_TIME_RELEASE);
+    }
+
+    public boolean isReleasing() {
+        return (purpleIsReleasing() || blackIsReleasing() || btmIsReleasing() || topIsReleasing() || isFlipping());
+    }
+
 
     public boolean isExtending() { return (extendTimer.milliseconds() < EXTEND_TIME);}
 

@@ -432,6 +432,8 @@ public class TeleOpDM18_MechManipulator extends OpMode {
             case 13: // Relic linear slide
                 telemetry.addData("RELIC", "MOTOR");
                 telemetry.addData("EncPos: ", robot.relic.relicMotor.getCurrentPosition());
+                telemetry.addData("Inches, ", robot.relic.getExtensionDistanceInches());
+
                 // Tune the motor PID parameters
                 if (robot.lift.liftMotor instanceof DcMotorEx) {
                     DcMotorEx theLift = (DcMotorEx) robot.lift.liftMotor;
@@ -443,10 +445,10 @@ public class TeleOpDM18_MechManipulator extends OpMode {
                 }
                 if (gamepad2.right_stick_y > 0.2 || gamepad2.right_stick_y < -0.2){
                     robot.relic.relicMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    double liftPower = -gamepad2.right_stick_y;
-                    liftPower = smoothPowerCurve(deadzone(liftPower, 0.10));
-                    Range.clip(liftPower, -1, 1);
-                    robot.relic.relicMotor.setPower(liftPower);
+                    double relicPower = -gamepad2.right_stick_y;
+                    relicPower = smoothPowerCurve(deadzone(relicPower, 0.10));
+                    relicPower = Range.clip(relicPower, -1, 1);
+                    robot.relic.relicMotor.setPower(relicPower);
                     autoLift = false;
                 } else  {
                     robot.relic.relicMotor.setPower(0.0);

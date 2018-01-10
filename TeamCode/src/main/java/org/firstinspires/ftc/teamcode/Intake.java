@@ -35,9 +35,9 @@ public class Intake {
 
     // Intake constants
     final static double INTAKE_LEFT_HOME = 0.0;
-    final static double INTAKE_LEFT_RELEASE = 0.208;
+    final static double INTAKE_LEFT_RELEASE = 0.338;
     final static double INTAKE_RIGHT_HOME = 1.0;
-    final static double INTAKE_RIGHT_RELEASE = 0.81;
+    final static double INTAKE_RIGHT_RELEASE = 0.58;
     final static double INTAKE_MOVE_TIME = 50;     // 0.5 seconds to open or close intake
     final static double MAX_IN_POWER = 1.0;
     final static double MIN_IN_POWER = 0.6;
