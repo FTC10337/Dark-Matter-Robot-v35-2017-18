@@ -34,6 +34,8 @@ public class AutoHelper {
 
     private ElapsedTime     runtime = new ElapsedTime();
 
+    public ElapsedTime      autoTime = new ElapsedTime();
+
     public static final String TAG = "Vuforia VuMark Sample";
 
     OpenGLMatrix lastLocation = null;
@@ -51,12 +53,13 @@ public class AutoHelper {
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
-    static final double     DRIVE_SPEED             = 0.8;     // Nominal speed for auto moves.
-    static final double     DRIVE_SPEED_SLOW        = 0.65;     // Slower speed where required
-    static final double     TURN_SPEED              = 0.8;     // Turn speed
+    static final double     DRIVE_SPEED             = 0.8;   // Nominal speed for auto moves.
+    static final double     DRIVE_SPEED_SLOW        = 0.5;  // Slower speed where required
+    static final double     TURN_SPEED              = 0.8;   // Turn speed
 
-    static final double     HEADING_THRESHOLD       = 2 ;      // As tight as we can make it with an integer gyro
-    static final double     P_TURN_COEFF            = 0.011;   // Larger is more responsive, but also less accurate
+    static final double     HEADING_THRESHOLD       = 2 ;    // As tight as we can make it with an integer gyro
+    static final double     P_TURN_COEFF            = 0.011; // Larger is more responsive, but also less accurate
+    static final double     P_TURN_COEFF_2          = 0.009; // For turns closer to 180 degrees. Less responsive, but more accurate to account for momentum coming out of long turns.
     static final double     P_DRIVE_COEFF_1         = 0.01;  // Larger is more responsive, but also less accurate
     static final double     P_DRIVE_COEFF_2         = 0.01;
 
@@ -166,8 +169,12 @@ public class AutoHelper {
 
         RobotLog.i("DM10337 - Gyro bias set to " + headingBias);
 
-        robot.lift.resetFloorPos();
 
+        // Start auto timer. Used to determine if there is enough time to place extra glyphs at end of auto sequence
+        autoTime.reset();
+
+        // Reset lift to bottom position and reset lift encoder to 0
+        robot.lift.resetFloorPos();
     }
 
 
@@ -609,7 +616,7 @@ public class AutoHelper {
      * Robot attempts to maintain heading throughout collection procress
      * Robot stops once glyph is retrieved
      **/
-    public void collectGlyph (double speed, int timeout, boolean useGyro, double heading) {
+    public void collectGlyph (double speed, int distance, int timeout, boolean useGyro, double heading) {
 
         robot.intake.setClosed();
         robot.intake.setIn();
@@ -621,6 +628,31 @@ public class AutoHelper {
         final double MINSPEED = 0.30;           // Start at this power
         final double SPEEDINCR = 0.015;         // And increment by this much each cycle
         double curSpeed;                        // Keep track of speed as we ramp
+
+        int newLFTarget = robot.leftDrive1.getCurrentPosition() + (int)(distance * robot.COUNTS_PER_INCH);
+        int newLRTarget = robot.leftDrive2.getCurrentPosition() + (int)(distance * robot.COUNTS_PER_INCH);
+        int newRFTarget = robot.rightDrive1.getCurrentPosition() + (int)(distance * robot.COUNTS_PER_INCH);
+        int newRRTarget = robot.rightDrive2.getCurrentPosition() + (int)(distance * robot.COUNTS_PER_INCH);
+
+        while(robot.leftDrive1.getTargetPosition() != newLFTarget){
+            robot.leftDrive1.setTargetPosition(newLFTarget);
+            sleep(1);
+        }
+        while(robot.rightDrive1.getTargetPosition() != newRFTarget){
+            robot.rightDrive1.setTargetPosition(newRFTarget);
+            sleep(1);
+        }
+        while(robot.leftDrive2.getTargetPosition() != newLRTarget){
+            robot.leftDrive2.setTargetPosition(newLRTarget);
+            sleep(1);
+        }
+        while(robot.rightDrive2.getTargetPosition() != newRRTarget){
+            robot.rightDrive2.setTargetPosition(newRRTarget);
+            sleep(1);
+        }
+
+        // Turn On motors to RUN_TO_POSITION
+        robot.setDriveMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // reset the timeout time and start motion.
         runtime.reset();
@@ -634,11 +666,17 @@ public class AutoHelper {
         robot.leftDrive2.setPower(Math.abs(curSpeed));
         robot.rightDrive2.setPower(Math.abs(curSpeed));
 
-        // keep looping while we are still active, and there is time left, until distance sensor detects glyph in intake
 
+        // keep looping while we are still active, and there is time left, until distance sensor detects glyph in intake
         boolean stop = false;
 
-        while (opMode.opModeIsActive() && (runtime.seconds() < timeout) && !stop) {
+        while (opMode.opModeIsActive() &&
+                (runtime.seconds() < timeout) &&
+                robot.leftDrive1.isBusy() &&
+                robot.leftDrive2.isBusy() &&
+                robot.rightDrive1.isBusy() &&
+                robot.rightDrive2.isBusy() &&
+                !stop) {
 
             if ((robot.intake.distRight() < 12.0) || (robot.intake.distLeft() < 12.0)) {
                 stop = true;
@@ -691,17 +729,28 @@ public class AutoHelper {
             sleep(1);;
         }
 
+        RobotLog.i("DM10337- Collect Glyph done" +
+                "  lftarget: " +newLFTarget + "  lfactual:" + robot.leftDrive1.getCurrentPosition() +
+                "  lrtarget: " +newLRTarget + "  lractual:" + robot.leftDrive2.getCurrentPosition() +
+                "  rftarget: " +newRFTarget + "  rfactual:" + robot.rightDrive1.getCurrentPosition() +
+                "  rrtarget: " +newRRTarget + "  rractual:" + robot.rightDrive2.getCurrentPosition() +
+                "  heading:" + readGyro());
+
+        // Stop all motion;
         robot.intake.intakeRightMotor.setPower(0.0);
         robot.intake.intakeLeftMotor.setPower(0.0);
-        robot.leftDrive1.setPower(0.0);
-        robot.leftDrive2.setPower(0.0);
-        robot.rightDrive1.setPower(0.0);
-        robot.rightDrive2.setPower(0.0);
+        robot.leftDrive1.setPower(0);
+        robot.rightDrive1.setPower(0);
+        robot.leftDrive2.setPower(0);
+        robot.rightDrive2.setPower(0);
+
+        // Turn off RUN_TO_POSITION
+        robot.setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
     /**
-     * Robot returns to designatied encoder position
+     * Robot returns to designated encoder position
      **/
 
     public int determineDistance(int left1Pos, int left2Pos, int right1Pos, int right2Pos) {

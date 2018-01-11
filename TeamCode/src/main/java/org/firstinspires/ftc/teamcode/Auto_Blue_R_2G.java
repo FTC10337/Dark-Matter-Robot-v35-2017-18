@@ -20,38 +20,38 @@ public class Auto_Blue_R_2G extends Auto_Master {
         if (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN) {
             // Drive forward to lineup with center cryptoglyph
             if (iAmBlue()) {
-                auto.encoderDrive(0.5, 33.0, 5.0, true, 0.0);
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, 33.0, 5.0, true, 0.0);
             } else {
-                auto.encoderDrive(0.5, -36.0, 5.0, true, 0.0);
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, -36.0, 5.0, true, 0.0);
             }
 
         }
         if (vuMark == RelicRecoveryVuMark.RIGHT) {
             // Drive forward to lineup with center cryptoglyph
             if (iAmBlue()) {
-                auto.encoderDrive(0.5, 33.0 + 7.5, 5.0, true, 0.0);
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, 33.0 + 7.5, 5.0, true, 0.0);
             } else {
-                auto.encoderDrive(0.5, -36.0 + 7.5, 5.0, true, 0.0);
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, -36.0 + 7.5, 5.0, true, 0.0);
             }
 
         }
         if (vuMark == RelicRecoveryVuMark.LEFT) {
             // Drive forward to lineup with center cryptoglyph
             if (iAmBlue()) {
-                auto.encoderDrive(0.5, 33.0 - 7.5, 5.0, true, 0.0);
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, 33.0 - 7.5, 5.0, true, 0.0);
             } else {
-                auto.encoderDrive(0.5, -36.0 - 7.5, 5.0, true, 0.0);
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, -36.0 - 7.5, 5.0, true, 0.0);
             }
 
         }
 
         // Turn toward center cryptoglyph
-        auto.gyroTurn(0.8, 90, auto.P_TURN_COEFF);
+        auto.gyroTurn(AutoHelper.TURN_SPEED, 90, AutoHelper.P_TURN_COEFF);
         // Outake glyph
         robot.gripper.setBothOpen();
         sleep(250);
         // Drive closer to center cryptoglyph
-        auto.encoderDrive(0.5, 7.0, 3.0, true, 90);
+        auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, 7.0, 3.0, true, 90);
 
         robot.intake.setOut();
         sleep(500);
@@ -67,9 +67,9 @@ public class Auto_Blue_R_2G extends Auto_Master {
 
     @Override
     public void driveToPile() throws InterruptedException {
-        auto.encoderDrive(0.6, -18.0, 3.0, true, 90);
+        auto.encoderDrive(AutoHelper.DRIVE_SPEED, -18.0, 3.0, true, 90);
 
-        auto.gyroTurn(0.8,-90, auto.P_TURN_COEFF);
+        auto.gyroTurn(AutoHelper.TURN_SPEED,-90, AutoHelper.P_TURN_COEFF);
 
         // Record drive motor encoder positions. Use these values to return to this position after collecting glyphs
         left1Pos = robot.leftDrive1.getCurrentPosition();
@@ -78,7 +78,7 @@ public class Auto_Blue_R_2G extends Auto_Master {
         right2Pos = robot.rightDrive2.getCurrentPosition();
 
         // Drive forward to collect glyph
-        auto.collectGlyph(0.3, 3, true, -90);
+        auto.collectGlyph(0.3, 10,3, true, -90);
 
     }
 
@@ -119,12 +119,12 @@ public class Auto_Blue_R_2G extends Auto_Master {
     public void returnToBox() throws InterruptedException {
         int inches = auto.determineDistance(left1Pos, left2Pos, right1Pos, right2Pos);
 
-        auto.encoderDrive(0.8, -inches, 5, true, -90);
+        auto.encoderDrive(AutoHelper.DRIVE_SPEED, -inches, 5, true, -90);
 
         // Turn toward cryptobox
-        auto.gyroTurn(0.8, 90, auto.P_TURN_COEFF);
+        auto.gyroTurn(AutoHelper.TURN_SPEED, 90, AutoHelper.P_TURN_COEFF);
 
-        auto.encoderDrive(0.8, 15, 5, true, 90);
+        auto.encoderDrive(AutoHelper.DRIVE_SPEED, 15, 5, true, 90);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class Auto_Blue_R_2G extends Auto_Master {
     @Override
     public void park() throws InterruptedException {
         // Drive back, but stay in safe zone
-        auto.encoderDrive(0.6, -4.0, 3.0, true, 90);
+        auto.encoderDrive(AutoHelper.DRIVE_SPEED, -4.0, 3.0, true, 90);
 
         robot.intake.setStop();
     }

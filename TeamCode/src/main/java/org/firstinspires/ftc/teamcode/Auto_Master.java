@@ -63,6 +63,8 @@ public abstract class Auto_Master extends LinearOpMode {
 
     RelicRecoveryVuMark vuMark;
 
+    int angleAdjust = 25;
+
     int left1Pos;
     int left2Pos;
     int right1Pos;
@@ -146,7 +148,7 @@ public abstract class Auto_Master extends LinearOpMode {
 
         } else {
 
-            auto.collectGlyph(0.3, 3, true, -90);
+            auto.collectGlyph(0.3, 10, 3, true, -90);
             loadFirstGlyph();
         }
 

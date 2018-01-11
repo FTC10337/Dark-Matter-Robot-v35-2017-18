@@ -220,7 +220,7 @@ public class Auto_Blue_R_2G_Old extends LinearOpMode {
         robot.lift.setLiftMid();
 
         // Drive forward to collect glyph
-        auto.collectGlyph(0.3, 3, true, -90);
+        auto.collectGlyph(0.3, 18,3, true, -90);
 
     }
 

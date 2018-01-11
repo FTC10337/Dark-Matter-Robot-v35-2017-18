@@ -78,7 +78,7 @@ public class Auto_Blue_R_3G_K extends Auto_Master {
         right2Pos = robot.rightDrive2.getCurrentPosition();
 
         // Drive forward to collect glyph
-        auto.collectGlyph(0.3, 3, true, -90);
+        auto.collectGlyph(0.3, 10,3, true, -90);
 
     }
 
@@ -121,7 +121,7 @@ public class Auto_Blue_R_3G_K extends Auto_Master {
 
         robot.lift.setLiftHeight(1.0);
 
-        auto.collectGlyph(0.3, 3, true, -90);
+        auto.collectGlyph(0.3, 6,3, true, -90);
     }
 
     @Override
@@ -150,6 +150,11 @@ public class Auto_Blue_R_3G_K extends Auto_Master {
             // never detected glyph in intake. Back off and set intake out to clear any potential jams.
             robot.intake.setOut();
             robot.intake.setStop();
+            robot.lift.setLiftHeight(8.0);
+            while(robot.lift.distFromBottom() < 7.5) idle();
+            robot.gripper.flip();
+            while(robot.gripper.isMoving()) idle();
+            robot.lift.setLiftBtm();
         }
     }
 
