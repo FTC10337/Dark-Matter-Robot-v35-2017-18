@@ -430,13 +430,13 @@ public class TeleOpDM18_Janus extends OpMode {
             }
 
             // FLIP GRIPPER
-            if (flip && autoMove && (robot.lift.distFromBottom() >= 5.0) && !init_AutoLoad) {
+            if (flip && autoMove && (robot.lift.distFromBottom() >= 7.75) && !init_AutoLoad) {
                 // Flip after determining gripper is high enough
                 robot.gripper.flip();
                 flip = false;
-            } else if ((flip && autoMove && robot.lift.distFromBottom() < 5.0) && !init_AutoLoad) {
+            } else if ((flip && autoMove && robot.lift.distFromBottom() < 7.75) && !init_AutoLoad) {
                 // Move gripper to top position before flipping if in another lift position
-                robot.lift.setLiftHeight(5.5);
+                robot.lift.setLiftHeight(8.25);
             }
 
             // PUSHER IN/OUT

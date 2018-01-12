@@ -85,7 +85,7 @@ public class Auto_Blue_R_2G extends Auto_Master {
 
     public void loadFirstGlyph() throws InterruptedException {
         // Check if glyph is in intake
-        if (robot.intake.distLeft() < 12.0 || robot.intake.distRight() < 12.0) {
+        if (robot.intake.distLeft() < 13.0 || robot.intake.distRight() < 13.0) {
 
             // square glyph
             auto.squareGlyph(1.0, -0.15, 2);

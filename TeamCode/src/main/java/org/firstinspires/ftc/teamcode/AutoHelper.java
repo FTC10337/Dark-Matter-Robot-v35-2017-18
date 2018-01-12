@@ -53,8 +53,8 @@ public class AutoHelper {
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
-    static final double     DRIVE_SPEED             = 0.8;   // Nominal speed for auto moves.
-    static final double     DRIVE_SPEED_SLOW        = 0.5;  // Slower speed where required
+    static final double     DRIVE_SPEED             = 1.0;   // Nominal speed for auto moves.
+    static final double     DRIVE_SPEED_SLOW        = 0.8;  // Slower speed where required
     static final double     TURN_SPEED              = 0.8;   // Turn speed
 
     static final double     HEADING_THRESHOLD       = 2 ;    // As tight as we can make it with an integer gyro
@@ -906,7 +906,7 @@ public class AutoHelper {
         robot.lift.setLiftHeight(7.0);
     }
 
-    public void flpToLoadSecondGlyph() {
+    public void flipToLoadSecondGlyph() throws InterruptedException {
 
         robot.lift.setLiftHeight(8.25);
 
@@ -914,9 +914,7 @@ public class AutoHelper {
 
         robot.gripper.flip();
 
-        while (robot.gripper.isFlipping()) sleep(1);;
-
-        robot.lift.setLiftHeight(7.0);
+        while (robot.gripper.isFlipping()) sleep (1);
 
     }
 
@@ -941,6 +939,7 @@ public class AutoHelper {
             while (robot.lift.distFromBottom() < 7.75) sleep(1);;
 
             robot.gripper.flip();
+
 
         } else robot.lift.setLiftHeight(8.25);
     }

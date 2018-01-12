@@ -117,7 +117,7 @@ public class Auto_Blue_R_3G_K extends Auto_Master {
     @Override
     public void collectSecondGlyph() throws InterruptedException {
 
-        auto.flpToLoadSecondGlyph();
+        auto.flipToLoadSecondGlyph();
 
         robot.lift.setLiftHeight(1.0);
 
@@ -126,7 +126,7 @@ public class Auto_Blue_R_3G_K extends Auto_Master {
 
     @Override
     public void loadSecondGlyph() throws InterruptedException {
-        if (robot.intake.distLeft() < 10.0 || robot.intake.distRight() < 10.0) {
+        if (robot.intake.distLeft() < 13.0 || robot.intake.distRight() < 13.0) {
 
             // square glyph
             auto.squareGlyph(1.0, -0.15, 2);

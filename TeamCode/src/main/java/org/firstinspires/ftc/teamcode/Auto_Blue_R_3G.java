@@ -117,7 +117,7 @@ public class Auto_Blue_R_3G extends Auto_Master {
     @Override
     public void collectSecondGlyph() throws InterruptedException {
 
-        auto.flpToLoadSecondGlyph();
+        auto.flipToLoadSecondGlyph();
 
         robot.lift.setLiftHeight(1.0);
 
@@ -126,7 +126,7 @@ public class Auto_Blue_R_3G extends Auto_Master {
 
     @Override
     public void loadSecondGlyph() throws InterruptedException {
-        if (robot.intake.distLeft() < 10.0 || robot.intake.distRight() < 10.0) {
+        if (robot.intake.distLeft() < 13.0 || robot.intake.distRight() < 13.0) {
 
             // square glyph
             auto.squareGlyph(1.0, -0.15, 2);
@@ -149,11 +149,13 @@ public class Auto_Blue_R_3G extends Auto_Master {
         } else {
             // never detected glyph in intake. Back off and set intake out to clear any potential jams.
             robot.intake.setOut();
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -6.0, 2.0, true, -90);
             robot.intake.setStop();
-            robot.lift.setLiftHeight(8.0);
+            robot.intake.setOpen();
+            robot.lift.setLiftHeight(8.25);
             while(robot.lift.distFromBottom() < 7.5) idle();
             robot.gripper.flip();
-            while(robot.gripper.isMoving()) idle();
+            while(robot.gripper.isMoving()) sleep (1);
             robot.lift.setLiftBtm();
         }
     }

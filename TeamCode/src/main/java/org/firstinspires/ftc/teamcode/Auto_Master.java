@@ -148,7 +148,7 @@ public abstract class Auto_Master extends LinearOpMode {
 
         } else {
 
-            auto.collectGlyph(0.3, 10, 3, true, -90);
+            auto.collectGlyph(AutoHelper.DRIVE_SPEED, 10, 3, true, -90);
             loadFirstGlyph();
         }
 

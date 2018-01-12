@@ -57,7 +57,7 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
         robot.gripper.setBothOpen();
         sleep(250);
         // Drive closer to center cryptoglyph
-        auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, 7.0, 3.0, true, 90);
+        auto.encoderDrive(AutoHelper.DRIVE_SPEED, 7.0, 3.0, true, 90);
 
         robot.intake.setOut();
         sleep(500);
@@ -84,24 +84,24 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
         right2Pos = robot.rightDrive2.getCurrentPosition();
 
         // Drive forward to collect glyph
-        auto.collectGlyph(0.3, 18,3, true, -90);
+        auto.collectGlyph(AutoHelper.DRIVE_SPEED, 18,3, true, -90);
 
     }
 
     @Override
     public void loadFirstGlyph() throws InterruptedException {
         // Check if glyph is in intake
-        if (robot.intake.distLeft() < 12.0 || robot.intake.distRight() < 12.0) {
+        if (robot.intake.distLeft() < 13.0 || robot.intake.distRight() < 13.0) {
 
             // square glyph
             auto.squareGlyph(1.0, -0.15, 2);
 
-            // intake on to hold glyph while driving back
-            robot.intake.intakeLeftMotor.setPower(0.30);
-            robot.intake.intakeRightMotor.setPower(0.30);
 
-            // drive backwards to avoid interference from other glyphs during load
-            auto.encoderDrive(0.3, -3.0, 2.0, true, -90);
+            // intake on to hold glyph while driving back
+            robot.intake.intakeLeftMotor.setPower(0.70);
+            robot.intake.intakeRightMotor.setPower(0.70);
+
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -6.0, 3.0, true, -90);
 
             robot.intake.setStop();
 
@@ -115,7 +115,7 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
         } else {
             // never detected glyph in intake. Back off and set intake out to clear any potential jams.
             robot.intake.setOut();
-            auto.encoderDrive(0.3, -7.0, 3.0, true, -90);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -6.0, 3.0, true, -90);
             robot.intake.setStop();
         }
     }
@@ -123,25 +123,25 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
     @Override
     public void collectSecondGlyph() throws InterruptedException {
 
-        auto.flpToLoadSecondGlyph();
+        auto.flipToLoadSecondGlyph();
 
         robot.lift.setLiftHeight(1.0);
 
-        auto.collectGlyph(0.3, 12,3, true, -90);
+        auto.collectGlyph(AutoHelper.DRIVE_SPEED, 12,3, true, -90);
     }
 
     @Override
     public void loadSecondGlyph() throws InterruptedException {
-        if (robot.intake.distLeft() < 10.0 || robot.intake.distRight() < 10.0) {
+        if (robot.intake.distLeft() < 13.0 || robot.intake.distRight() < 13.0) {
 
             // square glyph
             auto.squareGlyph(1.0, -0.15, 2);
 
             // intake on to hold glyph while driving back
-            robot.intake.intakeLeftMotor.setPower(0.30);
-            robot.intake.intakeRightMotor.setPower(0.30);
+            robot.intake.intakeLeftMotor.setPower(0.70);
+            robot.intake.intakeRightMotor.setPower(0.70);
             // drive backwards to avoid interference from other glyphs during load
-            auto.encoderDrive(0.3, -3.0, 2.0, true, -90);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -6.0, 2.0, true, -90);
 
             robot.intake.setStop();
 
@@ -155,11 +155,13 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
         } else {
             // never detected glyph in intake. Back off and set intake out to clear any potential jams.
             robot.intake.setOut();
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -6.0, 2.0, true, -90);
             robot.intake.setStop();
-            robot.lift.setLiftHeight(8.0);
+            robot.intake.setOpen();
+            robot.lift.setLiftHeight(8.25);
             while(robot.lift.distFromBottom() < 7.5) idle();
             robot.gripper.flip();
-            while(robot.gripper.isMoving()) idle();
+            while(robot.gripper.isMoving()) sleep (1);
             robot.lift.setLiftBtm();
         }
     }
@@ -173,19 +175,19 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
         // Turn toward cryptobox
         auto.gyroTurn(AutoHelper.TURN_SPEED, 90, AutoHelper.P_TURN_COEFF);
 
-        auto.encoderDrive(AutoHelper.DRIVE_SPEED, 12, 5, true, 90);
+        auto.encoderDrive(AutoHelper.DRIVE_SPEED, 11.5, 5, true, 90);
     }
 
     @Override
     public void placeExtraGlyphs() throws InterruptedException {
 
         // Check to see if there is enough time in auto to push glyphs in. This prevents being in contact with previous scored glyph at end of auto.
-        if (auto.glyphsCollected > 0 && auto.autoTime.seconds() < 40){
+        if (auto.glyphsCollected > 0 && auto.autoTime.seconds() < 28){
 
             robot.lift.setLiftBtm();
 
             // Turn to place glyph on ground
-            auto.gyroTurn(AutoHelper.TURN_SPEED, 90 + angleAdjust, AutoHelper.P_TURN_COEFF);
+            auto.gyroTurn(1.0, 90 + angleAdjust, AutoHelper.P_TURN_COEFF);
 
             // Extend gripper out
             robot.gripper.setExtendOut();
@@ -196,8 +198,8 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
             robot.gripper.setBothOpen();
 
             // Turn and drive forward to ensure glyphs have been pushed into crytobox
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, 5, 2, false, 90 + angleAdjust);
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, -5, 2, false, 90 + angleAdjust);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, 3, 2, false, 90 + angleAdjust);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -3, 2, false, 90 + angleAdjust);
 
         }
    }
@@ -207,5 +209,8 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
       // Do Nothing
           }
 
-
+    @Override
+    public void readyForRelic() {
+        // Do nothing
+    }
 }
