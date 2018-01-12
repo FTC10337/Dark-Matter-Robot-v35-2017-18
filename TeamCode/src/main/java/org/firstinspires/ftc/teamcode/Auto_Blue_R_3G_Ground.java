@@ -94,14 +94,14 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
         if (robot.intake.distLeft() < 13.0 || robot.intake.distRight() < 13.0) {
 
             // square glyph
-            auto.squareGlyph(1.0, -0.15, 2);
+            auto.squareGlyph(1.0, -0.25, 2);
 
 
             // intake on to hold glyph while driving back
             robot.intake.intakeLeftMotor.setPower(0.70);
             robot.intake.intakeRightMotor.setPower(0.70);
 
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -6.0, 3.0, true, -90);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -3.0, 3.0, true, -90);
 
             robot.intake.setStop();
 
@@ -115,7 +115,7 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
         } else {
             // never detected glyph in intake. Back off and set intake out to clear any potential jams.
             robot.intake.setOut();
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -6.0, 3.0, true, -90);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -3.0, 3.0, true, -90);
             robot.intake.setStop();
         }
     }
@@ -141,7 +141,7 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
             robot.intake.intakeLeftMotor.setPower(0.70);
             robot.intake.intakeRightMotor.setPower(0.70);
             // drive backwards to avoid interference from other glyphs during load
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -6.0, 2.0, true, -90);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -3.0, 2.0, true, -90);
 
             robot.intake.setStop();
 
@@ -155,7 +155,7 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
         } else {
             // never detected glyph in intake. Back off and set intake out to clear any potential jams.
             robot.intake.setOut();
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -6.0, 2.0, true, -90);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -3.0, 2.0, true, -90);
             robot.intake.setStop();
             robot.intake.setOpen();
             robot.lift.setLiftHeight(8.25);
