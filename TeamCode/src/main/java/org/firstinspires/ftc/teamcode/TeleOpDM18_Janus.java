@@ -703,8 +703,8 @@ public class TeleOpDM18_Janus extends OpMode {
                 double relicPower = -gamepad2.left_stick_y;
                 relicPower = smoothPowerCurve(deadzone(relicPower, 0.20));
                 // Driver 2 control to slow down extension speed for fine adjustments
-                if (gamepad2.right_bumper || gamepad2.left_bumper) {
-                    relicPower = relicPower / 2;
+                if (!gamepad2.right_bumper && !gamepad2.left_bumper) {
+                    relicPower = relicPower * 0.75;
                     }
 
                 if (robot.relic.relicMotor.getCurrentPosition() >= 0) {

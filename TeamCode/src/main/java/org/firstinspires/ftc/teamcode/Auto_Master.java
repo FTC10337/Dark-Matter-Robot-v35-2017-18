@@ -147,8 +147,7 @@ public abstract class Auto_Master extends LinearOpMode {
             loadSecondGlyph();
 
         } else {
-
-            auto.collectGlyph(AutoHelper.DRIVE_SPEED, 10, 3, true, -90);
+            attemptGlyphCollect();
             loadFirstGlyph();
         }
 
@@ -185,7 +184,9 @@ public abstract class Auto_Master extends LinearOpMode {
     }
 
     public void loadFirstGlyph() throws InterruptedException {
+    }
 
+    public void attemptGlyphCollect() throws InterruptedException {
     }
 
     public void collectSecondGlyph() throws InterruptedException{
@@ -202,14 +203,11 @@ public abstract class Auto_Master extends LinearOpMode {
     public void placeExtraGlyphs() throws InterruptedException {
     }
 
+    public void readyForRelic() {
+    }
+
     public abstract boolean iAmBlue();
 
-    public void readyForRelic() {
-        robot.relic.setRelicPivotGrabPos();
-        sleep(500);
-        robot.relic.setRelicPivotKickstand();
-        robot.relic.setRelicGripOpen();
-    }
 
 
 }

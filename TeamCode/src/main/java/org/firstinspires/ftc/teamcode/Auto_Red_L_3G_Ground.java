@@ -52,16 +52,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Blue L 1G Relic", group="DM18")
+@Autonomous(name="Auto Red L 3G Ground", group="DM18")
 //@Disabled
-public class Auto__Blue_L_1G_Relic extends Auto_Blue_L_1G {
+public class Auto_Red_L_3G_Ground extends Auto_Blue_R_3G_Ground {
 
 
-    @Override
-    public void readyForRelic() {
-        // Now turn and get ready to load relic
-        auto.gyroTurn(0.8, iAmBlue()? -135 : -65, auto.P_TURN_COEFF);
 
+    public boolean iAmBlue() {
+        return false;
     }
-
-  }
+}

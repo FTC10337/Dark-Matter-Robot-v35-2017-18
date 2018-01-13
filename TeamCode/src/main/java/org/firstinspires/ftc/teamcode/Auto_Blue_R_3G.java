@@ -149,7 +149,7 @@ public class Auto_Blue_R_3G extends Auto_Master {
         } else {
             // never detected glyph in intake. Back off and set intake out to clear any potential jams.
             robot.intake.setOut();
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -6.0, 2.0, true, -90);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -7.0, 2.0, true, -90);
             robot.intake.setStop();
             robot.intake.setOpen();
             robot.lift.setLiftHeight(8.25);
