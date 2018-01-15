@@ -54,7 +54,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name="Auto Red R 1G Relic", group="DM18")
 //@Disabled
-public class Auto__Red_R_1G_Relic extends Auto__Blue_L_1G_Relic {
+public class Auto__Red_R_1G_Relic extends Auto_Blue_L_1G_Relic {
 
 
 

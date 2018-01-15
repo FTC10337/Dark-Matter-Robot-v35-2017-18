@@ -188,7 +188,7 @@ public class AutoHelper {
         }
 
         robot.jewelCS.enableLed(true);
-        sleep(500);
+        sleep(200);
 
         // Check jewel color
         int jewelColor = jewelHue();
@@ -204,11 +204,11 @@ public class AutoHelper {
             detectedJewelColor = true;
         }
 
-        sleep(500);
+        sleep(150);
 
         // Reset jewel arm
         armPos = robot.jewelServo.getPosition();
-        armIncr = (robot.JEWEL_HOME - armPos)/50;
+        armIncr = (robot.JEWEL_HOME - armPos)/10;
         while (armPos > robot.JEWEL_HOME) {
             armPos += armIncr;
             robot.jewelServo.setPosition(armPos);
@@ -618,6 +618,7 @@ public class AutoHelper {
      **/
     public void collectGlyph (double speed, int distance, int timeout, boolean useGyro, double heading) {
 
+        robot.lift.setLiftHeight(5.0);
         robot.intake.setClosed();
         robot.intake.setIn();
 
@@ -914,7 +915,7 @@ public class AutoHelper {
 
         robot.gripper.flip();
 
-        while (robot.gripper.isFlipping()) sleep (1);
+        sleep ((long) robot.gripper.FLIP_TIME);
 
     }
 

@@ -63,7 +63,7 @@ public abstract class Auto_Master extends LinearOpMode {
 
     RelicRecoveryVuMark vuMark;
 
-    int angleAdjust = 25;
+    int angleAdjust = 0;
 
     int left1Pos;
     int left2Pos;

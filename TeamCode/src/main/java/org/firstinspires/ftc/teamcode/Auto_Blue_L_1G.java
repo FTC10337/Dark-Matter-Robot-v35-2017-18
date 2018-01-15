@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
@@ -11,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  */
 
 @Autonomous(name="Auto Blue L 1G", group="DM18")
-//@Disabled
+@Disabled
 public class Auto_Blue_L_1G extends Auto_Master {
     @Override
     public void driveToBox() throws InterruptedException {
@@ -28,6 +29,9 @@ public class Auto_Blue_L_1G extends Auto_Master {
 
 
         if (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN) {
+
+            angleAdjust = 0;
+
             // Drive forward to lineup with center cryptoglyph
             if (iAmBlue()) {
                 auto.encoderDrive(0.5, 11.0, 5.0, true, -90.0);
@@ -37,6 +41,9 @@ public class Auto_Blue_L_1G extends Auto_Master {
 
         }
         if (vuMark == RelicRecoveryVuMark.RIGHT) {
+
+            angleAdjust = 0;
+
             // Drive forward to lineup with center cryptoglyph
             if (iAmBlue()) {
                 auto.encoderDrive(0.5, 11.0 + 7.5, 5.0, true, -90.0);
@@ -46,6 +53,9 @@ public class Auto_Blue_L_1G extends Auto_Master {
 
         }
         if (vuMark == RelicRecoveryVuMark.LEFT) {
+
+            angleAdjust = 0;
+
             // Drive forward to lineup with center cryptoglyph
             if (iAmBlue()) {
                 auto.encoderDrive(0.5, 11.0 - 7.5, 5.0, true, -90.0);

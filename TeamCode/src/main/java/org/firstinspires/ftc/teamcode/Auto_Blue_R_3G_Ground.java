@@ -19,34 +19,34 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
 
         if (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN) {
 
-            angleAdjust = -angleAdjust;
+            angleAdjust = -25;
             // Drive forward to lineup with center cryptoglyph
             if (iAmBlue()) {
                 auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, 33.0, 5.0, true, 0.0);
             } else {
-                auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, -36.0, 5.0, true, 0.0);
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, -35.0, 5.0, true, 0.0);
             }
 
         }
         if (vuMark == RelicRecoveryVuMark.RIGHT) {
 
+            angleAdjust = 30;
             // Drive forward to lineup with center cryptoglyph
             if (iAmBlue()) {
                 auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, 33.0 + 7.5, 5.0, true, 0.0);
             } else {
-                auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, -36.0 + 7.5, 5.0, true, 0.0);
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, -35.0 + 7.5, 5.0, true, 0.0);
             }
 
         }
         if (vuMark == RelicRecoveryVuMark.LEFT) {
 
-            angleAdjust = -angleAdjust;
-
+            angleAdjust = -30;
             // Drive forward to lineup with center cryptoglyph
             if (iAmBlue()) {
                 auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, 33.0 - 7.5, 5.0, true, 0.0);
             } else {
-                auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, -36.0 - 7.5, 5.0, true, 0.0);
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, -35.0 - 7.5, 5.0, true, 0.0);
             }
 
         }
@@ -60,7 +60,7 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
         auto.encoderDrive(AutoHelper.DRIVE_SPEED, 7.0, 3.0, true, 90);
 
         robot.intake.setOut();
-        sleep(500);
+        sleep(600);
         robot.intake.setOpen();
         robot.intake.setStop();
     }
@@ -132,7 +132,7 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
 
         auto.flipToLoadSecondGlyph();
 
-        robot.lift.setLiftHeight(1.0);
+        //robot.lift.setLiftHeight(1.0);
 
         auto.collectGlyph(AutoHelper.DRIVE_SPEED, 12,3, true, -90);
     }
@@ -171,7 +171,7 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
             while(robot.lift.distFromBottom() < 7.5) idle();
             robot.gripper.flip();
             while(robot.gripper.isMoving()) sleep (1);
-            robot.lift.setLiftBtm();
+            robot.lift.setLiftHeight(1.0);
         }
     }
 
@@ -184,7 +184,9 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
         // Turn toward cryptobox
         auto.gyroTurn(AutoHelper.TURN_SPEED, 90, AutoHelper.P_TURN_COEFF);
 
-        auto.encoderDrive(AutoHelper.DRIVE_SPEED, 11.5, 5, true, 90);
+        if (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN) {
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, 9.5, 5, true, 90);
+        }
     }
 
     @Override
@@ -193,11 +195,19 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
         // Check to see if there is enough time in auto to push glyphs in. This prevents being in contact with previous scored glyph at end of auto.
         if (auto.glyphsCollected > 0 && auto.autoTime.seconds() < 28){
 
-            robot.lift.setLiftBtm();
+            robot.lift.setLiftHeight(1.0);
 
             // Turn to place glyph on ground
             auto.gyroTurn(1.0, 90 + angleAdjust, AutoHelper.P_TURN_COEFF);
 
+            // Turn and drive forward to ensure glyphs have been pushed into crytobox
+            if (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN)
+            {
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED, 5, 2, false, 90 + angleAdjust);
+            }
+            if (vuMark == RelicRecoveryVuMark.LEFT || vuMark == RelicRecoveryVuMark.RIGHT){
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED, 18, 2, false, 90 + angleAdjust);
+            }
             // Extend gripper out
             robot.gripper.setExtendOut();
 
@@ -206,10 +216,18 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
             // Drop glyphs
             robot.gripper.setBothOpen();
 
-            // Turn and drive forward to ensure glyphs have been pushed into crytobox
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, 3, 2, false, 90 + angleAdjust);
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -3, 2, false, 90 + angleAdjust);
+            sleep(350);
 
+            if (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN)
+            {
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED, -5, 2, false, 90 + angleAdjust);
+            }
+            if (vuMark == RelicRecoveryVuMark.LEFT || vuMark == RelicRecoveryVuMark.RIGHT){
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED, -5, 2, false, 90 + angleAdjust);
+            }
+
+        } else if (auto.glyphsCollected == 0 && (vuMark == RelicRecoveryVuMark.LEFT || vuMark == RelicRecoveryVuMark.RIGHT)) {
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, 11.0, 5, true, 90);
         }
    }
 

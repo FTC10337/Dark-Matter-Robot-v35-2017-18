@@ -55,7 +55,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @Autonomous(name="Auto Red L 2G", group="DM18")
 @Disabled
-public class Auto__Red_L_2G extends Auto_Blue_R_2G_Old {
+public class Auto__Red_L_2G extends Auto_Blue_R_2G {
 
 
 
