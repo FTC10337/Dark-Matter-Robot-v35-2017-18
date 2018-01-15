@@ -35,15 +35,15 @@ public class Relic {
     /* Lift constants */
     static final double     RELIC_POWER = 1.0;
     static final int        EXTENSION_COUNTS_PER_MOTOR_REV    = 7 ;    // Neverrest
-    static final double     EXTENSION_DRIVE_GEAR_REDUCTION    = 20; // Neverest 20:1
-    static final double     EXTENSION_PULLEY_DIAMETER_INCHES   = 1.875;     // For figuring circumference
+    static final double     EXTENSION_DRIVE_GEAR_REDUCTION    = 40; // Neverest 20:1
+    static final double     EXTENSION_PULLEY_DIAMETER_INCHES   = 2.5;     // For figuring circumference
     static final double     EXTENSION_COUNTS_PER_INCH         = (4 * EXTENSION_COUNTS_PER_MOTOR_REV * EXTENSION_DRIVE_GEAR_REDUCTION) /
             (EXTENSION_PULLEY_DIAMETER_INCHES * 3.1415);
 
 
     // Lift variables
-    public final int RELIC_OUT_POS = (int) (6000/2);
-    public final int RELIC_IN_POS = (int) (150/2);
+    public final int RELIC_OUT_POS = (int) (6000);
+    public final int RELIC_IN_POS = (int) (150);
 
     /**
      * Constructor
@@ -64,7 +64,7 @@ public class Relic {
     public void init (HardwareMap hw, String motor, String servoGrip, String servoPivot) {
         // Define and Initialize intake Motors
         relicMotor = hw.dcMotor.get(motor);
-        relicMotor.setDirection(DcMotor.Direction.FORWARD);
+        relicMotor.setDirection(DcMotor.Direction.REVERSE);
         relicMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Tune the motor PID parameters
@@ -125,11 +125,11 @@ public class Relic {
 
     // Set relic pivot to grab position
     public void setRelicPivotGrabPos() {
-        if (getExtensionEncoder() >= 7000/1.5) {
+        if (getExtensionEncoder() >= 7000) {
             relicPivotGrabPos = 0.273;
-        } else if (getExtensionEncoder() >= 6000/1.5) {
+        } else if (getExtensionEncoder() >= 6000) {
             relicPivotGrabPos = 0.265;
-        } else if (getExtensionEncoder() >= 5000/1.5) {
+        } else if (getExtensionEncoder() >= 5000) {
             relicPivotGrabPos = 0.257;
         } else {
             relicPivotGrabPos = 0.25;
@@ -139,13 +139,13 @@ public class Relic {
 
     // Set relic pivot to grab position
     public void setRelicPivotDropPos() {
-        if (getExtensionEncoder() >= 7000/1.5) {
+        if (getExtensionEncoder() >= 7000) {
             relicPivotDropPos = 0.287;
-        } else if (getExtensionEncoder() >= 6000/1.5) {
+        } else if (getExtensionEncoder() >= 6000) {
             relicPivotDropPos = 0.276;
-        } else if (getExtensionEncoder() >= 5000/1.5) {
+        } else if (getExtensionEncoder() >= 5000) {
             relicPivotDropPos = 0.265;
-        } else if (getExtensionEncoder() >= 2000/1.5) {
+        } else if (getExtensionEncoder() >= 2000) {
             relicPivotDropPos = 0.259;
         } else {
             relicPivotDropPos = 0.245;

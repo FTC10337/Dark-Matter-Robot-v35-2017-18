@@ -155,6 +155,7 @@ public class TeleOpDM18_Janus extends OpMode {
 
         telemetry.addData("Relic Mode: ", relicMode);
         telemetry.addData("Pivot: ", robot.relic.relicPivot.getPosition());
+        telemetry.addData("Relic Enc: ", robot.relic.relicMotor.getCurrentPosition());
         //telemetry.addData("alpha: " + robot.intake.glyphColorSensor.alpha(), "dist: " + robot.intake.intakeDistance);
         //telemetry.addData("LEFT_AVG: ", robot.intake.distSensor_leftAvg.average());
         //telemetry.addData("RIGHT_AVG: ", robot.intake.distSensor_rightAvg.average());
@@ -703,8 +704,8 @@ public class TeleOpDM18_Janus extends OpMode {
                 double relicPower = -gamepad2.left_stick_y;
                 relicPower = smoothPowerCurve(deadzone(relicPower, 0.20));
                 // Driver 2 control to slow down extension speed for fine adjustments
-                if (!gamepad2.right_bumper && !gamepad2.left_bumper) {
-                    relicPower = relicPower * 0.75;
+                if (gamepad2.right_bumper || gamepad2.left_bumper) {
+                    relicPower = relicPower / 2;
                     }
 
                 if (robot.relic.relicMotor.getCurrentPosition() >= 0) {

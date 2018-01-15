@@ -298,8 +298,8 @@ public class Intake {
     }
 
     public void setIntakeDistance() {
-        if (glyphColorSensor.alpha() > 75.0) intakeDistance = 6.5;
-        else intakeDistance = 8.25;
+        if (glyphColorSensor.alpha() > 75.0) intakeDistance = 7.2;
+        else intakeDistance = 9.0;
     }
 
     public int setGlyphColor() {
