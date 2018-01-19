@@ -120,7 +120,8 @@ public class TeleOpDM18_Janus extends OpMode {
          */
         robot.init(hardwareMap, false, false);
 
-
+        robot.relic.setRelicPivotKickstand();
+        robot.relic.setRelicGripOpen();
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Hello Driver");
@@ -140,10 +141,6 @@ public class TeleOpDM18_Janus extends OpMode {
      */
     @Override
     public void start() {
-
-        robot.relic.setRelicPivotKickstand();
-        robot.relic.setRelicGripOpen();
-
     }
 
     /*
@@ -473,22 +470,22 @@ public class TeleOpDM18_Janus extends OpMode {
 
             // OPEN & CLOSE GRIPPERS
             // close grippers
-            if ((gamepad2.right_trigger > 0.5) && !init_TeleOp && !init_AutoLoad) {
+            if ((gamepad2.right_trigger > 0.5) && !init_TeleOp && !init_AutoLoad && !init_Reset) {
                 robot.gripper.setBtmClosed();
             }
-            if ((gamepad2.right_bumper && !isButtonPressed && !init_TeleOp) && !init_AutoLoad) {
+            if (gamepad2.right_bumper && !isButtonPressed && !init_TeleOp && !init_AutoLoad && !init_Reset) {
                 robot.gripper.setTopClosed();
                 isButtonPressed = true;
                 topGripisClosed = true;
             }
 
             // open grippers
-            if ((gamepad2.left_trigger > 0.5) && !init_TeleOp && !init_AutoLoad) {
+            if ((gamepad2.left_trigger > 0.5) && !init_TeleOp && !init_AutoLoad && !init_Reset) {
                 // Set fully open
                 robot.gripper.setBtmOpen();
 
             }
-            if (gamepad2.left_bumper && !isButtonPressed && !init_TeleOp && !init_AutoLoad) {
+            if (gamepad2.left_bumper && !isButtonPressed && !init_TeleOp && !init_AutoLoad && !init_Reset) {
                 // Set fully open
                 robot.gripper.setTopOpen();
                 topGripisClosed = false;

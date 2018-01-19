@@ -127,6 +127,7 @@ public abstract class Auto_Master extends LinearOpMode {
         sleep (200);
 
         robot.relic.setRelicPivotKickstand();
+        robot.relic.setRelicGripOpen();
 
      // Main robot auto sequence
 

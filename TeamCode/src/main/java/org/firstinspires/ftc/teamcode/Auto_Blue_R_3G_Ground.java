@@ -148,7 +148,7 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
             robot.intake.intakeLeftMotor.setPower(0.70);
             robot.intake.intakeRightMotor.setPower(0.70);
 
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -4.0, 3.0, true, -90);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -8.0, 3.0, true, -90);
 
             // square glyph
             auto.squareGlyph(1.0, -0.25, 0.5);
@@ -233,7 +233,9 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
 
     @Override
     public void park() throws InterruptedException {
-      // Do Nothing
+        if (auto.glyphsCollected == 0){
+            auto.gyroTurn(1.0, -90, AutoHelper.P_TURN_COEFF);
+        }
           }
 
     @Override

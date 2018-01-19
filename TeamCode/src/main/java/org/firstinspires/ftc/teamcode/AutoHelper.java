@@ -618,7 +618,7 @@ public class AutoHelper {
      **/
     public void collectGlyph (double speed, int distance, int timeout, boolean useGyro, double heading) {
 
-        robot.lift.setLiftHeight(5.0);
+        robot.lift.setLiftTop();
         robot.intake.setClosed();
         robot.intake.setIn();
 
@@ -892,9 +892,7 @@ public class AutoHelper {
 
     public void autoLoadFirstGlyph() {
 
-        robot.lift.setLiftBtm();
-
-        while (!robot.lift.reachedFloor()) sleep(1);;
+        while (!robot.lift.resetFloorPos()) sleep (1);
 
         robot.gripper.setBtmClosed();
 
@@ -904,12 +902,12 @@ public class AutoHelper {
 
         while (robot.intake.isMoving()) sleep(1);;
 
-        robot.lift.setLiftHeight(7.0);
+        robot.lift.setLiftTop();
     }
 
     public void flipToLoadSecondGlyph() throws InterruptedException {
 
-        robot.lift.setLiftHeight(8.25);
+        robot.lift.setLiftTop();
 
         while (robot.lift.distFromBottom() < 7.75) sleep(1);;
 
@@ -920,8 +918,6 @@ public class AutoHelper {
     }
 
     public void autoLoadSecondGlyph() {
-
-        robot.lift.setLiftBtm();
 
         while (!robot.lift.resetFloorPos()) sleep(1);;
 
