@@ -61,7 +61,7 @@ public class AutoHelper {
     static final double     P_TURN_COEFF            = 0.011; // Larger is more responsive, but also less accurate
     static final double     P_TURN_COEFF_2          = 0.009; // For turns closer to 180 degrees. Less responsive, but more accurate to account for momentum coming out of long turns.
     static final double     P_DRIVE_COEFF_1         = 0.01;  // Larger is more responsive, but also less accurate
-    static final double     P_DRIVE_COEFF_2         = 0.01;
+    static final double     P_DRIVE_COEFF_2         = 0.05;  // Intenionally large so robot "wiggles" around the target setpoint while driving
 
     // Variables used for reading Gyro
     Orientation angles;
