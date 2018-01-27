@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -61,7 +62,7 @@ public class AutoHelper {
     static final double     P_TURN_COEFF            = 0.011; // Larger is more responsive, but also less accurate
     static final double     P_TURN_COEFF_2          = 0.009; // For turns closer to 180 degrees. Less responsive, but more accurate to account for momentum coming out of long turns.
     static final double     P_DRIVE_COEFF_1         = 0.01;  // Larger is more responsive, but also less accurate
-    static final double     P_DRIVE_COEFF_2         = 0.05;  // Intenionally large so robot "wiggles" around the target setpoint while driving
+    static final double     P_DRIVE_COEFF_2         = 0.25;  // Intenionally large so robot "wiggles" around the target setpoint while driving
 
     // Variables used for reading Gyro
     Orientation angles;
@@ -389,7 +390,7 @@ public class AutoHelper {
                     // adjust relative speed based on heading
                     double error = getError(curHeading);
                     double steer = getSteer(error,
-                            (aggressive?P_DRIVE_COEFF_1:P_DRIVE_COEFF_2));
+                            (aggressive?P_DRIVE_COEFF_2:P_DRIVE_COEFF_1));
 
                     // if driving in reverse, the motor correction also needs to be reversed
                     if (distance < 0)
@@ -917,7 +918,12 @@ public class AutoHelper {
 
     }
 
-    public void autoLoadSecondGlyph() {
+    public void autoLoadSecondGlyph(){
+        autoLoadSecondGlyph(RelicRecoveryVuMark.UNKNOWN);
+    }
+
+
+    public void autoLoadSecondGlyph(RelicRecoveryVuMark vuMark) {
 
         while (!robot.lift.resetFloorPos()) sleep(1);;
 
@@ -929,14 +935,13 @@ public class AutoHelper {
 
         while (robot.intake.isMoving()) sleep(1);;
 
-        if ((firstGlyphColor + secondGlyphColor == 1) && firstGlyphColor == 1) {
+        if ((firstGlyphColor + secondGlyphColor == 1) && firstGlyphColor == 1 && (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN)) {
 
             robot.lift.setLiftHeight(8.25);
 
             while (robot.lift.distFromBottom() < 7.75) sleep(1);;
 
             robot.gripper.flip();
-
 
         } else robot.lift.setLiftHeight(8.25);
     }

@@ -156,7 +156,7 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
             robot.intake.setStop();
 
             // Auto load glyph
-            auto.autoLoadSecondGlyph();
+            auto.autoLoadSecondGlyph(vuMark);
             auto.glyphsCollected = 2;
             // determine and record glyph color
             auto.secondGlyphColor = robot.intake.setGlyphColor();
@@ -203,10 +203,10 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
             // Turn and drive forward to ensure glyphs have been pushed into crytobox
             if (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN)
             {
-                auto.encoderDrive(AutoHelper.DRIVE_SPEED, 5, 2, false, 90 + angleAdjust);
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED, 4, 2, true, 90 + angleAdjust);
             }
             if (vuMark == RelicRecoveryVuMark.LEFT || vuMark == RelicRecoveryVuMark.RIGHT){
-                auto.encoderDrive(AutoHelper.DRIVE_SPEED, 18, 2, false, 90 + angleAdjust);
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED, 17, 2, true, 90 + angleAdjust);
             }
             // Extend gripper out
             robot.gripper.setExtendOut();
@@ -220,9 +220,11 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
 
             if (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN)
             {
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED, 3.0, 1.5, true, 90 + angleAdjust);
                 auto.encoderDrive(AutoHelper.DRIVE_SPEED, -5, 2, false, 90 + angleAdjust);
             }
             if (vuMark == RelicRecoveryVuMark.LEFT || vuMark == RelicRecoveryVuMark.RIGHT){
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED, 3.0, 1.5, true, 90 + angleAdjust);
                 auto.encoderDrive(AutoHelper.DRIVE_SPEED, -5, 2, false, 90 + angleAdjust);
             }
 
