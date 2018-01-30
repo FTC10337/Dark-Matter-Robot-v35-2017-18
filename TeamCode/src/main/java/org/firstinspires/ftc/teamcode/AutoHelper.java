@@ -935,15 +935,16 @@ public class AutoHelper {
 
         while (robot.intake.isMoving()) sleep(1);;
 
-        if ((firstGlyphColor + secondGlyphColor == 1) && firstGlyphColor == 1 && (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN)) {
+        //if ((firstGlyphColor + secondGlyphColor == 1) && firstGlyphColor == 1 && (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN)) {
 
-            robot.lift.setLiftHeight(8.25);
+        //    robot.lift.setLiftHeight(8.25);
 
-            while (robot.lift.distFromBottom() < 7.75) sleep(1);;
+        //    while (robot.lift.distFromBottom() < 7.75) sleep(1);;
 
-            robot.gripper.flip();
-
-        } else robot.lift.setLiftHeight(8.25);
+        //    robot.gripper.flip();
+        //
+        // } else
+        robot.lift.setLiftHeight(8.25);
     }
 
     public void squareGlyph(double inSpeed, double outSpeed, double timeOut) {
@@ -962,6 +963,34 @@ public class AutoHelper {
 
         robot.intake.intakeRightMotor.setPower(0.30);
         robot.intake.intakeLeftMotor.setPower(0.30);
+    }
+
+    public int determineCipher() {
+        if (glyphsCollected == 1){
+            if (firstGlyphColor + secondGlyphColor == 0) {
+                // one gray
+                return 1;
+            } else if (firstGlyphColor + secondGlyphColor == 1) {
+                // one brown
+                return 2;
+            }
+        }
+        else if (glyphsCollected == 2) {
+            if(firstGlyphColor + secondGlyphColor == 2) {
+                //both brown
+                return 3;
+            } else if (firstGlyphColor == 1 && secondGlyphColor == 0) {
+                //one brown on top & one gray on bottom
+                return 4;
+            } else if (firstGlyphColor == 0 && secondGlyphColor == 1){
+                //one gray on top & one brown on bottom
+                return 5;
+            } else if (firstGlyphColor + secondGlyphColor == 0) {
+                // both gray
+                return 6;
+            }
+        }
+        return 0;
     }
 
     public boolean waitForSwitch() {
