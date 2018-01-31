@@ -339,9 +339,11 @@ public class TeleOpDM18_Janus extends OpMode {
                 liftChangePos = false;
                 flip = false;
 
-                // Open intake wheels
-                robot.intake.setOpen();
-                robot.intake.setStop();
+                if (robot.lift.distFromBottom() < 8.0){
+                    // Open intake wheels
+                    robot.intake.setOpen();
+                    robot.intake.setStop();
+                }
 
                 // Move lift
                 robot.lift.liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -438,12 +440,7 @@ public class TeleOpDM18_Janus extends OpMode {
             }
 
             // PUSHER IN/OUT
-            if (gamepad2.left_stick_y > 0.2 && !init_TeleOp || gamepad2.left_stick_y < -0.2 && !init_TeleOp) {
-
-                // Override auto moves
-                autoMove = false;
-                init_AutoLoad = false;
-                init_Reset = false;
+            if (gamepad2.left_stick_y > 0.2 && !init_TeleOp && !init_Reset || gamepad2.left_stick_y < -0.2 && !init_TeleOp && !init_Reset) {
 
                 // reset all auto lift booleans to default
                 resetLiftBtm = false;

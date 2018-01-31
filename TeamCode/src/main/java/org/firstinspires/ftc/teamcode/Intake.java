@@ -35,7 +35,7 @@ public class Intake {
 
     // Intake constants
     final static double INTAKE_LEFT_HOME = 0.0;
-    final static double INTAKE_LEFT_RELEASE = 0.569;
+    final static double INTAKE_LEFT_RELEASE = 0.396;
     final static double INTAKE_RIGHT_HOME = 1.0;
     final static double INTAKE_RIGHT_RELEASE = 0.58;
     final static double INTAKE_MOVE_TIME = 50;     // 0.5 seconds to open or close intake
@@ -45,7 +45,7 @@ public class Intake {
 
     /* Intake state variables */
     boolean intakeCycle = true;        // True we are incrementing right power and decrementing left
-    boolean isIntakeClosed = true;
+    boolean isIntakeClosed = false;
     boolean isIntakeInOn = false;
     boolean isIntakeOutOn = false;
 
