@@ -140,15 +140,15 @@ public class Relic {
     // Set relic pivot to grab position
     public void setRelicPivotDropPos() {
         if (getExtensionEncoder() >= 7000) {
-            relicPivotDropPos = 0.287;
+            relicPivotDropPos = 0.277;
         } else if (getExtensionEncoder() >= 6000) {
-            relicPivotDropPos = 0.276;
+            relicPivotDropPos = 0.264;
         } else if (getExtensionEncoder() >= 5000) {
-            relicPivotDropPos = 0.265;
-        } else if (getExtensionEncoder() >= 2000) {
-            relicPivotDropPos = 0.259;
+            relicPivotDropPos = 0.256;
+        } else if (getExtensionEncoder() >= 4000) {
+            relicPivotDropPos = 0.253;
         } else {
-            relicPivotDropPos = 0.245;
+            relicPivotDropPos = 0.25;
         }
         relicPivot.setPosition(relicPivotDropPos);
     }
