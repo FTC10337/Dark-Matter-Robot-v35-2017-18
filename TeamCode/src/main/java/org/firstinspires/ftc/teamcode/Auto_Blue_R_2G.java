@@ -89,7 +89,7 @@ public class Auto_Blue_R_2G extends Auto_Master {
         if (robot.intake.distLeft() < 13.0 || robot.intake.distRight() < 13.0) {
 
             // square glyph
-            auto.squareGlyph(1.0, -0.25, 2);
+            auto.squareGlyph(1.0, -0.25, 2.0, 0.5);
 
             // intake on to hold glyph while driving back
             robot.intake.intakeLeftMotor.setPower(0.30);

@@ -72,7 +72,7 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
     public void driveToPile() throws InterruptedException {
         auto.encoderDrive(AutoHelper.DRIVE_SPEED, -18.0, 3.0, true, 90);
 
-        auto.gyroTurn(AutoHelper.TURN_SPEED,-90, AutoHelper.P_TURN_COEFF_180);
+        auto.gyroTurn(AutoHelper.TURN_SPEED,-90, AutoHelper.P_TURN_COEFF);
 
         // Record drive motor encoder positions. Use these values to return to this position after collecting glyphs
         left1Pos = robot.leftDrive1.getCurrentPosition();
@@ -91,7 +91,7 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
         if (robot.intake.distLeft() < 13.0 || robot.intake.distRight() < 13.0) {
 
             // square glyph
-            auto.squareGlyph(1.0, -0.25, .5);
+            auto.squareGlyph(1.0, -0.25,  2.0, 0.5);
 
             // intake on to hold glyph while driving back
             robot.intake.intakeLeftMotor.setPower(0.70);
@@ -100,16 +100,17 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
             auto.encoderDrive(AutoHelper.DRIVE_SPEED, -4.0, 3.0, true, -90);
 
             // square glyph
-            auto.squareGlyph(1.0, -0.25, 1.0);
+            auto.squareGlyph(1.0, -0.25,  2.0, 0.5);
 
             robot.intake.setStop();
+
+            // determine and record glyph color
+            auto.firstGlyphColor = robot.intake.setGlyphColor();
 
             // Auto load glyph
             auto.autoLoadFirstGlyph();
             auto.glyphsCollected+=1;
 
-            // determine and record glyph color
-            auto.firstGlyphColor = robot.intake.setGlyphColor();
 
         } else {
             // never detected glyph in intake. Back off and set intake out to clear any potential jams.
@@ -139,7 +140,7 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
         if (robot.intake.distLeft() < 13.0 || robot.intake.distRight() < 13.0) {
 
             // square glyph
-            auto.squareGlyph(1.0, -0.25, 1.5);
+            auto.squareGlyph(1.0, -0.25, 2.0, 0.5);
 
             // intake on to hold glyph while driving back
             robot.intake.intakeLeftMotor.setPower(0.70);
@@ -148,15 +149,16 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
             auto.encoderDrive(AutoHelper.DRIVE_SPEED, -8.0, 3.0, true, -90);
 
             // square glyph
-            auto.squareGlyph(1.0, -0.25, 0.5);
+            auto.squareGlyph(1.0, -0.25, 2.0, 0.5);
 
             robot.intake.setStop();
+
+            // determine and record glyph color
+            auto.secondGlyphColor = robot.intake.setGlyphColor();
 
             // Auto load glyph
             auto.autoLoadSecondGlyph(vuMark);
             auto.glyphsCollected+=1;
-            // determine and record glyph color
-            auto.secondGlyphColor = robot.intake.setGlyphColor();
 
         } else {
             // never detected glyph in intake. Back off and set intake out to clear any potential jams.
@@ -179,7 +181,11 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
         auto.encoderDrive(AutoHelper.DRIVE_SPEED, -inches, 5, true, -90);
 
         // Turn toward cryptobox
-        auto.gyroTurn(AutoHelper.TURN_SPEED, 90, AutoHelper.P_TURN_COEFF_180);
+        auto.gyroTurn(AutoHelper.TURN_SPEED, 90, AutoHelper.P_TURN_COEFF);
+
+        if (auto.getError(90) > 3) {
+            auto.gyroTurn(AutoHelper.TURN_SPEED, 90, AutoHelper.P_TURN_COEFF);
+        }
 
     }
 
@@ -209,7 +215,6 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
                     robot.lift.setLiftHeight(8.25);
                     while (robot.lift.distFromBottom() < 7.75) sleep(1);
                     robot.gripper.flip();
-                    sleep(600);
                     angleAdjust = -25;
                     break;
                 case 5: // gray top brown bottom - place right
@@ -221,12 +226,21 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
             }
 
             if (auto.glyphsCollected > 0 && auto.autoTime.seconds() < 29) {
-                // Set lift to 1"
-                robot.lift.setLiftHeight(1.0);
+
                 // Turn to place glyph
                 auto.gyroTurn(1.0, 90 + angleAdjust, AutoHelper.P_TURN_COEFF);
+
+                while(robot.gripper.isFlipping()) sleep(1);
+
+                // lift to 0"
+                robot.lift.setLiftHeight(0.0);
+
                 // Drive forward to place glyph
-                auto.encoderDrive(AutoHelper.DRIVE_SPEED, 4, 2, true, 90 + angleAdjust);
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED, 5, 2, true, 90 + angleAdjust);
+
+                // lift to floor
+                while(!robot.lift.resetFloorPos()) sleep(1);
+
                 // Extend gripper out
                 robot.gripper.setExtendOut();
                 sleep(200);
@@ -250,36 +264,41 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
             switch (cipher) {
 
                 case 1: // one gray - place right
-                    angleAdjust = -31;
+                    angleAdjust = -29;
                     break;
                 case 2: // one brown - place center ************* NEED ANGLE TESTING SINCE WE'VE NEVER TRIED TO PLACE CENTER
-                    angleAdjust = -31;
+                    angleAdjust = -29;
                     break;
                 case 3: // two brown - place right
-                    angleAdjust = -31;
+                    angleAdjust = -29;
                     break;
                 case 4: // brown top gray bottom - place right
-                    angleAdjust = -31;
+                    angleAdjust = -29;
                     break;
                 case 5: // gray top brown bottom - flip & place right
                     robot.lift.setLiftHeight(8.25);
                     while (robot.lift.distFromBottom() < 7.75) sleep(1);
                     robot.gripper.flip();
-                    sleep(600);
-                    angleAdjust = -31;
+                    angleAdjust = -29;
                     break;
                 case 6: // two gray - place right*** NO CIPHER
-                    angleAdjust = -31;
+                    angleAdjust = -29;
                     break;
             }
 
-
-            // Set lift to 1"
-            robot.lift.setLiftHeight(1.0);
             // Turn toward cryptobox
             auto.gyroTurn(1.0, 90 + angleAdjust, AutoHelper.P_TURN_COEFF);
+
+            while(robot.gripper.isFlipping()) sleep(1);
+
+            // lift to 0"
+            robot.lift.setLiftHeight(0.0);
+
             // Drive to cryptobox
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, 17, 2, true, 90 + angleAdjust);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, 18, 2, true, 90 + angleAdjust);
+
+            // lift to floor
+            while(!robot.lift.resetFloorPos()) sleep(1);
 
             if (auto.glyphsCollected > 0 && auto.autoTime.seconds() < 29) {
                 // Extend gripper out
@@ -306,34 +325,42 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
             switch (cipher) {
 
                 case 1: // one gray - place left
-                    angleAdjust = 31;
+                    angleAdjust = 29;
                     break;
                 case 2: // one brown - place center ************* NEED ANGLE TESTING SINCE WE'VE NEVER TRIED TO PLACE CENTER
-                    angleAdjust = 31;
+                    angleAdjust = 29;
                     break;
                 case 3: // two brown - place left
-                    angleAdjust = 31;
+                    angleAdjust = 29;
                     break;
                 case 4: // brown top gray bottom - place left
-                    angleAdjust = 31;
+                    angleAdjust = 29;
                     break;
                 case 5: // gray top brown bottom - flip & place left
                     robot.lift.setLiftHeight(8.25);
                     while (robot.lift.distFromBottom() < 7.75) sleep(1);
                     robot.gripper.flip();
-                    sleep(600);
-                    angleAdjust = 31;
+                    angleAdjust = 29;
                     break;
                 case 6: // two gray - place left *** NO CIPHER
-                    angleAdjust = 31;
+                    angleAdjust = 29;
                     break;
             }
-            // Set lift to 1"
-            robot.lift.setLiftHeight(1.0);
+
             // Turn toward cryptobox
             auto.gyroTurn(1.0, 90 + angleAdjust, AutoHelper.P_TURN_COEFF);
+
+            while(robot.gripper.isFlipping()) sleep(1);
+
+            // lift to 0"
+            robot.lift.setLiftHeight(0.0);
+
             // Drive to cryptobox
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, 17, 2, true, 90 + angleAdjust);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, 18, 2, true, 90 + angleAdjust);
+
+            // lift to floor
+            while(!robot.lift.resetFloorPos()) sleep(1);
+
             if (auto.glyphsCollected > 0 && auto.autoTime.seconds() < 29) {
                 // Extend gripper out
                 robot.gripper.setExtendOut();

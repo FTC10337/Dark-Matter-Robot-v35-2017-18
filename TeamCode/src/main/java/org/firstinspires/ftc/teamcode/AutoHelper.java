@@ -181,7 +181,7 @@ public class AutoHelper {
 
     public void processJewel() {
         double armPos = robot.jewelServo.getPosition();
-        double armIncr = (robot.JEWEL_DEPLOY - armPos)/50;
+        double armIncr = (robot.JEWEL_DEPLOY - armPos)/25;
         while (armPos < robot.JEWEL_DEPLOY) {
             armPos += armIncr;
             robot.jewelServo.setPosition(armPos);
@@ -947,11 +947,11 @@ public class AutoHelper {
         robot.lift.setLiftHeight(8.25);
     }
 
-    public void squareGlyph(double inSpeed, double outSpeed, double timeOut) {
+    public void squareGlyph(double inSpeed, double outSpeed, double difference, double timeOut) {
 
         runtime.reset();
 
-        while ((Math.abs(robot.intake.distLeft() - robot.intake.distRight()) > 1.0) && runtime.seconds() < timeOut) {
+        while ((Math.abs(robot.intake.distLeft() - robot.intake.distRight()) > difference) && runtime.seconds() < timeOut) {
             if (robot.intake.distLeft() > robot.intake.distRight()) {
                 robot.intake.intakeLeftMotor.setPower(inSpeed);
                 robot.intake.intakeRightMotor.setPower(outSpeed);

@@ -94,7 +94,7 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
         if (robot.intake.distLeft() < 13.0 || robot.intake.distRight() < 13.0) {
 
             // square glyph
-            auto.squareGlyph(1.0, -0.25, .5);
+            auto.squareGlyph(1.0, -0.25, 2.0,.5);
 
             // intake on to hold glyph while driving back
             robot.intake.intakeLeftMotor.setPower(0.70);
@@ -103,7 +103,7 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
             auto.encoderDrive(AutoHelper.DRIVE_SPEED, -4.0, 3.0, true, -90);
 
             // square glyph
-            auto.squareGlyph(1.0, -0.25, 1.0);
+            auto.squareGlyph(1.0, -0.25, 2.0,1.0);
 
             robot.intake.setStop();
 
@@ -142,7 +142,7 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
         if (robot.intake.distLeft() < 13.0 || robot.intake.distRight() < 13.0) {
 
             // square glyph
-            auto.squareGlyph(1.0, -0.25, 1.5);
+            auto.squareGlyph(1.0, -0.25, 2.0, 0.5);
 
             // intake on to hold glyph while driving back
             robot.intake.intakeLeftMotor.setPower(0.70);
@@ -151,7 +151,7 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
             auto.encoderDrive(AutoHelper.DRIVE_SPEED, -8.0, 3.0, true, -90);
 
             // square glyph
-            auto.squareGlyph(1.0, -0.25, 0.5);
+            auto.squareGlyph(1.0, -0.25, 2.0,0.5);
 
             robot.intake.setStop();
 
