@@ -684,6 +684,11 @@ public class AutoHelper {
                 stop = true;
             }
 
+            if (robot.intake.distRight() > 18.0 && robot.intake.distLeft() > 18.0 &&
+                    runtime.milliseconds() > 750 && runtime.milliseconds() < 1000){
+                robot.intake.setOpen();
+            } else robot.intake.setClosed();
+
             // Ramp up motor powers as needed
             if (curSpeed < speed) {
                 curSpeed += SPEEDINCR;

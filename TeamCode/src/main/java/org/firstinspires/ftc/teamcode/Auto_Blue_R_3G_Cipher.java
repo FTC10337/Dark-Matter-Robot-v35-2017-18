@@ -378,9 +378,9 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
 
     @Override
     public void park() throws InterruptedException {
-        if (auto.glyphsCollected == 0){
-            auto.gyroTurn(1.0, -90, AutoHelper.P_TURN_COEFF);
-        }
+        //if (auto.glyphsCollected == 0){
+        //    auto.gyroTurn(1.0, -90, AutoHelper.P_TURN_COEFF);
+        //}
           }
 
     @Override
