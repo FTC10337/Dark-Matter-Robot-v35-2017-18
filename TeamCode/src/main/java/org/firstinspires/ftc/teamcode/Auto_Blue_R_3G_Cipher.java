@@ -97,7 +97,7 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
             robot.intake.intakeLeftMotor.setPower(0.70);
             robot.intake.intakeRightMotor.setPower(0.70);
 
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -4.0, 3.0, true, -90);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -8.0, 3.0, true, -90);
 
             // square glyph
             auto.squareGlyph(1.0, -0.25,  2.0, 0.5);
@@ -163,7 +163,7 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
         } else {
             // never detected glyph in intake. Back off and set intake out to clear any potential jams.
             robot.intake.setOut();
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -8.0, 2.0, true, -90);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -12.0, 2.0, true, -90);
             robot.intake.setStop();
             robot.intake.setOpen();
             robot.lift.setLiftHeight(8.25);

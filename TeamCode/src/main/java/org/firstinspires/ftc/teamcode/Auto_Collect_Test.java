@@ -50,7 +50,7 @@ public class Auto_Collect_Test extends Auto_Master {
             robot.intake.intakeLeftMotor.setPower(0.70);
             robot.intake.intakeRightMotor.setPower(0.70);
 
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -4.0, 3.0, true, 0);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -8.0, 3.0, true, 0);
 
             // square glyph
             auto.squareGlyph(1.0, -0.25,  2.0, 0.5);
@@ -133,15 +133,12 @@ public class Auto_Collect_Test extends Auto_Master {
 
         auto.encoderDrive(AutoHelper.DRIVE_SPEED, -inches, 5, true, 0);
 
-        // Turn toward cryptobox
-        auto.gyroTurn(AutoHelper.TURN_SPEED, 180, AutoHelper.P_TURN_COEFF);
-
-
     }
 
     @Override
     public void placeExtraGlyphs() throws InterruptedException {
 
+            robot.gripper.setBothOpen();
    }
 
     @Override

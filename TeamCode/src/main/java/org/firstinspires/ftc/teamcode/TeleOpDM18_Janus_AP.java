@@ -75,6 +75,8 @@ public class TeleOpDM18_Janus_AP extends OpMode {
     boolean autoPark = false;
     boolean autoParking = false;
 
+    boolean glyphBump = false;
+
     boolean glyphMode = true;
     boolean relicMode = false;
     boolean firstModeChange = true;
@@ -534,6 +536,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                         telemetry.addData("Reset: ", "1");
 
                         slowDriveTrainOveride = false;
+                        glyphBump = false;
 
                         if (robot.intake.isClosed()) {
                             robot.intake.setOpen();
@@ -602,6 +605,8 @@ public class TeleOpDM18_Janus_AP extends OpMode {
             }
 
             if (init_AutoLoad && autoMove) {
+
+                glyphBump = false;
 
                 switch (nStates) {
 
@@ -860,9 +865,18 @@ public class TeleOpDM18_Janus_AP extends OpMode {
         }
 
         // Intake IN - Start Squaring Glyph
+        //if (gamepad1.right_bumper && !init_AutoLoad && !init_Reset) {
+        //    squaringGlyph = true;
+        //    timedStopIntake = false;
+        // }
+
         if (gamepad1.right_bumper && !init_AutoLoad && !init_Reset) {
-            squaringGlyph = true;
-            timedStopIntake = false;
+            robot.intake.setOpen();
+            glyphBump = true;
+
+        } else if (glyphBump && !init_AutoLoad && !init_Reset ) {
+            robot.intake.setClosed();
+            glyphBump = false;
         }
 
         // Intake SET STOP after glyph detected

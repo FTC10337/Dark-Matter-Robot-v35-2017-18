@@ -623,6 +623,10 @@ public class AutoHelper {
         robot.intake.setClosed();
         robot.intake.setIn();
 
+        ElapsedTime cycleTime = new ElapsedTime();
+        cycleTime.reset();
+
+
         // The potentially adjusted current target heading
         double curHeading = heading;
 
@@ -672,6 +676,7 @@ public class AutoHelper {
         // keep looping while we are still active, and there is time left, until distance sensor detects glyph in intake
         boolean stop = false;
 
+
         while (opMode.opModeIsActive() &&
                 (runtime.seconds() < timeout) &&
                 robot.leftDrive1.isBusy() &&
@@ -684,9 +689,14 @@ public class AutoHelper {
                 stop = true;
             }
 
-            if (robot.intake.distRight() > 18.0 && robot.intake.distLeft() > 18.0 &&
-                    runtime.milliseconds() > 750 && runtime.milliseconds() < 1000){
-                robot.intake.setOpen();
+            if ((robot.intake.distRight() > 18.0) || (robot.intake.distLeft() > 18.0)) {
+                if (cycleTime.milliseconds() > 750 && cycleTime.milliseconds() < 1000){
+                    robot.intake.setOpen();
+                } else if (cycleTime.milliseconds() > 1000) {
+                    robot.intake.setClosed();
+                    cycleTime.reset();
+                }
+
             } else robot.intake.setClosed();
 
             // Ramp up motor powers as needed
@@ -743,6 +753,9 @@ public class AutoHelper {
                 "  rrtarget: " +newRRTarget + "  rractual:" + robot.rightDrive2.getCurrentPosition() +
                 "  heading:" + readGyro());
 
+
+
+        robot.intake.setClosed();
         // Stop all motion;
         robot.intake.intakeRightMotor.setPower(0.0);
         robot.intake.intakeLeftMotor.setPower(0.0);
