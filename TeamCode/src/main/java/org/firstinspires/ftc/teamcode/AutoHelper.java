@@ -685,7 +685,7 @@ public class AutoHelper {
                 robot.rightDrive2.isBusy() &&
                 !stop) {
 
-            if ((robot.intake.distRight() < 12.0) || (robot.intake.distLeft() < 12.0)) {
+            if ((robot.intake.distRight() < 15.0) || (robot.intake.distLeft() < 15.0)) {
                 stop = true;
             }
 
@@ -909,11 +909,15 @@ public class AutoHelper {
         }
     }
 
-    public void autoLoadFirstGlyph() {
+    public void autoLoadFirstGlyph(boolean closeBoth) {
 
         while (!robot.lift.resetFloorPos()) sleep (1);
 
-        robot.gripper.setBtmClosed();
+        if (closeBoth) {
+            robot.gripper.setBothClosed();
+        } else {
+            robot.gripper.setBtmClosed();
+        }
 
         while (robot.gripper.btmIsMoving()) sleep(1);;
 

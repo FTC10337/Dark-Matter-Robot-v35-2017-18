@@ -69,10 +69,10 @@ public class Relic {
 
         // Tune the motor PID parameters
         if (relicMotor instanceof DcMotorEx) {
-            DcMotorEx theLift = (DcMotorEx) relicMotor;
-            PIDCoefficients pid = theLift.getPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
+            DcMotorEx theRelic = (DcMotorEx) relicMotor;
+            PIDCoefficients pid = theRelic.getPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
             // Do any needed PID value adjustments here
-            theLift.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, pid);
+            theRelic.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, pid);
 
         }
 

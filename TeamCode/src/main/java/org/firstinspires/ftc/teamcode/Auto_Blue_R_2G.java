@@ -103,7 +103,7 @@ public class Auto_Blue_R_2G extends Auto_Master {
             auto.firstGlyphColor = robot.intake.setGlyphColor();
 
             // Auto load glyph
-            auto.autoLoadFirstGlyph();
+            auto.autoLoadFirstGlyph(false);
             auto.glyphsCollected = 1;
 
 

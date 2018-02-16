@@ -61,7 +61,7 @@ public class Auto_Collect_Test extends Auto_Master {
             auto.firstGlyphColor = robot.intake.setGlyphColor();
 
             // Auto load glyph
-            auto.autoLoadFirstGlyph();
+            auto.autoLoadFirstGlyph(false);
             auto.glyphsCollected+=1;
 
 

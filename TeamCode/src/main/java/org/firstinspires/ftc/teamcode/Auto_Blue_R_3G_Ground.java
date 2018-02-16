@@ -108,7 +108,7 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
             robot.intake.setStop();
 
             // Auto load glyph
-            auto.autoLoadFirstGlyph();
+            auto.autoLoadFirstGlyph(false);
             auto.glyphsCollected = 1;
 
             // determine and record glyph color
