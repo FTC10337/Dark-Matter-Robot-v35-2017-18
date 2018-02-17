@@ -54,7 +54,7 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
         robot.gripper.setBothOpen();
         sleep(250);
         // Drive closer to center cryptoglyph
-        auto.encoderDrive(AutoHelper.DRIVE_SPEED, 7.0, 3.0, true, 90);
+        auto.encoderDrive(AutoHelper.DRIVE_SPEED, 8.0, 3.0, true, 90);
 
         robot.intake.setOut();
         sleep(600);
@@ -70,7 +70,7 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
 
     @Override
     public void driveToPile() throws InterruptedException {
-        auto.encoderDrive(AutoHelper.DRIVE_SPEED, -18.0, 3.0, true, 90);
+        auto.encoderDrive(AutoHelper.DRIVE_SPEED, -20.0, 3.0, true, 90);
 
         auto.gyroTurn(AutoHelper.TURN_SPEED,-90, AutoHelper.P_TURN_COEFF);
 
@@ -238,14 +238,17 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
                 // Drive forward to place glyph
                 auto.encoderDrive(AutoHelper.DRIVE_SPEED, 5, 2, true, 90 + angleAdjust);
 
+                auto.autoTime.reset();
                 // lift to floor
-                while(!robot.lift.resetFloorPos()) sleep(1);
+                while(!robot.lift.resetFloorPos() || auto.autoTime.milliseconds() < 150) sleep(1);
+                robot.lift.liftMotor.setPower(0.0);
 
                 // Extend gripper out
                 robot.gripper.setExtendOut();
                 sleep(200);
                 // Drop glyphs
                 robot.gripper.setBothOpen();
+                robot.intake.setClosed();
                 sleep(350);
                 // Nudge glyphs in
                 auto.encoderDrive(AutoHelper.DRIVE_SPEED, 2.0, 1.5, true, 90 + angleAdjust);
@@ -297,15 +300,20 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
             // Drive to cryptobox
             auto.encoderDrive(AutoHelper.DRIVE_SPEED, 18, 2, true, 90 + angleAdjust);
 
-            // lift to floor
-            while(!robot.lift.resetFloorPos()) sleep(1);
 
             if (auto.glyphsCollected > 0 && auto.autoTime.seconds() < 29) {
+
+                auto.autoTime.reset();
+                // lift to floor
+                while(!robot.lift.resetFloorPos() || auto.autoTime.milliseconds() < 150) sleep(1);
+                robot.lift.liftMotor.setPower(0.0);
+
                 // Extend gripper out
                 robot.gripper.setExtendOut();
                 sleep(200);
                 // Drop glyphs
                 robot.gripper.setBothOpen();
+                robot.intake.setClosed();
                 sleep(350);
                 // Nudge glyphs in
                 auto.encoderDrive(AutoHelper.DRIVE_SPEED, 2.0, 1.5, true, 90 + angleAdjust);
@@ -358,15 +366,20 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
             // Drive to cryptobox
             auto.encoderDrive(AutoHelper.DRIVE_SPEED, 18, 2, true, 90 + angleAdjust);
 
-            // lift to floor
-            while(!robot.lift.resetFloorPos()) sleep(1);
 
             if (auto.glyphsCollected > 0 && auto.autoTime.seconds() < 29) {
+
+                auto.autoTime.reset();
+                // lift to floor
+                while(!robot.lift.resetFloorPos() || auto.autoTime.milliseconds() < 150) sleep(1);
+                robot.lift.liftMotor.setPower(0.0);
+
                 // Extend gripper out
                 robot.gripper.setExtendOut();
                 sleep(200);
                 // Drop glyphs
                 robot.gripper.setBothOpen();
+                robot.intake.setClosed();
                 sleep(350);
                 // Nudge glyphs in
                 auto.encoderDrive(AutoHelper.DRIVE_SPEED, 2.0, 1.5, true, 90 + angleAdjust);

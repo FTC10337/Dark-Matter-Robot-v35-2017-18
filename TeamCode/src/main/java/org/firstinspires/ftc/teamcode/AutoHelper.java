@@ -194,6 +194,7 @@ public class AutoHelper {
         // Check jewel color
         int jewelColor = jewelHue();
 
+
         // Check if we see blue or red
         if (jewelColor == -1) {
             // We see red
@@ -317,15 +318,15 @@ public class AutoHelper {
                 if (Math.abs(headingChange) > 5.0) {
                     //Heading change is significant enough to account for
                     if (headingChange > 0.0) {
-                        // Assume 16 inch wheelbase
+                        // Assume 15.25 inch wheelbase
                         // Add extra distance to the wheel on outside of turn
-                        rightDistance += Math.signum(distance) * 2 * 3.1415 * 16 * headingChange / 360.0;
+                        rightDistance += Math.signum(distance) * 2 * 3.1415 * 15.25 * headingChange / 360.0;
                         RobotLog.i("DM10337 -- Turn adjusted R distance:" + rightDistance);
                     } else {
-                        // Assume 16 inch wheelbase
+                        // Assume 15.25 inch wheelbase
                         // Add extra distance from the wheel on inside of turn
                         // headingChange is - so this is increasing the left distance
-                        leftDistance -= Math.signum(distance) * 2 * 3.1415 * 16 * headingChange / 360.0;
+                        leftDistance -= Math.signum(distance) * 2 * 3.1415 * 15.25 * headingChange / 360.0;
                         RobotLog.i("DM10337 -- Turn adjusted L distance:" + leftDistance);
                     }
                 }
