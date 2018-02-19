@@ -180,11 +180,15 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
 
         auto.encoderDrive(AutoHelper.DRIVE_SPEED, -inches, 5, true, -90);
 
-        // Turn toward cryptobox
-        auto.gyroTurn(AutoHelper.TURN_SPEED, 90, AutoHelper.P_TURN_COEFF);
 
-        if (auto.getError(90) > 3) {
+        if (auto.glyphsCollected > 0){
+            // Turn toward cryptobox
             auto.gyroTurn(AutoHelper.TURN_SPEED, 90, AutoHelper.P_TURN_COEFF);
+
+            if (auto.getError(90) > 3) {
+                auto.gyroTurn(AutoHelper.TURN_SPEED, 90, AutoHelper.P_TURN_COEFF);
+            }
+
         }
 
     }
@@ -195,7 +199,7 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
         // CENTER KEY - Drive Forward before turning
         if (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN) {
             // Drive toward Cryptobox
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, 9.5, 5, true, 90);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, auto.glyphsCollected > 0? 9.5: -5.5, 5, true, auto.glyphsCollected > 0? 90: -90);
 
             // Determine where to place glyphs based on cipher and sets angleAdjust
             int cipher = auto.determineCipher();
@@ -289,8 +293,10 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
                     break;
             }
 
-            // Turn toward cryptobox
-            auto.gyroTurn(1.0, 90 + angleAdjust, AutoHelper.P_TURN_COEFF);
+            if (auto.glyphsCollected > 0) {
+                // Turn toward cryptobox
+                auto.gyroTurn(1.0, 90 + angleAdjust, AutoHelper.P_TURN_COEFF);
+            }
 
             while(robot.gripper.isFlipping()) sleep(1);
 
@@ -298,8 +304,7 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
             robot.lift.setLiftHeight(0.0);
 
             // Drive to cryptobox
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, 18, 2, true, 90 + angleAdjust);
-
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, auto.glyphsCollected > 0? 18: -14, 2, true, auto.glyphsCollected > 0? (90 + angleAdjust): -90);
 
             if (auto.glyphsCollected > 0 && auto.autoTime.seconds() < 29) {
 
@@ -321,8 +326,6 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
                 auto.encoderDrive(AutoHelper.DRIVE_SPEED, -7, 2, false, 90 + angleAdjust);
             }
         }
-
-
 
         // RIGHT Key - Decide which direction to TURN before driving to place glyph
         else if (vuMark == RelicRecoveryVuMark.RIGHT){
@@ -355,8 +358,11 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
                     break;
             }
 
-            // Turn toward cryptobox
-            auto.gyroTurn(1.0, 90 + angleAdjust, AutoHelper.P_TURN_COEFF);
+
+            if (auto.glyphsCollected > 0) {
+                // Turn toward cryptobox
+                auto.gyroTurn(1.0, 90 + angleAdjust, AutoHelper.P_TURN_COEFF);
+            }
 
             while(robot.gripper.isFlipping()) sleep(1);
 
@@ -364,7 +370,7 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
             robot.lift.setLiftHeight(0.0);
 
             // Drive to cryptobox
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, 18, 2, true, 90 + angleAdjust);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, auto.glyphsCollected > 0? 18: -14, 2, true,  auto.glyphsCollected > 0? (90 + angleAdjust) : -90);
 
 
             if (auto.glyphsCollected > 0 && auto.autoTime.seconds() < 29) {
@@ -391,10 +397,11 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
 
     @Override
     public void park() throws InterruptedException {
-        //if (auto.glyphsCollected == 0){
-        //    auto.gyroTurn(1.0, -90, AutoHelper.P_TURN_COEFF);
-        //}
-          }
+        // Turn toward glyph pile if no extra glyphs picked up
+        if (auto.glyphsCollected == 0){
+            auto.gyroTurn(1.0, -90, AutoHelper.P_TURN_COEFF);
+            }
+        }
 
     @Override
     public void readyForRelic() {
