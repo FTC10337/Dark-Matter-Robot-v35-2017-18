@@ -144,11 +144,13 @@ public abstract class Auto_Master extends LinearOpMode {
 
         if (auto.glyphsCollected == 1){
 
+            RobotLog.i("DM10337 -- Collected ONE glyph. Starting attempt to collect SECOND glyph.");
             collectSecondGlyph();
-
             loadSecondGlyph();
 
         } else {
+
+            RobotLog.i("DM10337 -- FAILED to collect glyph. Attempting again.");
             attemptGlyphCollect();
             loadFirstGlyph();
         }
@@ -171,7 +173,7 @@ public abstract class Auto_Master extends LinearOpMode {
 
     public void readVuMark() {
         vuMark = RelicRecoveryVuMark.from(auto.relicTemplate);
-
+        RobotLog.i("DM10337 -- VuMark: " + vuMark);
         telemetry.addData("VuMark", "%s visible", vuMark);
 
     }

@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.util.RobotLog;
 
 /**
  *    Everything related to the lift motor
@@ -89,6 +90,7 @@ public class Relic {
 
     // Set relic arm to OUT position
     public void setRelicExtensionOut() {
+        RobotLog.i("DM10337 -- Set Relic OUT");
         relicMotor.setTargetPosition(RELIC_OUT_POS);
         relicMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         relicMotor.setPower(RELIC_POWER);
@@ -97,6 +99,7 @@ public class Relic {
 
     // Set relic arm to IN position
     public void setRelicExtensionIn() {
+        RobotLog.i("DM10337 -- Set Relic IN");
         relicMotor.setTargetPosition(RELIC_IN_POS);
         relicMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         relicMotor.setPower(RELIC_POWER);
@@ -109,19 +112,34 @@ public class Relic {
     }
 
     // Set relic grip open
-    public void setRelicGripOpen() { relicGrip.setPosition(RELIC_GRIP_OPEN);}
+    public void setRelicGripOpen() {
+        RobotLog.i("DM10337 -- Set Relic OPEN");
+        relicGrip.setPosition(RELIC_GRIP_OPEN);
+    }
 
     // Set relic grip closed
-    public void setRelicGripClose() { relicGrip.setPosition(RELIC_GRIP_CLOSE);}
+    public void setRelicGripClose() {
+        RobotLog.i("DM10337 -- Set Relic CLOSED");
+        relicGrip.setPosition(RELIC_GRIP_CLOSE);
+    }
 
     // Set relic grip to grab
-    public void setRelicGripGrab() { relicGrip.setPosition(RELIC_GRIP_GRAB);}
+    public void setRelicGripGrab() {
+        RobotLog.i("DM10337 -- Set Relic GRAB");
+        relicGrip.setPosition(RELIC_GRIP_GRAB);
+    }
 
     // Set relic pivot to home position
-    public void setRelicPivotHome() { relicPivot.setPosition(RELIC_PIVOT_HOME);}
+    public void setRelicPivotHome() {
+        RobotLog.i("DM10337 -- Set Relic pivot HOME");
+        relicPivot.setPosition(RELIC_PIVOT_HOME);
+    }
 
     // Set relic pivot to out position
-    public void setRelicPivotOut() { relicPivot.setPosition(RELIC_PIVOT_OUT);}
+    public void setRelicPivotOut() {
+        RobotLog.i("DM10337 -- Set Relic pivot OUT");
+        relicPivot.setPosition(RELIC_PIVOT_OUT);
+    }
 
     // Set relic pivot to grab position
     public void setRelicPivotGrabPos() {
@@ -135,6 +153,8 @@ public class Relic {
             relicPivotGrabPos = 0.25;
         }
         relicPivot.setPosition(relicPivotGrabPos);
+        RobotLog.i("DM10337 -- Set Relic to GRAB pivot position: " + relicPivotGrabPos);
+
     }
 
     // Set relic pivot to grab position
@@ -151,10 +171,14 @@ public class Relic {
             relicPivotDropPos = 0.25;
         }
         relicPivot.setPosition(relicPivotDropPos);
+        RobotLog.i("DM10337 -- Set Relic to DROP pivot position: " + relicPivotDropPos);
     }
 
     // Set relic pivot to kickstand position
-    public void setRelicPivotKickstand() { relicPivot.setPosition(RELIC_PIVOT_KICKSTAND);}
+    public void setRelicPivotKickstand() {
+        RobotLog.i("DM10337 -- Set Relic to kickstand position");
+        relicPivot.setPosition(RELIC_PIVOT_KICKSTAND);
+    }
 
     // Manually rotate relic pivot
     public void rotate(double speed) {

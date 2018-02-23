@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -218,6 +219,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
             autoParking = true;
             autoPark(0.6, -20.0);
             parkTimer.reset();
+            RobotLog.i("DM10337 -- AUTO PARKING ENGAGED!");
         }
 
         // Override auto park
@@ -244,6 +246,10 @@ public class TeleOpDM18_Janus_AP extends OpMode {
             if (!init_TeleOp && !init_Reset && robot.gripper.isPusherOut()) {
                 slowDriveTrain = true;
                 slowDriveTrainOveride = true;
+                robot.intake.setOpen();
+                if (robot.intake.isIntakeInOn){
+                     robot.intake.setStop();
+                }
             } else slowDriveTrain = false;
 
             // Driver 1 ability to slow down drivetrain
@@ -310,6 +316,8 @@ public class TeleOpDM18_Janus_AP extends OpMode {
 
             // SETS DRIVER 2 to RELIC MODE
             if (gamepad2.start && gamepad2.y && !isButtonPressed) {
+
+                RobotLog.i("DM10337 -- SWITCHING to RELIC mode");
 
                 isButtonPressed = true;
 
@@ -514,6 +522,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
 
             // RESET auto load sequence. To be used by both drivers is something in sequence goes wrong
             if (gamepad2.y && gamepad2.b && !isButtonPressed && !init_TeleOp) {
+                RobotLog.i("DM10337 -- RESET glyph mechanism");
                 isButtonPressed = true;
                 autoMove = true;
                 init_Reset = true;
@@ -532,8 +541,6 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                 switch (nStates) {
 
                     case RESET_1: // OPEN INTAKE
-                        telemetry.clearAll();
-                        telemetry.addData("Reset: ", "1");
 
                         slowDriveTrainOveride = false;
                         glyphBump = false;
@@ -542,49 +549,54 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                             robot.intake.setOpen();
                             robot.gripper.setBothOpen();
                             nStates = States.RESET_2;
+                            RobotLog.i("DM10337 -- RESET glyph sequence 1 complete");
                         } else {
                             robot.gripper.setBothOpen();
                             nStates = States.RESET_2;
+                            RobotLog.i("DM10337 -- RESET glyph sequence 1 complete");
                         }
                         break;
 
                     case RESET_2: // LIFT ABOVE INTAKE IF NOT ALREADY
-                        telemetry.clearAll();
-                        telemetry.addData("Reset: ", "2");
+
                         if (!robot.intake.isMoving() && !robot.gripper.isReleasing()) {
                             if (robot.lift.distFromBottom() < 5.0) {
                                 robot.lift.setLiftHeight(5.5);
                                 nStates = States.RESET_2_1;
-                            } else nStates = States.RESET_2_1;
+                                RobotLog.i("DM10337 -- RESET glyph sequence 2 complete");
+                            } else {
+                                nStates = States.RESET_2_1;
+                                RobotLog.i("DM10337 -- RESET glyph sequence 2 complete");
+                            }
                         }
                         break;
 
                     case RESET_2_1: // PUSHER IN & OPEN GRIPPERS
-                        telemetry.clearAll();
-                        telemetry.addData("Reset: ", "2_1");
+
                         if (robot.lift.distFromBottom() > 5.0) {
                             robot.gripper.setExtendIn();
                             robot.gripper.setBothOpen();
                             topGripisClosed = false;
                             nStates = States.RESET_3;
+                            RobotLog.i("DM10337 -- RESET glyph sequence 2_1 complete");
                         }
                         break;
 
                     case RESET_3:
-                        telemetry.clearAll();
-                        telemetry.addData("Reset: ", "3");
+
                         if (!robot.gripper.isExtending()) {
                             robot.lift.setLiftBtm();
                             nStates = States.RESET_4;
+                            RobotLog.i("DM10337 -- RESET glyph sequence 3 complete");
                         }
                         break;
 
                     case RESET_4:
-                        telemetry.clearAll();
-                        telemetry.addData("Reset: ", "4");
+
                         if (robot.lift.reachedFloor()) {
                             if (robot.lift.resetFloorPos()) {
                                 init_Reset = false;
+                                RobotLog.i("DM10337 -- RESET glyph sequence 4 complete");
                             }
                         }
 
@@ -597,6 +609,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
 
             // INITIATE AUTO LOAD - DRIVER 2 - Can be activated when glyph is detected
             if (gamepad2.a && glyphDetected && !isButtonPressed && !init_TeleOp && !init_AutoLoad) {
+                RobotLog.i("DM10337 -- Start AUTOLOAD sequence");
                 isButtonPressed = true;
                 nStates = States.AUTO_LOAD_INIT;
                 init_AutoLoad = true;
@@ -620,7 +633,8 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                             // Move lift down to BTM limit switch
                             if (robot.lift.resetFloorPos()) {
                                 nStates = States.AUTO_LOAD_1;
-                            }
+                                RobotLog.i("DM10337 -- AUTO LOAD Seqeunce Init Complete");
+                           }
                         }
                         break;
 
@@ -629,19 +643,20 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                         if (!robot.gripper.isBtmClosed()) {
                             robot.gripper.setBtmClosed();
                             nStates = States.AUTO_LOAD_1_2;
+                            RobotLog.i("DM10337 -- AUTO LOAD Seqeunce 1 Complete");
                         }
                         break;
 
                     case AUTO_LOAD_1_2:
                         // Open intake after gripper has closed
-                        telemetry.clearAll();
-                        telemetry.addData("Top is closed:", topGripisClosed);
                         if (!robot.gripper.btmIsMoving()) {
                             robot.intake.setOpen();
                             if (!topGripisClosed) {
                                 nStates = States.AUTO_LOAD_2;
+                                RobotLog.i("DM10337 -- AUTO LOAD Seqeunce 1_2 Complete");
                             } else {
                                 nStates = States.AUTO_LOAD_SECOND;
+                                RobotLog.i("DM10337 -- AUTO LOAD Seqeunce 1_2 Complete");
                             }
                         }
                         break;
@@ -652,6 +667,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                         if (!robot.intake.isMoving()) {
                             robot.lift.setLiftHeight(8.25);
                             nStates = States.AUTO_LOAD_3;
+                            RobotLog.i("DM10337 -- AUTO LOAD Seqeunce 2 Complete");
                         }
                         break;
 
@@ -663,6 +679,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                             robot.gripper.flip(); // Flip gripper
                             topGripisClosed = true;
                             nStates = States.AUTO_LOAD_4; // Go to next state in auto load sequence
+                            RobotLog.i("DM10337 -- AUTO LOAD Seqeunce 3 Complete");
                         }
                         break;
 
@@ -672,6 +689,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                             robot.lift.setLiftHeight(0.5); // Move lift to btm position after gripper is done flipping
                             //nStates = States.AUTO_LOAD_5;
                             init_AutoLoad = false;
+                            RobotLog.i("DM10337 -- AUTO LOAD Seqeunce 4 Complete");
                         }
                         break;
 
@@ -679,6 +697,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                         if (robot.lift.reachedFloor()) {
                             robot.lift.resetFloorPos();
                             init_AutoLoad = false;
+                            RobotLog.i("DM10337 -- AUTO LOAD Seqeunce 5 Complete");
                         }
                         break;
 
@@ -687,6 +706,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                         if (!robot.intake.isMoving()) {
                             robot.lift.setLiftHeight(1.0); // Lift above ground to drive
                             init_AutoLoad = false;
+                            RobotLog.i("DM10337 -- AUTO LOAD Seqeunce SECOND Complete");
                         }
                         break;
                 }
@@ -709,6 +729,8 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                 // set DRIVE MODE to GLYPH
                 relicMode = false;
                 glyphMode = true;
+                RobotLog.i("DM10337 -- SWITCHING to GLYPH mode");
+
             }
 
             // / MANUAL MOVEMENT OF RELIC EXTENSION

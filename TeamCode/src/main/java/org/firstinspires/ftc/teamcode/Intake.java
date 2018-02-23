@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -105,7 +106,7 @@ public class Intake {
      */
     public void setOpen() {
         if (isClosed()) {
-            intakeLeftServo.setPosition(INTAKE_LEFT_RELEASE);
+            RobotLog.i("DM10337 -- Intake set to OPEN");intakeLeftServo.setPosition(INTAKE_LEFT_RELEASE);
             intakeRightServo.setPosition(INTAKE_RIGHT_RELEASE);
             isIntakeClosed = false;
             timer.reset();
@@ -118,6 +119,7 @@ public class Intake {
      */
     public void setClosed() {
         if (!isClosed()){
+            RobotLog.i("DM10337 -- Intake set to CLOSED");
             intakeLeftServo.setPosition(INTAKE_LEFT_HOME);
             intakeRightServo.setPosition(INTAKE_RIGHT_HOME);
             isIntakeClosed = true;
@@ -134,6 +136,7 @@ public class Intake {
      * Set the intake feed wheels in
      */
     public void setIn() {
+        RobotLog.i("DM10337 -- Intake set IN");
         rInPower = MIN_IN_POWER;
         lInPower = MAX_IN_POWER;
         intakeLeftMotor.setPower(lInPower);
@@ -214,6 +217,7 @@ public class Intake {
      * Stop the intake feed wheels
      */
     public void setStop() {
+        RobotLog.i("DM10337 -- Intake set STOP");
         intakeLeftMotor.setPower(0.0);
         intakeRightMotor.setPower(0.0);
         isIntakeInOn = false;
@@ -224,6 +228,7 @@ public class Intake {
      * Feed the intake in reverse
      */
     public void setOut() {
+        RobotLog.i("DM10337 -- Intake set OUT");
         intakeLeftMotor.setPower(-0.60);
         intakeRightMotor.setPower(-1.0);
         isIntakeInOn = false;

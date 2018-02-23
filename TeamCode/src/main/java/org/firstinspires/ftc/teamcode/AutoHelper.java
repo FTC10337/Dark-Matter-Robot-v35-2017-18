@@ -688,14 +688,19 @@ public class AutoHelper {
 
             if ((robot.intake.distRight() < 15.0) || (robot.intake.distLeft() < 15.0)) {
                 stop = true;
+                RobotLog.i("DM10337 -- Detected Glyph - right dist: " + robot.intake.distRight());
+                RobotLog.i("DM10337 -- Detected Glyph - left dist: " + robot.intake.distLeft());
             }
 
             if ((robot.intake.distRight() > 18.0) || (robot.intake.distLeft() > 18.0)) {
                 if (cycleTime.milliseconds() > 750 && cycleTime.milliseconds() < 1000){
                     robot.intake.setOpen();
+                    RobotLog.i("DM10337 -- No glyphs detected yet. Cycling intake open.");
+
                 } else if (cycleTime.milliseconds() > 1000) {
                     robot.intake.setClosed();
                     cycleTime.reset();
+                    RobotLog.i("DM10337 -- No glyphs detected yet. Cycling intake close.");
                 }
 
             } else robot.intake.setClosed();
@@ -780,6 +785,7 @@ public class AutoHelper {
         int averageOldPos = (left1Pos + left2Pos + right1Pos + right2Pos) / 4;
         int difference = Math.abs(averageOldPos - averageNewPos);
         int inches = (int) (difference / robot.COUNTS_PER_INCH);
+        RobotLog.i("DM10337 -- Returning to previous position. Driving back " + inches + " inches");
         return inches;
     }
 
@@ -912,6 +918,8 @@ public class AutoHelper {
 
     public void autoLoadFirstGlyph(boolean closeBoth) {
 
+        RobotLog.i("DM10337 -- Autoloading FIRST glyph.");
+
         while (!robot.lift.resetFloorPos()) sleep (1);
 
         if (closeBoth) {
@@ -931,6 +939,8 @@ public class AutoHelper {
 
     public void flipToLoadSecondGlyph() throws InterruptedException {
 
+        RobotLog.i("DM10337 -- Flipping to load second glyph.");
+
         robot.lift.setLiftTop();
 
         while (robot.lift.distFromBottom() < 7.75) sleep(1);;
@@ -948,6 +958,8 @@ public class AutoHelper {
 
     public void autoLoadSecondGlyph(RelicRecoveryVuMark vuMark) {
 
+        RobotLog.i("DM10337 -- Autoloading SECOND glyph.");
+
         while (!robot.lift.resetFloorPos()) sleep(1);;
 
         robot.gripper.setBtmClosed();
@@ -958,19 +970,12 @@ public class AutoHelper {
 
         while (robot.intake.isMoving()) sleep(1);;
 
-        //if ((firstGlyphColor + secondGlyphColor == 1) && firstGlyphColor == 1 && (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN)) {
-
-        //    robot.lift.setLiftHeight(8.25);
-
-        //    while (robot.lift.distFromBottom() < 7.75) sleep(1);;
-
-        //    robot.gripper.flip();
-        //
-        // } else
         robot.lift.setLiftHeight(8.25);
     }
 
     public void squareGlyph(double inSpeed, double outSpeed, double difference, double timeOut) {
+
+        RobotLog.i("DM10337 -- Squaring glyph.");
 
         runtime.reset();
 
@@ -984,6 +989,8 @@ public class AutoHelper {
             }
         }
 
+        RobotLog.i("DM10337 -- Squaring Complete - difference: " + difference);
+        RobotLog.i("DM10337 -- Squaring Complete - timeOut: " + runtime.seconds());
         robot.intake.intakeRightMotor.setPower(0.30);
         robot.intake.intakeLeftMotor.setPower(0.30);
     }
@@ -992,27 +999,35 @@ public class AutoHelper {
         if (glyphsCollected == 1){
             if (firstGlyphColor + secondGlyphColor == 0) {
                 // one gray
+                RobotLog.i("DM10337 -- Cipher is 1 - One Gray.");
                 return 1;
             } else if (firstGlyphColor + secondGlyphColor == 1) {
                 // one brown
+                RobotLog.i("DM10337 -- Cipher is 2 - One Brown.");
                 return 2;
             }
         }
         else if (glyphsCollected == 2) {
             if(firstGlyphColor + secondGlyphColor == 2) {
                 //both brown
+                RobotLog.i("DM10337 -- Cipher is 3 - Two Browns.");
+
                 return 3;
             } else if (firstGlyphColor == 1 && secondGlyphColor == 0) {
                 //one brown on top & one gray on bottom
+                RobotLog.i("DM10337 -- Cipher is 4 - One Brown TOP / One Gray BOTTOM.");
                 return 4;
             } else if (firstGlyphColor == 0 && secondGlyphColor == 1){
                 //one gray on top & one brown on bottom
+                RobotLog.i("DM10337 -- Cipher is 5 - One Gray TOP / One Brown BOTTOM.");
                 return 5;
             } else if (firstGlyphColor + secondGlyphColor == 0) {
                 // both gray
+                RobotLog.i("DM10337 -- Cipher is 6 - Two Grays.");
                 return 6;
             }
         }
+        RobotLog.i("DM10337 -- Cipher is 0 - NO CIPHER DETERMINED! OH NOES.");
         return 0;
     }
 

@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.util.RobotLog;
 
 /**
  *    Everything related to the lift motor
@@ -96,6 +97,7 @@ public class Lift {
 
     // Set lift position to top
     public void setLiftTop() {
+        RobotLog.i("DM10337 -- Set lift to TOP");
         targetPos = LIFT_TOP_POS - liftOffset;
         liftMotor.setTargetPosition(targetPos);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -106,6 +108,7 @@ public class Lift {
 
     // Set lift position to middle
     public void setLiftMid() {
+        RobotLog.i("DM10337 -- Set lift to MID");
         targetPos = LIFT_MID_POS - liftOffset;
         liftMotor.setTargetPosition(targetPos);
 
@@ -126,6 +129,7 @@ public class Lift {
 
     // Set lift position to bottom
     public void setLiftBtm() {
+        RobotLog.i("DM10337 -- Set lift to BOTTOM");
         targetPos = LIFT_BTM_POS - liftOffset;
         liftMotor.setTargetPosition(targetPos);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -139,6 +143,7 @@ public class Lift {
     }
 
     public void setLiftHeight(double height) {
+        RobotLog.i("DM10337 -- Set lift to height " + height);
         height = Range.clip(height, 1.0, 11.0);
         targetPos = LIFT_BTM_POS - liftOffset + (int)(height * LIFT_COUNTS_PER_INCH);
 
@@ -168,6 +173,7 @@ public class Lift {
 
     // Hard Stop Lift
     public void stopLift() {
+
         runDown = false;
         runUp = false;
         if (liftMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
@@ -231,6 +232,12 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
 
             if (auto.glyphsCollected > 0 && auto.autoTime.seconds() < 29) {
 
+                if (auto.glyphsCollected == 1) {
+                    RobotLog.i("DM10337 -- Placing ONE glyph. Auto timer @ " + auto.autoTime.seconds());
+                } else if (auto.glyphsCollected == 2) {
+                    RobotLog.i("DM10337 -- Placing TWO glyphs. Auto timer @ " + auto.autoTime.seconds());
+                }
+
                 // Turn to place glyph
                 auto.gyroTurn(1.0, 90 + angleAdjust, AutoHelper.P_TURN_COEFF);
 
@@ -308,6 +315,12 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
 
             if (auto.glyphsCollected > 0 && auto.autoTime.seconds() < 29) {
 
+                if (auto.glyphsCollected == 1) {
+                    RobotLog.i("DM10337 -- Placing ONE glyph. Auto timer @ " + auto.autoTime.seconds());
+                } else if (auto.glyphsCollected == 2) {
+                    RobotLog.i("DM10337 -- Placing TWO glyphs. Auto timer @ " + auto.autoTime.seconds());
+                }
+
                 auto.autoTime.reset();
                 // lift to floor
                 while(!robot.lift.resetFloorPos() || auto.autoTime.milliseconds() < 150) sleep(1);
@@ -375,6 +388,12 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
 
             if (auto.glyphsCollected > 0 && auto.autoTime.seconds() < 29) {
 
+                if (auto.glyphsCollected == 1) {
+                    RobotLog.i("DM10337 -- Placing ONE glyph. Auto timer @ " + auto.autoTime.seconds());
+                } else if (auto.glyphsCollected == 2) {
+                    RobotLog.i("DM10337 -- Placing TWO glyphs. Auto timer @ " + auto.autoTime.seconds());
+                }
+
                 auto.autoTime.reset();
                 // lift to floor
                 while(!robot.lift.resetFloorPos() || auto.autoTime.milliseconds() < 150) sleep(1);
@@ -397,10 +416,9 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
 
     @Override
     public void park() throws InterruptedException {
-        // Turn toward glyph pile if no extra glyphs picked up
         if (auto.glyphsCollected == 0){
-            auto.gyroTurn(1.0, -90, AutoHelper.P_TURN_COEFF);
-            }
+            RobotLog.i("DM10337 -- No extra glyphs to place. Parked");
+           }
         }
 
     @Override

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoControllerEx;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 /**
  *    Everything related to the gripper
@@ -132,6 +133,7 @@ public class Gripper {
      */
     public void setTopOpen() {
 
+        RobotLog.i("DM10337 -- Gripper TOP set to OPEN");
         topGrip.setPosition(isGripFlipped ? B_GRIP_OPEN: P_GRIP_OPEN);
         topTimer.reset();
     }
@@ -141,6 +143,7 @@ public class Gripper {
      */
     public void setBtmOpen() {
 
+        RobotLog.i("DM10337 -- Gripper BOTTOM set to OPEN");
         btmGrip.setPosition(isGripFlipped ? P_GRIP_OPEN: B_GRIP_OPEN);
         btmTimer.reset();
     }
@@ -162,11 +165,13 @@ public class Gripper {
     }
 
     public void setBtmPartialOpen() {
+        RobotLog.i("DM10337 -- Gripper BOTTOM set to PARTIAL OPEN");
         btmGrip.setPosition(isGripFlipped ? P_GRIP_PARTIAL_OPEN: B_GRIP_PARTIAL_OPEN);
         btmTimer.reset();
     }
 
     public void setTopPartialOpen() {
+        RobotLog.i("DM10337 -- Gripper TOP set to PARTIAL OPEN");
         topGrip.setPosition(isGripFlipped ? B_GRIP_PARTIAL_OPEN: P_GRIP_PARTIAL_OPEN);
         topTimer.reset();
     }
@@ -176,6 +181,7 @@ public class Gripper {
      */
     public void setExtendOut() {
 
+        RobotLog.i("DM10337 -- Gripper set to OUT position");
         extendGrip.setPosition(GRIP_EXTEND_OUT);
         extendTimer.reset();
     }
@@ -193,7 +199,7 @@ public class Gripper {
      * Retract gripper
      */
     public void setExtendIn() {
-
+        RobotLog.i("DM10337 -- Gripper set to HOME position");
         extendGrip.setPosition(GRIP_EXTEND_HOME);
         extendTimer.reset();
     }
@@ -221,6 +227,7 @@ public class Gripper {
      */
     public void setTopClosed() {
 
+        RobotLog.i("DM10337 -- Gripper TOP set to CLOSED");
         topGrip.setPosition(isGripFlipped ? B_GRIP_CLOSED: P_GRIP_CLOSED);
         topTimer.reset();
     }
@@ -229,7 +236,7 @@ public class Gripper {
      * Close whichever gripper is currently on bottom
      */
     public void setBtmClosed() {
-
+        RobotLog.i("DM10337 -- Gripper BOTTOM set to CLOSED");
         btmGrip.setPosition(isGripFlipped ? P_GRIP_CLOSED: B_GRIP_CLOSED);
         btmTimer.reset();
     }
@@ -270,6 +277,7 @@ public class Gripper {
     public boolean isPusherOut() { return (Math.abs(extendGrip.getPosition() - GRIP_EXTEND_HOME) > 0.02); }
 
     public void flip() {
+        RobotLog.i("DM10337 -- Flipping Gripper");
         if (isGripFlipped) {
             // Was flipped so turn it back upright
             setFlipped(false);
@@ -286,12 +294,14 @@ public class Gripper {
             isGripFlipped = true;
             topGrip = blackGrip;
             btmGrip = purpleGrip;
+            RobotLog.i("DM10337 -- Gripper FLIPPED. Black Up!");
         }
         else {
             rotateServo.setPosition(GRIP_ROTATE_NORMAL);
             isGripFlipped = false;
             topGrip = purpleGrip;
             btmGrip = blackGrip;
+            RobotLog.i("DM10337 -- Gripper FLIPPED. Purple Up!");
         }
         flipTimer.reset();          // Start a flipTimer so we can check later if it might be moving
     }
