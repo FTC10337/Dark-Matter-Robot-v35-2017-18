@@ -205,29 +205,55 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
             // Determine where to place glyphs based on cipher and sets angleAdjust
             int cipher = auto.determineCipher();
 
-            switch (cipher) {
+            if (auto.keyGlyph == 0){
+                switch (cipher) {
 
-                case 1: // one gray - place left
-                    angleAdjust = 25;
-                    break;
-                case 2: // one brown - place right
-                    angleAdjust = -25;
-                    break;
-                case 3: // two brown - place right
-                    angleAdjust = -25;
-                    break;
-                case 4: // brown top gray bottom - flip & place right
-                    robot.lift.setLiftHeight(8.25);
-                    while (robot.lift.distFromBottom() < 7.75) sleep(1);
-                    robot.gripper.flip();
-                    angleAdjust = -25;
-                    break;
-                case 5: // gray top brown bottom - place right
-                    angleAdjust = -25;
-                    break;
-                case 6: // two gray - place left
-                    angleAdjust = 25;
-                    break;
+                    case 1: // one gray - place left
+                        angleAdjust = 25;
+                        break;
+                    case 2: // one brown - place right
+                        angleAdjust = -25;
+                        break;
+                    case 3: // two brown - place right
+                        angleAdjust = -25;
+                        break;
+                    case 4: // brown top gray bottom - flip & place right
+                        robot.lift.setLiftHeight(8.25);
+                        while (robot.lift.distFromBottom() < 7.75) sleep(1);
+                        robot.gripper.flip();
+                        angleAdjust = -25;
+                        break;
+                    case 5: // gray top brown bottom - place right
+                        angleAdjust = -25;
+                        break;
+                    case 6: // two gray - place left
+                        angleAdjust = 25;
+                        break;
+                }
+            } else if (auto.keyGlyph == 1) {
+                switch (cipher) {
+                    case 1: // one gray - place right
+                        angleAdjust = -25;
+                        break;
+                    case 2: // one brown - place left
+                        angleAdjust = 25;
+                        break;
+                    case 3: // two brown - place left
+                        angleAdjust = 25;
+                        break;
+                    case 4: // brown top gray bottom - right
+                        angleAdjust = -25;
+                        break;
+                    case 5: // gray top brown bottom - place right
+                        robot.lift.setLiftHeight(8.25);
+                        while (robot.lift.distFromBottom() < 7.75) sleep(1);
+                        robot.gripper.flip();
+                        angleAdjust = -25;
+                        break;
+                    case 6: // two gray - place left
+                        angleAdjust = 25;
+                        break;
+                }
             }
 
             if (auto.glyphsCollected > 0 && auto.autoTime.seconds() < 29) {
@@ -275,30 +301,58 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
             // Determine where to place glyphs based on cipher and set angleAdjust
             int cipher = auto.determineCipher();
 
-            switch (cipher) {
+            if (auto.keyGlyph == 0){
+                switch (cipher) {
 
-                case 1: // one gray - place right
-                    angleAdjust = -29;
-                    break;
-                case 2: // one brown - place center ************* NEED ANGLE TESTING SINCE WE'VE NEVER TRIED TO PLACE CENTER
-                    angleAdjust = -29;
-                    break;
-                case 3: // two brown - place right
-                    angleAdjust = -29;
-                    break;
-                case 4: // brown top gray bottom - place right
-                    angleAdjust = -29;
-                    break;
-                case 5: // gray top brown bottom - flip & place right
-                    robot.lift.setLiftHeight(8.25);
-                    while (robot.lift.distFromBottom() < 7.75) sleep(1);
-                    robot.gripper.flip();
-                    angleAdjust = -29;
-                    break;
-                case 6: // two gray - place right*** NO CIPHER
-                    angleAdjust = -29;
-                    break;
+                    case 1: // one gray - place right
+                        angleAdjust = -29;
+                        break;
+                    case 2: // one brown - place center ************* NEED ANGLE TESTING SINCE WE'VE NEVER TRIED TO PLACE CENTER
+                        angleAdjust = -29;
+                        break;
+                    case 3: // two brown - place right
+                        angleAdjust = -29;
+                        break;
+                    case 4: // brown top gray bottom - place right
+                        angleAdjust = -29;
+                        break;
+                    case 5: // gray top brown bottom - flip & place right
+                        robot.lift.setLiftHeight(8.25);
+                        while (robot.lift.distFromBottom() < 7.75) sleep(1);
+                        robot.gripper.flip();
+                        angleAdjust = -29;
+                        break;
+                    case 6: // two gray - place right*** NO CIPHER
+                        angleAdjust = -29;
+                        break;
+                }
+            } else if (auto.keyGlyph == 1) {
+                switch (cipher) {
+                    case 1: // one gray - place center ************* NEED ANGLE TESTING SINCE WE'VE NEVER TRIED TO PLACE CENTER
+                        angleAdjust = -29;
+                        break;
+                    case 2: // one brown - place right
+                        angleAdjust = -29;
+                        break;
+                    case 3: // two brown - place right *** NO CIPHER
+                        angleAdjust = -29;
+                        break;
+                    case 4: // brown top gray bottom - flip & place right
+                        robot.lift.setLiftHeight(8.25);
+                        while (robot.lift.distFromBottom() < 7.75) sleep(1);
+                        robot.gripper.flip();
+                        angleAdjust = -29;
+                        break;
+                    case 5: // gray top brown bottom - flip & place right
+                        angleAdjust = -29;
+                        break;
+                    case 6: // two gray - place right
+                        angleAdjust = -29;
+                        break;
+                }
             }
+
+
 
             if (auto.glyphsCollected > 0) {
                 // Turn toward cryptobox
@@ -346,31 +400,56 @@ public class Auto_Blue_R_3G_Cipher extends Auto_Master {
             // Determine where to place glyphs based on cipher and set angleAdjust
             int cipher = auto.determineCipher();
 
-            switch (cipher) {
+            if (auto.keyGlyph == 0){
+                switch (cipher) {
+                    case 1: // one gray - place left
+                        angleAdjust = 29;
+                        break;
+                    case 2: // one brown - place center ************* NEED ANGLE TESTING SINCE WE'VE NEVER TRIED TO PLACE CENTER
+                        angleAdjust = 29;
+                        break;
+                    case 3: // two brown - place left
+                        angleAdjust = 29;
+                        break;
+                    case 4: // brown top gray bottom - place left
+                        angleAdjust = 29;
+                        break;
+                    case 5: // gray top brown bottom - flip & place left
+                        robot.lift.setLiftHeight(8.25);
+                        while (robot.lift.distFromBottom() < 7.75) sleep(1);
+                        robot.gripper.flip();
+                        angleAdjust = 29;
+                        break;
+                    case 6: // two gray - place left *** NO CIPHER
+                        angleAdjust = 29;
+                        break;
+                }
 
-                case 1: // one gray - place left
-                    angleAdjust = 29;
-                    break;
-                case 2: // one brown - place center ************* NEED ANGLE TESTING SINCE WE'VE NEVER TRIED TO PLACE CENTER
-                    angleAdjust = 29;
-                    break;
-                case 3: // two brown - place left
-                    angleAdjust = 29;
-                    break;
-                case 4: // brown top gray bottom - place left
-                    angleAdjust = 29;
-                    break;
-                case 5: // gray top brown bottom - flip & place left
-                    robot.lift.setLiftHeight(8.25);
-                    while (robot.lift.distFromBottom() < 7.75) sleep(1);
-                    robot.gripper.flip();
-                    angleAdjust = 29;
-                    break;
-                case 6: // two gray - place left *** NO CIPHER
-                    angleAdjust = 29;
-                    break;
+            } else if (auto.keyGlyph == 1){
+                switch (cipher) {
+                    case 1: // one gray - place center ************* NEED ANGLE TESTING SINCE WE'VE NEVER TRIED TO PLACE CENTER
+                        angleAdjust = 29;
+                        break;
+                    case 2: // one brown - place left
+                        angleAdjust = 29;
+                        break;
+                    case 3: // two brown - place left *** NO CIPHER
+                        angleAdjust = 29;
+                        break;
+                    case 4: // brown top gray bottom - flip & place left
+                        robot.lift.setLiftHeight(8.25);
+                        while (robot.lift.distFromBottom() < 7.75) sleep(1);
+                        robot.gripper.flip();
+                        angleAdjust = 29;
+                        break;
+                    case 5: // gray top brown bottom - place left
+                        angleAdjust = 29;
+                        break;
+                    case 6: // two gray - place left
+                        angleAdjust = 29;
+                        break;
+                }
             }
-
 
             if (auto.glyphsCollected > 0) {
                 // Turn toward cryptobox

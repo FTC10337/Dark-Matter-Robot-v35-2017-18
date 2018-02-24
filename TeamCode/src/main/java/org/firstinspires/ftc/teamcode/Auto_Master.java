@@ -132,6 +132,8 @@ public abstract class Auto_Master extends LinearOpMode {
 
      // Main robot auto sequence
 
+        auto.determineKeyGlyph();
+
         auto.processJewel();
 
         readVuMark();

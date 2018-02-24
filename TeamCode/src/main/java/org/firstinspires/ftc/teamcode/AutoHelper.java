@@ -74,8 +74,10 @@ public class AutoHelper {
     static final double     RED_MIN                 = -21.0;
     static final double     RED_MAX                 = 21.0;
 
-    // Variable for number of glyphs collected
+    // Variable for key glyph
+    int keyGlyph = 0;
 
+    // Variable for number of glyphs collected
     int glyphsCollected = 0;
     int firstGlyphColor = 0; // 0 for gray 1 for brown
     int secondGlyphColor = 0; // 0 for gray 1 for brown
@@ -1029,6 +1031,12 @@ public class AutoHelper {
         }
         RobotLog.i("DM10337 -- Cipher is 0 - NO CIPHER DETERMINED! OH NOES.");
         return 0;
+    }
+
+    public void determineKeyGlyph() {
+        keyGlyph = robot.intake.setGlyphColor();
+        if (keyGlyph == 0) RobotLog.i("DM10337 -- Key Glyph is GRAY.");
+        else if (keyGlyph == 1) RobotLog.i("DM10337 -- Key Glyph is BROWN.");
     }
 
     public boolean waitForSwitch() {
