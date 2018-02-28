@@ -33,36 +33,26 @@ public class Auto_Blue_L_3G extends Auto_Master {
             distAdjust = 0;
 
             // Drive forward to lineup with center cryptoglyph
-            if (iAmBlue()) {
-                auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? 13.515 : 12.165, 5.0, true, -90.0);            } else {
-                auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? 13.515 : 12.165, 5.0, true, -90.0);
-            }
+           auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? 13.515 : 12.165, 5.0, true, -90.0);
 
         }
         if (vuMark == RelicRecoveryVuMark.RIGHT) {
 
             angleAdjust = -10;
-            distAdjust = -3;
+            distAdjust= iAmBlue()? -3: 5;
 
             // Drive forward to lineup with center cryptoglyph
-            if (iAmBlue()) {
-                auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? 13.515 + 7.5 : 12.165 + 7.5, 5.0, true, -90.0);
-            } else {
-                auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? 13.515 + 7.5 : 12.165 + 7.5, 5.0, true, -90.0);
-            }
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? 13.515 + 7.5 : 12.165 - 7.5, 5.0, true, -90.0);
 
         }
         if (vuMark == RelicRecoveryVuMark.LEFT) {
 
             angleAdjust = 9;
-            distAdjust = 5;
+            distAdjust = iAmBlue()? 5: -3;
 
             // Drive forward to lineup with center cryptoglyph
-            if (iAmBlue()) {
-                auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? 13.515 - 7.5 : 12.165 - 7.5, 5.0, true, -90.0);
-            } else {
-                auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? 13.515 - 7.5 : 12.165 - 7.5, 5.0, true, -90.0);
-            }
+
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? 13.515 - 7.5 : 12.165 + 7.5, 5.0, true, -90.0);
 
         }
 
@@ -159,7 +149,7 @@ public class Auto_Blue_L_3G extends Auto_Master {
 
             //robot.lift.setLiftHeight(1.0);
 
-            auto.collectGlyph(AutoHelper.DRIVE_SPEED, 12,3, true, iAmBlue()? 220 + angleAdjust : 320 + angleAdjust);
+            auto.collectGlyph(AutoHelper.DRIVE_SPEED, 14,3, true, iAmBlue()? 220 + angleAdjust : 320 + angleAdjust);
         }
     }
 
@@ -211,12 +201,12 @@ public class Auto_Blue_L_3G extends Auto_Master {
         }
 
         if (vuMark == RelicRecoveryVuMark.RIGHT) {
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -inches + -25 + -distAdjust, 5, true, iAmBlue()? 220 + angleAdjust : 320 + angleAdjust);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? (-inches + -25 + -distAdjust):-inches + -25, 5, true, iAmBlue()? 220 + angleAdjust : 320 + angleAdjust);
             robot.lift.setLiftHeight(0.0);
         }
 
         if (vuMark == RelicRecoveryVuMark.LEFT) {
-            auto.encoderDrive(AutoHelper.DRIVE_SPEED, -inches + -25, 5, true, iAmBlue()? 220 + angleAdjust : 320 + angleAdjust);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()?(-inches + -25):(-inches + -25 + -distAdjust), 5, true, iAmBlue()? 220 + angleAdjust : 320 + angleAdjust);
             robot.lift.setLiftHeight(0.0);
         }
 
@@ -249,7 +239,7 @@ public class Auto_Blue_L_3G extends Auto_Master {
             }
             if (vuMark == RelicRecoveryVuMark.RIGHT){
                 // turn to place extra glyphs
-                auto.gyroTurn(AutoHelper.DRIVE_SPEED, iAmBlue()? 41: 139, AutoHelper.P_TURN_COEFF_180);
+                auto.gyroTurn(AutoHelper.DRIVE_SPEED, iAmBlue()? 41: 203, AutoHelper.P_TURN_COEFF_180);
 
                 auto.autoTime.reset();
                 // lift to floor
@@ -260,7 +250,7 @@ public class Auto_Blue_L_3G extends Auto_Master {
                 robot.gripper.setExtendOut();
                 sleep(200);
 
-                auto.encoderDrive(AutoHelper.DRIVE_SPEED, 14.0, 3.0, true, iAmBlue()? 41: 139);
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? 14.0 : 9.0, 3.0, true, iAmBlue()? 41: 203);
 
                 // Drop glyphs
                 robot.gripper.setBothOpen();
@@ -269,7 +259,7 @@ public class Auto_Blue_L_3G extends Auto_Master {
             }
             if (vuMark == RelicRecoveryVuMark.LEFT){
                 // turn to place extra glyphs
-                auto.gyroTurn(AutoHelper.DRIVE_SPEED, iAmBlue()? -23: 203, AutoHelper.P_TURN_COEFF_180);
+                auto.gyroTurn(AutoHelper.DRIVE_SPEED, iAmBlue()? -23 : 139, AutoHelper.P_TURN_COEFF_180);
 
                 auto.autoTime.reset();
                 // lift to floor
@@ -280,7 +270,7 @@ public class Auto_Blue_L_3G extends Auto_Master {
                 robot.gripper.setExtendOut();
                 sleep(200);
 
-                auto.encoderDrive(AutoHelper.DRIVE_SPEED, 9.0, 3.0, true, iAmBlue()? -23: 203);
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? 9.0 : 14.0, 3.0, true, iAmBlue()? -23: 139);
 
                 // Drop glyphs
                 robot.gripper.setBothOpen();

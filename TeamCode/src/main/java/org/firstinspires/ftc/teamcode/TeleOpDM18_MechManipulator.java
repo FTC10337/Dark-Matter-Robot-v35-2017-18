@@ -40,7 +40,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
  * This file provides basic Telop driving for a Pushbot robot.
@@ -397,6 +400,8 @@ public class TeleOpDM18_MechManipulator extends OpMode {
                 telemetry.addData("ldrive2: ", robot.leftDrive2.getCurrentPosition());
                 telemetry.addData("rdrive1: ", robot.rightDrive1.getCurrentPosition());
                 telemetry.addData("rdrive2: ", robot.rightDrive2.getCurrentPosition());
+                Orientation angles = robot.adaGyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+                telemetry.addData("Gyro: ", angles.firstAngle);
 
                 double left;
                 double right;

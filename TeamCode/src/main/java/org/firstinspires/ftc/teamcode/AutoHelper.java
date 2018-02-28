@@ -1035,8 +1035,8 @@ public class AutoHelper {
 
     public void determineKeyGlyph() {
         keyGlyph = robot.intake.setGlyphColor();
-        if (keyGlyph == 0) RobotLog.i("DM10337 -- Key Glyph is GRAY.");
-        else if (keyGlyph == 1) RobotLog.i("DM10337 -- Key Glyph is BROWN.");
+        if (keyGlyph == 0) RobotLog.i("DM10337 -- Key Glyph is GRAY. Alpha: " + robot.intake.glyphColorSensor.alpha());
+        else if (keyGlyph == 1) RobotLog.i("DM10337 -- Key Glyph is BROWN. Alpha: " + robot.intake.glyphColorSensor.alpha());
     }
 
     public boolean waitForSwitch() {

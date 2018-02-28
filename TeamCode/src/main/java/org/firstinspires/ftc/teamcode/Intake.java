@@ -308,7 +308,7 @@ public class Intake {
     }
 
     public int setGlyphColor() {
-        if (glyphColorSensor.alpha() > 85.0) return 0; // 0 for gray
+        if (glyphColorSensor.alpha() > 70.0) return 0; // 0 for gray
         else return 1; // 1 for brown
     }
 
