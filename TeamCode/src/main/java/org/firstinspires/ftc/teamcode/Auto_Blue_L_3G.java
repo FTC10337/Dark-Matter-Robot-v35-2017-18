@@ -149,7 +149,7 @@ public class Auto_Blue_L_3G extends Auto_Master {
 
             //robot.lift.setLiftHeight(1.0);
 
-            auto.collectGlyph(AutoHelper.DRIVE_SPEED, 14,3, true, iAmBlue()? 220 + angleAdjust : 320 + angleAdjust);
+            auto.collectGlyph(AutoHelper.DRIVE_SPEED, 14, 3, true, iAmBlue()? 220 + angleAdjust : 320 + angleAdjust);
         }
     }
 
