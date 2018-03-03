@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
 /**
@@ -53,7 +54,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  */
 
 @Autonomous(name="Auto Red L 3G Ground", group="DM18")
-//@Disabled
+@Disabled
 public class Auto__Red_L_3G_Ground extends Auto_Blue_R_3G_Ground {
 
 

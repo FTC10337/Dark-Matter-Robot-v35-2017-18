@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
 /**
@@ -53,7 +54,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  */
 
 @Autonomous(name="Auto Blue L 1G Relic", group="DM18")
-//@Disabled
+@Disabled
 public class Auto_Blue_L_1G_Relic extends Auto_Blue_L_1G {
 
 
