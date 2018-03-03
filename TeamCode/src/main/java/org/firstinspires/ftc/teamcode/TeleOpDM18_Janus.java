@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -57,7 +58,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 
 @TeleOp(name="Teleop Janus", group="DM18")
-//@Disabled
+@Disabled
 public class TeleOpDM18_Janus extends OpMode {
 
     /* Declare OpMode members. */
@@ -350,7 +351,7 @@ public class TeleOpDM18_Janus extends OpMode {
                 double liftPower = -gamepad2.right_stick_y;
                 liftPower = smoothPowerCurve(deadzone(liftPower, 0.20));
                 if (!robot.lift.liftLimitT.getState()) {
-                    liftPower = Range.clip(liftPower, -1, 0);
+                    liftPower = Range.clip(liftPower, -1, -0.15);
                 } else if (!robot.lift.liftLimitB.getState()) {
                     liftPower = Range.clip(liftPower, 0, 1);
                 } else liftPower = Range.clip(liftPower, -1, 1);

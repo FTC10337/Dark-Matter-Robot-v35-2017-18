@@ -110,6 +110,8 @@ public class TeleOpDM18_Janus_AP extends OpMode {
 
     int liftFloorTarget = 0;
 
+    double liftPower = 0;
+
     ElapsedTime intakeStopTimer = new ElapsedTime();
     ElapsedTime parkTimer = new ElapsedTime();
 
@@ -156,8 +158,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
 
 
         telemetry.addData("Relic Mode: ", relicMode);
-        telemetry.addData("Pivot: ", robot.relic.relicPivot.getPosition());
-        telemetry.addData("Relic Enc: ", robot.relic.relicMotor.getCurrentPosition());
+
         //telemetry.addData("alpha: " + robot.intake.glyphColorSensor.alpha(), "dist: " + robot.intake.intakeDistance);
         //telemetry.addData("LEFT_AVG: ", robot.intake.distSensor_leftAvg.average());
         //telemetry.addData("RIGHT_AVG: ", robot.intake.distSensor_rightAvg.average());
@@ -374,10 +375,10 @@ public class TeleOpDM18_Janus_AP extends OpMode {
 
                 // Move lift
                 robot.lift.liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                double liftPower = -gamepad2.right_stick_y;
+                liftPower = -gamepad2.right_stick_y;
                 liftPower = smoothPowerCurve(deadzone(liftPower, 0.20));
                 if (!robot.lift.liftLimitT.getState()) {
-                    liftPower = Range.clip(liftPower, -1, 0);
+                    liftPower = Range.clip(liftPower, -1, 0.15);
                 } else if (!robot.lift.liftLimitB.getState()) {
                     liftPower = Range.clip(liftPower, 0, 1);
                 } else liftPower = Range.clip(liftPower, -1, 1);
