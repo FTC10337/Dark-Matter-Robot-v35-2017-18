@@ -378,7 +378,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                 liftPower = -gamepad2.right_stick_y;
                 liftPower = smoothPowerCurve(deadzone(liftPower, 0.20));
                 if (!robot.lift.liftLimitT.getState()) {
-                    liftPower = Range.clip(liftPower, -1, 0.15);
+                    liftPower = Range.clip(liftPower, -1, 0);
                 } else if (!robot.lift.liftLimitB.getState()) {
                     liftPower = Range.clip(liftPower, 0, 1);
                 } else liftPower = Range.clip(liftPower, -1, 1);

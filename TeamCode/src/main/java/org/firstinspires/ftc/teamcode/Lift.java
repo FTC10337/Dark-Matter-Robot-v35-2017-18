@@ -199,7 +199,7 @@ public class Lift {
     public boolean resetFloorPos() {
         if (liftLimitB.getState()) {
             liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftMotor.setPower(-0.25);
+            liftMotor.setPower(-1.0);
             return false;
         } else {
             liftMotor.setPower(0.0);
