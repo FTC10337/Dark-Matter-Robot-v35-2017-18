@@ -143,28 +143,29 @@ public class Relic {
 
     // Set relic pivot to grab position
     public void setRelicPivotGrabPos() {
-        if (getExtensionEncoder() >= 7000) {
-            relicPivotGrabPos = 0.273;
+        if (getExtensionEncoder() >= 6900) {
+            relicPivotGrabPos = 0.2716;
         } else if (getExtensionEncoder() >= 6000) {
-            relicPivotGrabPos = 0.265;
+            relicPivotGrabPos = 0.2611;
         } else if (getExtensionEncoder() >= 5000) {
-            relicPivotGrabPos = 0.257;
+            relicPivotGrabPos = 0.2567;
+        } else if (getExtensionEncoder() >= 4000) {
+            relicPivotGrabPos = 0.2522;
         } else {
-            relicPivotGrabPos = 0.25;
+            relicPivotGrabPos = 0.2489;
         }
         relicPivot.setPosition(relicPivotGrabPos);
         RobotLog.i("DM10337 -- Set Relic to GRAB pivot position: " + relicPivotGrabPos);
-
     }
 
     // Set relic pivot to grab position
     public void setRelicPivotDropPos() {
         if (getExtensionEncoder() >= 7000) {
-            relicPivotDropPos = 0.277;
+            relicPivotDropPos = 0.2767;
         } else if (getExtensionEncoder() >= 6000) {
             relicPivotDropPos = 0.264;
         } else if (getExtensionEncoder() >= 5000) {
-            relicPivotDropPos = 0.256;
+            relicPivotDropPos = 0.257;
         } else if (getExtensionEncoder() >= 4000) {
             relicPivotDropPos = 0.253;
         } else {
