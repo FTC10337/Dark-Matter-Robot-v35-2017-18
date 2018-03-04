@@ -19,85 +19,115 @@ public class Auto_Blue_L_1G extends Auto_Master {
 
         // Drive off stone
         if (iAmBlue()) {
-            auto.encoderDrive(0.5, 25.0, 5.0, true, 0.0);
-            auto.gyroTurn(0.8, -90, auto.P_TURN_COEFF);
+            auto.encoderDrive(0.5, 28.0, 5.0, true, 0.0);
+            auto.gyroTurn(AutoHelper.DRIVE_SPEED, -90, auto.P_TURN_COEFF);
         } else {
-            auto.encoderDrive(0.5, -25.0, 5.0, true, 0.0);
-            auto.gyroTurn(0.8, -90, auto.P_TURN_COEFF);
-
+            auto.encoderDrive(0.5, -28.0, 5.0, true, 0.0);
+            auto.gyroTurn(AutoHelper.DRIVE_SPEED, -90, auto.P_TURN_COEFF);
         }
 
 
         if (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN) {
 
             angleAdjust = 0;
+            distAdjust = 0;
 
             // Drive forward to lineup with center cryptoglyph
-            if (iAmBlue()) {
-                auto.encoderDrive(0.5, 11.0, 5.0, true, -90.0);
-            } else {
-                auto.encoderDrive(0.5, 11.0, 5.0, true, -90.0);
-            }
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? 13.515 : 12.165, 5.0, true, -90.0);
 
         }
         if (vuMark == RelicRecoveryVuMark.RIGHT) {
 
-            angleAdjust = 0;
+            angleAdjust = -10;
+            distAdjust= iAmBlue()? -3: 5;
 
             // Drive forward to lineup with center cryptoglyph
-            if (iAmBlue()) {
-                auto.encoderDrive(0.5, 11.0 + 7.5, 5.0, true, -90.0);
-            } else {
-                auto.encoderDrive(0.5, 11.0 + 7.5, 5.0, true, -90.0);
-            }
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? 13.515 + 7.5 : 12.165 - 7.5, 5.0, true, -90.0);
 
         }
         if (vuMark == RelicRecoveryVuMark.LEFT) {
 
-            angleAdjust = 0;
+            angleAdjust = 9;
+            distAdjust = iAmBlue()? 5: -3;
 
             // Drive forward to lineup with center cryptoglyph
-            if (iAmBlue()) {
-                auto.encoderDrive(0.5, 11.0 - 7.5, 5.0, true, -90.0);
-            } else {
-                auto.encoderDrive(0.5, 11.0 - 7.5, 5.0, true, -90.0);
-            }
+
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? 13.515 - 7.5 : 12.165 + 7.5, 5.0, true, -90.0);
 
         }
 
         // Turn toward  cryptoglyph
         if (iAmBlue()) {
-            auto.gyroTurn(0.8, 0, auto.P_TURN_COEFF);
+            auto.gyroTurn(AutoHelper.DRIVE_SPEED, 0, auto.P_TURN_COEFF);
         } else {
-            auto.gyroTurn(0.8, 180, auto.P_TURN_COEFF);
+            auto.gyroTurn(AutoHelper.DRIVE_SPEED, 180, auto.P_TURN_COEFF);
         }
+
         // Outake glyph
         robot.gripper.setBothOpen();
         sleep(250);
-        // Drive closer to  cryptoglyph
+        // Drive closer to cryptoglyph
         if (iAmBlue()) {
-            auto.encoderDrive(0.5, 7.0, 3.0, true, 0);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, 3.0, 0.5, true, 0);
         } else {
-            auto.encoderDrive(0.5, 7.0, 3.0, true, 180);
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, 3.0, 0.5, true, 180);
         }
 
         robot.intake.setOut();
         sleep(600);
         robot.intake.setOpen();
         robot.intake.setStop();
+
+
+        // drive back
+        if (iAmBlue()) {
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, vuMark == RelicRecoveryVuMark.RIGHT? -8.0: -6.0, 3.0, true, 0);
+        } else {
+            auto.encoderDrive(AutoHelper.DRIVE_SPEED, vuMark == RelicRecoveryVuMark.LEFT? -8.0: -6.0, 3.0, true, 180);
+        }
+
+    }
+
+    @Override
+    public void driveToPile() throws InterruptedException {
+    // Do nothing
+    }
+
+    @Override
+    public void loadFirstGlyph() throws InterruptedException {
+        // Do nothing
+    }
+
+    @Override
+    public void attemptGlyphCollect() throws InterruptedException {
+        // Do nothing
+    }
+
+    @Override
+    public void collectSecondGlyph() throws InterruptedException {
+        // Do nothing
+    }
+
+    @Override
+    public void loadSecondGlyph() throws InterruptedException {
+        // Do nothing
+    }
+    @Override
+    public void returnToBox() throws InterruptedException {
+        // Do nothing
+
+    }
+
+    @Override
+    public void placeExtraGlyphs() throws InterruptedException {
+
+        // Do nothing
+
     }
 
     @Override
     public void park() throws InterruptedException {
-        // Drive back, but stay in safe zone
-        if (iAmBlue()) {
-            auto.encoderDrive(0.6, -8.0, 3.0, true, 0);
-        } else {
-            auto.encoderDrive(0.6, -8.0, 3.0, true, 180);
-
-        }
-
-        robot.intake.setStop();
+        // Do nothing
     }
 
     @Override
