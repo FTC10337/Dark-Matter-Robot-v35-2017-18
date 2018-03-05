@@ -633,6 +633,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                         if (!robot.gripper.isBtmClosed() && robot.lift.targetPos == robot.lift.LIFT_BTM_POS && robot.lift.reachedFloor()) {
                             // Move lift down to BTM limit switch
                             if (robot.lift.resetFloorPos()) {
+                                robot.lift.setLiftBtm();
                                 nStates = States.AUTO_LOAD_1;
                                 RobotLog.i("DM10337 -- AUTO LOAD Seqeunce Init Complete");
                            }
