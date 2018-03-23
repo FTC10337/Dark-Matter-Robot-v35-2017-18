@@ -78,6 +78,8 @@ public class TeleOpDM18_Janus_AP extends OpMode {
 
     boolean glyphBump = false;
 
+    boolean gamepadx = false;
+
     boolean glyphMode = true;
     boolean relicMode = false;
     boolean firstModeChange = true;
@@ -158,6 +160,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
 
 
         telemetry.addData("Relic Mode: ", relicMode);
+        telemetry.addData("Relic inches: ", robot.relic.getExtensionDistanceInches());
 
         //telemetry.addData("alpha: " + robot.intake.glyphColorSensor.alpha(), "dist: " + robot.intake.intakeDistance);
         //telemetry.addData("LEFT_AVG: ", robot.intake.distSensor_leftAvg.average());
@@ -322,10 +325,9 @@ public class TeleOpDM18_Janus_AP extends OpMode {
 
                 isButtonPressed = true;
 
-                // Override auto moves
-                autoMove = false;
+                // Override auto load
                 init_AutoLoad = false;
-                init_Reset = false;
+                autoMove = false;
 
                 // reset all auto lift booleans to default
                 resetLiftBtm = false;
@@ -735,6 +737,72 @@ public class TeleOpDM18_Janus_AP extends OpMode {
 
             }
 
+            if (init_Reset) {
+                switch (nStates) {
+
+                    case RESET_1: // OPEN INTAKE
+
+                        slowDriveTrainOveride = false;
+                        glyphBump = false;
+
+                        if (robot.intake.isClosed()) {
+                            robot.intake.setOpen();
+                            robot.gripper.setBothOpen();
+                            nStates = States.RESET_2;
+                            RobotLog.i("DM10337 -- RESET glyph sequence 1 complete");
+                        } else {
+                            robot.gripper.setBothOpen();
+                            nStates = States.RESET_2;
+                            RobotLog.i("DM10337 -- RESET glyph sequence 1 complete");
+                        }
+                        break;
+
+                    case RESET_2: // LIFT ABOVE INTAKE IF NOT ALREADY
+
+                        if (!robot.intake.isMoving() && !robot.gripper.isReleasing()) {
+                            if (robot.lift.distFromBottom() < 5.0) {
+                                robot.lift.setLiftHeight(5.5);
+                                nStates = States.RESET_2_1;
+                                RobotLog.i("DM10337 -- RESET glyph sequence 2 complete");
+                            } else {
+                                nStates = States.RESET_2_1;
+                                RobotLog.i("DM10337 -- RESET glyph sequence 2 complete");
+                            }
+                        }
+                        break;
+
+                    case RESET_2_1: // PUSHER IN & OPEN GRIPPERS
+
+                        if (robot.lift.distFromBottom() > 5.0) {
+                            robot.gripper.setExtendIn();
+                            robot.gripper.setBothOpen();
+                            topGripisClosed = false;
+                            nStates = States.RESET_3;
+                            RobotLog.i("DM10337 -- RESET glyph sequence 2_1 complete");
+                        }
+                        break;
+
+                    case RESET_3:
+
+                        if (!robot.gripper.isExtending()) {
+                            robot.lift.setLiftBtm();
+                            nStates = States.RESET_4;
+                            RobotLog.i("DM10337 -- RESET glyph sequence 3 complete");
+                        }
+                        break;
+
+                    case RESET_4:
+
+                        if (robot.lift.reachedFloor()) {
+                            if (robot.lift.resetFloorPos()) {
+                                init_Reset = false;
+                                RobotLog.i("DM10337 -- RESET glyph sequence 4 complete");
+                            }
+                        }
+
+                }
+            }
+
             // / MANUAL MOVEMENT OF RELIC EXTENSION
 
 
@@ -799,12 +867,22 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                 isButtonPressed = true;
             }
 
-            // Set relic pivot to grab position and open claw
-            if (gamepad2.x && robot.relic.isGripHoldingRelic()) {
-                robot.relic.setRelicPivotDropPos();
-            } else if (gamepad2.x && !robot.relic.isGripHoldingRelic()) {
-                robot.relic.setRelicPivotGrabPos();
+            if (gamepad2.x && !isButtonPressed) {
+                isButtonPressed = true;
+                gamepadx = true;
+                robot.relic.setRelicPivotKickstand();
             }
+
+            if (gamepadx) {
+             // Set relic pivot to grab position and open claw
+                if (robot.relic.isGripHoldingRelic()) {
+                    robot.relic.setRelicPivotDropPos();
+                } else if (!robot.relic.isGripHoldingRelic()) {
+                    robot.relic.setRelicPivotGrabPos();
+                }
+                gamepadx = false;
+            }
+
 
         }
     }
@@ -915,6 +993,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                 // square glyph
                 robot.intake.squareGlyph();
             } else {
+                //robot.intake.setInSlow();
                 intakeStopTimer.reset();
                 robot.intake.setIn();
                 squaringGlyph = false;

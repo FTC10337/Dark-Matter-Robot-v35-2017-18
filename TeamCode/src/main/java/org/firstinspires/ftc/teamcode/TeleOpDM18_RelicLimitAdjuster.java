@@ -130,6 +130,7 @@ public class TeleOpDM18_RelicLimitAdjuster extends OpMode {
         telemetry.addData("Relic EncPos: ", robot.relic.relicMotor.getCurrentPosition());
         telemetry.addData("Pivot: ", robot.relic.relicPivot.getPosition());
         telemetry.addData("Claw: ", robot.relic.relicGrip.getPosition());
+        telemetry.addData("Extension inches: ", robot.relic.getExtensionDistanceInches());
 
         if (gamepad2.left_stick_y > 0.2 || gamepad2.left_stick_y < -0.2) {
             robot.relic.relicMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

@@ -146,6 +146,15 @@ public class Intake {
         intakeCycle = true;
     }
 
+    public void setInSlow() {
+        RobotLog.i("DM10337 -- Intake set IN SLOW");
+        intakeLeftMotor.setPower(0.5);
+        intakeRightMotor.setPower(0.5);
+        isIntakeInOn = true;
+        isIntakeOutOn = false;
+        intakeCycle = true;
+    }
+
     public void setInLeftOnly() {
         lInPower = MAX_IN_POWER;
         rInPower = -0.2;
