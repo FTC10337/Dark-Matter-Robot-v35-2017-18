@@ -107,8 +107,8 @@ public class TeleOpDM18_Janus_AP extends OpMode {
     boolean squaringGlyph = false;
     boolean timedStopIntake = false;
 
-    int turnCoefficient = 1;
-    int driveCoefficient = 1;
+    double turnCoefficient = 1;
+    double driveCoefficient = 1;
 
     int liftFloorTarget = 0;
 
@@ -267,7 +267,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                 turnCoefficient = 4;
                 driveCoefficient = 2;
             } else {
-                turnCoefficient = 2;
+                turnCoefficient = 1;
                 driveCoefficient = 1;
             }
 
@@ -635,7 +635,8 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                         if (!robot.gripper.isBtmClosed() && robot.lift.targetPos == robot.lift.LIFT_BTM_POS && robot.lift.reachedFloor()) {
                             // Move lift down to BTM limit switch
                             if (robot.lift.resetFloorPos()) {
-                                robot.lift.setLiftBtm();
+                                //robot.lift.setLiftBtm();
+                                robot.lift.setLiftDown();
                                 nStates = States.AUTO_LOAD_1;
                                 RobotLog.i("DM10337 -- AUTO LOAD Seqeunce Init Complete");
                            }

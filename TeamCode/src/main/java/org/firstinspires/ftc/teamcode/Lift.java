@@ -142,6 +142,10 @@ public class Lift {
         liftTimer.reset();
     }
 
+    public void setLiftDown() {
+        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftMotor.setPower(-0.5);
+    }
     public void setLiftHeight(double height) {
         RobotLog.i("DM10337 -- Set lift to height " + height);
         height = Range.clip(height, 1.0, 11.0);
