@@ -267,7 +267,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                 turnCoefficient = 4;
                 driveCoefficient = 2;
             } else {
-                turnCoefficient = 1;
+                turnCoefficient = 1.5;
                 driveCoefficient = 1;
             }
 
