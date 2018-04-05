@@ -23,7 +23,7 @@ public class Relic {
 
 
     // Servo Constants
-    static final double RELIC_GRIP_OPEN =  0.32;
+    static final double RELIC_GRIP_OPEN =  0.26;
     static final double RELIC_GRIP_CLOSE = 0.845;
     static final double RELIC_GRIP_GRAB = 0.845;
     static final double RELIC_PIVOT_HOME = 1.0;
