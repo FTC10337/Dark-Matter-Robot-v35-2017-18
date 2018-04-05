@@ -124,17 +124,23 @@ public abstract class Auto_Master extends LinearOpMode {
         robot.lift.resetFloorPos();
 
         robot.relic.setRelicPivotGrabPos();
+        robot.intake.setOpen();
 
         sleep (200);
+
+        robot.gripper.setExtendIn();
+
 
         robot.relic.setRelicPivotKickstand();
         robot.relic.setRelicGripOpen();
 
      // Main robot auto sequence
 
+        auto.processJewel();
+
         auto.determineKeyGlyph();
 
-        auto.processJewel();
+        robot.intake.setClosed();
 
         readVuMark();
 

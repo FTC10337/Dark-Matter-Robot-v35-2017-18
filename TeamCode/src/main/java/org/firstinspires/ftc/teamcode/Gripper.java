@@ -31,9 +31,10 @@ public class Gripper {
     public final static double GRIP_ROTATE_FLIPPED = 0.041;
     public final static double GRIP_EXTEND_HOME = 0.898;
     public final static double GRIP_EXTEND_OUT = 0.487;
+    public final static double GRIP_EXTEND_INIT = 0.7;
     public final static double FLIP_TIME = 600;        // 1 second for servo to flip gripper
     public final static double GRIP_TIME_GRAB = 225;        // 1 second for grip to open or close
-    public final static double GRIP_TIME_RELEASE = 350;
+    public final static double GRIP_TIME_RELEASE = 700;
     public final static double EXTEND_TIME = 250;
 
     /* Gripper state variables */
@@ -106,7 +107,8 @@ public class Gripper {
         isGripFlipped = false;
 
         setFlipped(false);
-        setExtendIn();
+        setExtendInitPosition();
+        //setExtendIn();
         setBothClosed();
     }
 
@@ -199,11 +201,15 @@ public class Gripper {
      * Retract gripper
      */
     public void setExtendIn() {
-        RobotLog.i("DM10337 -- Gripper set to HOME position");
+        RobotLog.i("DM10337 -- Pusher set to HOME position");
         extendGrip.setPosition(GRIP_EXTEND_HOME);
         extendTimer.reset();
     }
 
+    public void setExtendInitPosition() {
+        RobotLog.i("DM10337 -- Pusher set to INIT position");
+        extendGrip.setPosition(GRIP_EXTEND_INIT);
+    }
     /**
      * Close the purple gripper
      */
