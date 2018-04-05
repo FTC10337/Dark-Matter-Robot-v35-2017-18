@@ -655,6 +655,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                         // Open intake after gripper has closed
                         if (!robot.gripper.btmIsMoving()) {
                             robot.intake.setOpen();
+                            robot.intake.setStop();
                             if (!topGripisClosed) {
                                 nStates = States.AUTO_LOAD_2;
                                 RobotLog.i("DM10337 -- AUTO LOAD Seqeunce 1_2 Complete");
@@ -813,7 +814,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                 relicPower = smoothPowerCurve(deadzone(relicPower, 0.20));
                 // Driver 2 control to slow down extension speed for fine adjustments
                 if (gamepad2.right_bumper || gamepad2.left_bumper) {
-                    relicPower = relicPower / 2;
+                    relicPower = relicPower / 1.5;
                     }
 
                 if (robot.relic.relicMotor.getCurrentPosition() >= 0) {
@@ -892,6 +893,7 @@ public class TeleOpDM18_Janus_AP extends OpMode {
      */
     @Override
     public void stop () {
+
     }
 
     /**
