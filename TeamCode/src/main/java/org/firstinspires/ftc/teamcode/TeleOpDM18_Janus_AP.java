@@ -635,11 +635,10 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                         if (!robot.gripper.isBtmClosed() && robot.lift.targetPos == robot.lift.LIFT_BTM_POS && robot.lift.reachedFloor()) {
                             // Move lift down to BTM limit switch
                             if (robot.lift.resetFloorPos()) {
-                                //robot.lift.setLiftBtm();
-                                robot.lift.setLiftDown();
+                                robot.lift.setPower(-0.7);
                                 nStates = States.AUTO_LOAD_1;
                                 RobotLog.i("DM10337 -- AUTO LOAD Seqeunce Init Complete");
-                           }
+                            }
                         }
                         break;
 
@@ -988,17 +987,18 @@ public class TeleOpDM18_Janus_AP extends OpMode {
         }
 
         // Intake STOP - square glyph if necessary then stop intaking
-        if (squaringGlyph) {
+        if (squaringGlyph && init_AutoLoad) {
+            squaringGlyph = false;
+        } else if (squaringGlyph && robot.intake.distLeft() > 10.0 && robot.intake.distRight() > 10.0) {
+            robot.intake.setIn();
+            squaringGlyph = false;
+        } else if (squaringGlyph){
             // check to see if glyph is squared against backplate
             if (Math.abs(robot.intake.distLeft() - robot.intake.distRight()) > 1.0){
                 // square glyph
                 robot.intake.squareGlyph();
             } else {
-                //robot.intake.setInSlow();
-                intakeStopTimer.reset();
-                robot.intake.setIn();
-                squaringGlyph = false;
-                timedStopIntake = true;
+                robot.intake.setInSlow();
             }
         }
 
@@ -1006,7 +1006,6 @@ public class TeleOpDM18_Janus_AP extends OpMode {
             robot.intake.setStop();
             timedStopIntake = false;
         }
-
 
         // Intake OUT
         if (gamepad1.left_trigger > 0.5 && !init_AutoLoad && !init_Reset) {
