@@ -160,8 +160,6 @@ public class TeleOpDM18_Janus_AP extends OpMode {
 
 
         telemetry.addData("Relic Mode: ", relicMode);
-        telemetry.addData("Relic inches: ", robot.relic.getExtensionDistanceInches());
-
         //telemetry.addData("alpha: " + robot.intake.glyphColorSensor.alpha(), "dist: " + robot.intake.intakeDistance);
         //telemetry.addData("LEFT_AVG: ", robot.intake.distSensor_leftAvg.average());
         //telemetry.addData("RIGHT_AVG: ", robot.intake.distSensor_rightAvg.average());

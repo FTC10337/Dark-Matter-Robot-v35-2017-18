@@ -29,12 +29,12 @@ public class Gripper {
 
     public final static double GRIP_ROTATE_NORMAL = 0.967;
     public final static double GRIP_ROTATE_FLIPPED = 0.041;
-    public final static double GRIP_EXTEND_HOME = 0.898;
-    public final static double GRIP_EXTEND_OUT = 0.487;
-    public final static double GRIP_EXTEND_INIT = 0.7;
-    public final static double FLIP_TIME = 600;        // 1 second for servo to flip gripper
-    public final static double GRIP_TIME_GRAB = 225;        // 1 second for grip to open or close
-    public final static double GRIP_TIME_RELEASE = 700;
+    public final static double GRIP_EXTEND_HOME = 0.447;   // Savox 1256tg 0.93
+    public final static double GRIP_EXTEND_OUT = 0.813;  // Savox 1256tg 0.55
+    public final static double GRIP_EXTEND_INIT = 0.603;  // Savox 1256tg 0.7
+    public final static double FLIP_TIME = 600;        // 600 ms for servo to flip gripper
+    public final static double GRIP_TIME_GRAB = 225;        // 225 ms timer for grip to complete grab
+    public final static double GRIP_TIME_RELEASE = 700;    // 700 ms timer for grip to complete release
     public final static double EXTEND_TIME = 250;
 
     /* Gripper state variables */
@@ -191,8 +191,8 @@ public class Gripper {
     public void moveInOut(double speed) {
         speed = Range.clip(speed, -1, 1);
         double current = extendGrip.getPosition();
-        double target =  current + (((GRIP_EXTEND_OUT - GRIP_EXTEND_HOME) * speed) / 3);   // At full stick will take 20 cycles
-        target = Range.clip(target, GRIP_EXTEND_OUT, GRIP_EXTEND_HOME);
+        double target =  current + ((Math.abs(GRIP_EXTEND_HOME - GRIP_EXTEND_OUT) * speed) / 3.5);   // At full stick will take 20 cycles
+        target = Range.clip(target, GRIP_EXTEND_HOME, GRIP_EXTEND_OUT); // min max reversed if using Savox 1256tg
         extendGrip.setPosition(target);
         extendTimer.reset();
     }

@@ -20,10 +20,16 @@ public class Auto_Blue_L_3G extends Auto_Master {
         // Drive off stone
         if (iAmBlue()) {
             auto.encoderDrive(0.5, 28.0, 5.0, true, 0.0);
-            auto.gyroTurn(AutoHelper.DRIVE_SPEED, -90, auto.P_TURN_COEFF);
+            auto.gyroTurn(1.0, -90, auto.P_TURN_COEFF);
+            if (Math.abs(-90 - auto.readGyro()) > 0.0) {
+                auto.gyroTurn(1.0, -90, AutoHelper.P_TURN_COEFF_STRONG);
+            }
         } else {
             auto.encoderDrive(0.5, -28.0, 5.0, true, 0.0);
-            auto.gyroTurn(AutoHelper.DRIVE_SPEED, -90, auto.P_TURN_COEFF);
+            auto.gyroTurn(1.0, -90, auto.P_TURN_COEFF);
+            if (Math.abs(-90 - auto.readGyro()) > 0.0) {
+                auto.gyroTurn(1.0, -90, AutoHelper.P_TURN_COEFF_STRONG);
+            }
         }
 
 
@@ -219,7 +225,7 @@ public class Auto_Blue_L_3G extends Auto_Master {
 
             if (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN){
                 // turn to place extra glyphs
-                auto.gyroTurn(AutoHelper.DRIVE_SPEED, iAmBlue()? -31: 211, AutoHelper.P_TURN_COEFF_180);
+                auto.gyroTurn(1.0, iAmBlue()? -31: 211, AutoHelper.P_TURN_COEFF_180);
 
                 auto.autoTime.reset();
                 // lift to floor
@@ -239,7 +245,7 @@ public class Auto_Blue_L_3G extends Auto_Master {
             }
             if (vuMark == RelicRecoveryVuMark.RIGHT){
                 // turn to place extra glyphs
-                auto.gyroTurn(AutoHelper.DRIVE_SPEED, iAmBlue()? 41: 203, AutoHelper.P_TURN_COEFF_180);
+                auto.gyroTurn(1.0, iAmBlue()? 41: 203, AutoHelper.P_TURN_COEFF_180);
 
                 auto.autoTime.reset();
                 // lift to floor
@@ -259,7 +265,7 @@ public class Auto_Blue_L_3G extends Auto_Master {
             }
             if (vuMark == RelicRecoveryVuMark.LEFT){
                 // turn to place extra glyphs
-                auto.gyroTurn(AutoHelper.DRIVE_SPEED, iAmBlue()? -23 : 139, AutoHelper.P_TURN_COEFF_180);
+                auto.gyroTurn(1.0, iAmBlue()? -23 : 139, AutoHelper.P_TURN_COEFF_180);
 
                 auto.autoTime.reset();
                 // lift to floor
@@ -270,7 +276,7 @@ public class Auto_Blue_L_3G extends Auto_Master {
                 robot.gripper.setExtendOut();
                 sleep(200);
 
-                auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? 9.0 : 14.0, 3.0, true, iAmBlue()? -23: 139);
+                auto.encoderDrive(1.0, iAmBlue()? 9.0 : 14.0, 3.0, true, iAmBlue()? -23: 139);
 
                 // Drop glyphs
                 robot.gripper.setBothOpen();

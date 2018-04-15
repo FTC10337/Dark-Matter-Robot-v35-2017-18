@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
@@ -31,7 +32,7 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
         }
         if (vuMark == RelicRecoveryVuMark.RIGHT) {
 
-            angleAdjust = 30;
+            angleAdjust = 31;
             // Drive forward to lineup with center cryptoglyph
             if (iAmBlue()) {
                 auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, 33.0 + 7.5, 5.0, true, 0.0);
@@ -42,7 +43,7 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
         }
         if (vuMark == RelicRecoveryVuMark.LEFT) {
 
-            angleAdjust = -30;
+            angleAdjust = -31;
             // Drive forward to lineup with center cryptoglyph
             if (iAmBlue()) {
                 auto.encoderDrive(AutoHelper.DRIVE_SPEED_SLOW, 33.0 - 7.5, 5.0, true, 0.0);
@@ -183,7 +184,11 @@ public class Auto_Blue_R_3G_Ground extends Auto_Master {
         auto.encoderDrive(AutoHelper.DRIVE_SPEED, -inches, 5, true, -90);
 
         // Turn toward cryptobox
-        auto.gyroTurn(AutoHelper.TURN_SPEED, 90, AutoHelper.P_TURN_COEFF);
+        if (vuMark == RelicRecoveryVuMark.RIGHT || vuMark == RelicRecoveryVuMark.LEFT){
+            auto.gyroTurn(AutoHelper.TURN_SPEED, 90 + angleAdjust, AutoHelper.P_TURN_COEFF);
+        } else {
+            auto.gyroTurn(AutoHelper.TURN_SPEED, 90, AutoHelper.P_TURN_COEFF);
+        }
 
         if (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN) {
             auto.encoderDrive(AutoHelper.DRIVE_SPEED, 9.5, 5, true, 90);

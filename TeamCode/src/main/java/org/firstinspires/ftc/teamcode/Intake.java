@@ -317,8 +317,13 @@ public class Intake {
     }
 
     public int setGlyphColor() {
-        if (glyphColorSensor.alpha() > 70.0) return 0; // 0 for gray
-        else return 1; // 1 for brown
+        if (glyphColorSensor.alpha() > 77.0) {
+            RobotLog.i("DM10337 -- Glyph color is GRAY. Alpha:" + glyphColorSensor.alpha());
+            return 0; // 0 for gray
+        } else {
+            RobotLog.i("DM10337 -- Glyph color is BROWN. Alpha:" + glyphColorSensor.alpha());
+            return 1; // 1 for brown
+        }
     }
 
     public void squareGlyph() {
