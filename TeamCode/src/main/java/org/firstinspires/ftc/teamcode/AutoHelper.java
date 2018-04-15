@@ -37,6 +37,8 @@ public class AutoHelper {
 
     public ElapsedTime      autoTime = new ElapsedTime();
 
+    public MovingAvg gyroErrorAvg = new MovingAvg(30);
+
     public static final String TAG = "Vuforia VuMark Sample";
 
     OpenGLMatrix lastLocation = null;
@@ -61,8 +63,8 @@ public class AutoHelper {
     static final double     HEADING_THRESHOLD       = 1.0 ;    // As tight as we can make it with an integer gyro
     static final double     P_TURN_COEFF            = 0.011; // Larger is more responsive, but also less accurate
     static final double     P_TURN_COEFF_180        = 0.009; // For turns closer to 180 degrees. Less responsive, but more accurate to account for momentum coming out of long turns.
-    static final double     P_TURN_COEFF_STRONG     = 0.022; // For small turns
-    static final double     P_DRIVE_COEFF_1         = 0.01;  // Larger is more responsive, but also less accurate
+    static final double     P_TURN_COEFF_STRONG     = 0.100; // For small 1 degree adjustment turns
+    static final double     P_DRIVE_COEFF_1         = 0.03;  // Larger is more responsive, but also less accurate
     static final double     P_DRIVE_COEFF_2         = 0.25;  // Intenionally large so robot "wiggles" around the target setpoint while driving
 
     // Variables used for reading Gyro
@@ -393,6 +395,9 @@ public class AutoHelper {
 
                     // adjust relative speed based on heading
                     double error = getError(curHeading);
+
+                    updateGyroErrorAvg(error);
+
                     double steer = getSteer(error,
                             (aggressive?P_DRIVE_COEFF_2:P_DRIVE_COEFF_1));
 
@@ -432,6 +437,8 @@ public class AutoHelper {
                     "  rrtarget: " +newRRTarget + "  rractual:" + robot.rightDrive2.getCurrentPosition() +
                     "  heading:" + readGyro());
 
+            RobotLog.i ("DM10337 - Gyro error average: " + gyroErrorAvg.average());
+
             // Stop all motion;
             robot.leftDrive1.setPower(0);
             robot.rightDrive1.setPower(0);
@@ -440,6 +447,7 @@ public class AutoHelper {
 
             // Turn off RUN_TO_POSITION
             robot.setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         }
     }
 
@@ -1054,6 +1062,11 @@ public class AutoHelper {
             Thread.currentThread().interrupt();
         }
     }
+
+    public void updateGyroErrorAvg(double error) {
+        gyroErrorAvg.add(Math.abs(error));
+    }
+
 
     boolean iAmBlue() {return weAreBlue;}
 }

@@ -29,7 +29,7 @@ public class Gripper {
 
     public final static double GRIP_ROTATE_NORMAL = 0.967;
     public final static double GRIP_ROTATE_FLIPPED = 0.041;
-    public final static double GRIP_EXTEND_HOME = 0.447;   // Savox 1256tg 0.93
+    public final static double GRIP_EXTEND_HOME = 0.48;   // Savox 1256tg 0.93
     public final static double GRIP_EXTEND_OUT = 0.813;  // Savox 1256tg 0.55
     public final static double GRIP_EXTEND_INIT = 0.603;  // Savox 1256tg 0.7
     public final static double FLIP_TIME = 600;        // 600 ms for servo to flip gripper
