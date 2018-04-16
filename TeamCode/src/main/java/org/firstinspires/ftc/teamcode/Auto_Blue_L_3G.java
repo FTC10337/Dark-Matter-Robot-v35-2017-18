@@ -20,12 +20,14 @@ public class Auto_Blue_L_3G extends Auto_Master {
         // Drive off stone
         if (iAmBlue()) {
             auto.encoderDrive(0.5, 28.0, 5.0, true, 0.0);
+
             auto.gyroTurn(1.0, -90, auto.P_TURN_COEFF);
             if (Math.abs(-90 - auto.readGyro()) > 0.0) {
                 auto.gyroTurn(1.0, -90, AutoHelper.P_TURN_COEFF_STRONG);
             }
         } else {
             auto.encoderDrive(0.5, -28.0, 5.0, true, 0.0);
+
             auto.gyroTurn(1.0, -90, auto.P_TURN_COEFF);
             if (Math.abs(-90 - auto.readGyro()) > 0.0) {
                 auto.gyroTurn(1.0, -90, AutoHelper.P_TURN_COEFF_STRONG);
