@@ -22,14 +22,14 @@ public class Auto_Blue_L_3G extends Auto_Master {
             auto.encoderDrive(0.5, 28.0, 5.0, true, 0.0);
 
             auto.gyroTurn(1.0, -90, auto.P_TURN_COEFF);
-            if (Math.abs(-90 - auto.readGyro()) > 0.0) {
+            if (Math.abs(-90 - auto.readGyro()) > 1.0) {
                 auto.gyroTurn(1.0, -90, AutoHelper.P_TURN_COEFF_STRONG);
             }
         } else {
             auto.encoderDrive(0.5, -28.0, 5.0, true, 0.0);
 
             auto.gyroTurn(1.0, -90, auto.P_TURN_COEFF);
-            if (Math.abs(-90 - auto.readGyro()) > 0.0) {
+            if (Math.abs(-90 - auto.readGyro()) > 1.0) {
                 auto.gyroTurn(1.0, -90, AutoHelper.P_TURN_COEFF_STRONG);
             }
         }
@@ -229,16 +229,16 @@ public class Auto_Blue_L_3G extends Auto_Master {
                 // turn to place extra glyphs
                 auto.gyroTurn(1.0, iAmBlue()? -31: 211, AutoHelper.P_TURN_COEFF_180);
 
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED, 5.0, 3.0, true, iAmBlue()? -31: 211);
+
+                // Extend gripper out
+                robot.gripper.setExtendOut();
+                sleep(250);
+
                 auto.autoTime.reset();
                 // lift to floor
                 while(!robot.lift.resetFloorPos() || auto.autoTime.milliseconds() < 150) sleep(1);
                 robot.lift.liftMotor.setPower(0.0);
-
-                // Extend gripper out
-                robot.gripper.setExtendOut();
-                sleep(200);
-
-                auto.encoderDrive(AutoHelper.DRIVE_SPEED, 5.0, 3.0, true, iAmBlue()? -31: 211);
 
                 // Drop glyphs
                 robot.gripper.setBothOpen();
@@ -249,16 +249,16 @@ public class Auto_Blue_L_3G extends Auto_Master {
                 // turn to place extra glyphs
                 auto.gyroTurn(1.0, iAmBlue()? 41: 203, AutoHelper.P_TURN_COEFF_180);
 
+                auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? 14.0 : 9.0, 3.0, true, iAmBlue()? 41: 203);
+
+                // Extend gripper out
+                robot.gripper.setExtendOut();
+                sleep(250);
+
                 auto.autoTime.reset();
                 // lift to floor
                 while(!robot.lift.resetFloorPos() || auto.autoTime.milliseconds() < 150) sleep(1);
                 robot.lift.liftMotor.setPower(0.0);
-
-                // Extend gripper out
-                robot.gripper.setExtendOut();
-                sleep(200);
-
-                auto.encoderDrive(AutoHelper.DRIVE_SPEED, iAmBlue()? 14.0 : 9.0, 3.0, true, iAmBlue()? 41: 203);
 
                 // Drop glyphs
                 robot.gripper.setBothOpen();
@@ -269,16 +269,16 @@ public class Auto_Blue_L_3G extends Auto_Master {
                 // turn to place extra glyphs
                 auto.gyroTurn(1.0, iAmBlue()? -23 : 139, AutoHelper.P_TURN_COEFF_180);
 
+                auto.encoderDrive(1.0, iAmBlue()? 9.0 : 14.0, 3.0, true, iAmBlue()? -23: 139);
+
+                // Extend gripper out
+                robot.gripper.setExtendOut();
+                sleep(250);
+
                 auto.autoTime.reset();
                 // lift to floor
                 while(!robot.lift.resetFloorPos() || auto.autoTime.milliseconds() < 150) sleep(1);
                 robot.lift.liftMotor.setPower(0.0);
-
-                // Extend gripper out
-                robot.gripper.setExtendOut();
-                sleep(200);
-
-                auto.encoderDrive(1.0, iAmBlue()? 9.0 : 14.0, 3.0, true, iAmBlue()? -23: 139);
 
                 // Drop glyphs
                 robot.gripper.setBothOpen();
