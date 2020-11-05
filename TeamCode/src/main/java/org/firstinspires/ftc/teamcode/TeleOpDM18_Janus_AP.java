@@ -287,6 +287,9 @@ public class TeleOpDM18_Janus_AP extends OpMode {
                 right /= max;
             }
 
+
+
+            
             // Apply power to drive motors
             robot.leftDrive1.setPower(left);
             robot.leftDrive2.setPower(left);
